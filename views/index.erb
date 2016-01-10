@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>logic</title>
+  <style type="text/css">
+    #left-column {
+      float: left;
+      width: 50%;
+    }
+    #right-column {
+      float: right;
+      width: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="left-column">
+    <b>Available logics</b>, <a href="/edit/new">new</a>
+  <br>
+  <% @logics.each do |logic| %>
+    <%= logic["sha"] %>, <a href="/edit/<%=logic["sha"]%>">edit</a><br>
+    <%= logic["logic"] %>
+    <hr>
+  <% end %>
+  </div>
+  <div id="right-column">
+    <b>Connected</b>
+
+  </div>
+</body>
+</html>

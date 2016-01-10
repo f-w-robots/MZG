@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+
+<form  method="POST" action="/edit/<%= @sha %>">
+
+  <% if @sha == 'new' %>
+    <input type="text" name="sha" value="">
+  <% else %>
+    <b><%= @sha %></b>
+  <% end %>
+  <br>
+  <textarea cols="20" rows="10" name="logic"><%=@logic.to_s%></textarea>
+  <br>
+  <input type="submit">
+</form>
+
+</body>
+</html>
