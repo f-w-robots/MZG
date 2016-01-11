@@ -17,7 +17,7 @@ def next_step sha, msg
   eval "def logic(msg)
     #{get_logic(sha)}
   end"
-  logic(msg)
+  logic({right: msg[1].to_i, left: msg[3].to_i, direct: msg[5].to_i})
 end
 
 get '/:sha' do |sha|
