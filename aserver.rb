@@ -26,8 +26,8 @@ end
 # Example:
 # if msg[:left] == 0
 #   'l'
-# elsif msg[:direct] == 0
-#   'd'
+# elsif msg[:forward] == 0
+#   'f'
 # elsif msg[:right] == 0
 #   'r'
 # else
@@ -37,7 +37,7 @@ def next_step sha, msg
   eval "def logic(msg)
     #{get_logic(sha)}
   end"
-  logic({right: msg[1].to_i, left: msg[3].to_i, direct: msg[5].to_i})
+  logic({forward: msg[0].to_i, right: msg[1].to_i, left: msg[3].to_i})
 end
 
 get '/devices/list' do
@@ -50,7 +50,6 @@ get '/:sha' do |sha|
   else
     request.websocket do |ws|
       ws.onopen do
-        ws.send("OK")
         settings.sockets[sha] = ws
         puts "connected with id: #{sha}"
       end

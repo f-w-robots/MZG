@@ -1,8 +1,9 @@
 # Simple arduino device simulator
 #
-# send random state and accept commands by web-sockets
+# send detector states and accept commands by web-sockets
 #
 require 'byebug'
+require './labirint'
 
 require 'digest/sha1'
 require 'faye/websocket'
@@ -19,6 +20,7 @@ def _init
       end
 
       ws.on :message do |event|
+        @labirint.move event.data
         p [:message, event.data]
       end
 
@@ -28,15 +30,16 @@ def _init
       end
     }
   end
+  @labirint = Labirint.new
 end
 
 def _loop
   return if !@ws
-  @ws.send("r#{rand(2)}l#{rand(2)}d#{rand(2)}")
+  @ws.send("#{@labirint.detector('f')}#{@labirint.detector('r')}-#{@labirint.detector('l')}")
 end
 
 _init
 loop do
   _loop
-  sleep 1
+  sleep 0.1
 end
