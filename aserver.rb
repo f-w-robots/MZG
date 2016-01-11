@@ -67,5 +67,6 @@ get '/:sha' do |sha|
 end
 
 set :sockets, {}
-set :port, 2500
-set :db, Mongo::Client.new([ CONFIG['database']['host_port'] ], :database => CONFIG['database']['dbname'])
+set :port, CONFIG['aserver']['port']
+set :db, Mongo::Client.new([ "#{CONFIG['database']['host']}:#{CONFIG['database']['port']}" ],
+  :database => CONFIG['database']['dbname'])

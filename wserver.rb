@@ -35,4 +35,6 @@ post '/edit/:id' do |id|
   end
 end
 
-set :db, Mongo::Client.new([ CONFIG['database']['host_port'] ], :database => CONFIG['database']['dbname'])
+set :port, CONFIG['wserver']['port']
+set :db, Mongo::Client.new([ "#{CONFIG['database']['host']}:#{CONFIG['database']['port']}" ],
+  :database => CONFIG['database']['dbname'])

@@ -3,14 +3,18 @@
 # send detector states and accept commands by web-sockets
 #
 require 'byebug'
-require './labirint'
 
 require 'digest/sha1'
 require 'faye/websocket'
+require 'yaml'
+
+require './labirint'
+
+CONFIG = YAML.load_file("config.yml")
 
 def _init
   @sha = Digest::SHA1.hexdigest ENV['ID'].to_s
-  port = 2500
+  port = CONFIG['aserver']['port']
   Thread.new do
     EM.run {
       @ws = ws = Faye::WebSocket::Client.new("ws://localhost:#{port}/#{@sha}")
