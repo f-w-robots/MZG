@@ -1,0 +1,3 @@
+database:
+  host_port: localhost:28001
+  dbname: mzg

@@ -1,37 +1,38 @@
+# Server for web interface
+#
+# Show connected devices and
+# manage algorithms
+#
 require 'byebug'
 
-require 'sinatra/base'
+require 'sinatra'
 require 'mongo'
+require 'net/http'
 
-class Server < Sinatra::Base
-  def initialize
-    super
-    @db = Mongo::Client.new([ 'localhost:28001' ], :database => 'mzg')
+CONFIG = YAML.load_file("config.yml")
+
+get '/' do
+  @logics = settings.db[:logics].find
+  erb :index
+end
+
+get '/edit/:id' do |id|
+  @sha = id
+  if id != 'new'
+    logic = settings.db[:logics].find({sha: id}).first
+    @logic = logic[:logic]
   end
+  erb :edit
+end
 
-  get '/' do
-    @logics = @db[:logics].find
-    erb :index
-  end
-
-  get '/edit/:id' do |id|
-    @sha = id
-    if id != 'new'
-      logic = @db[:logics].find({sha: id}).first
-      @logic = logic[:logic]
-    end
-    erb :edit
-  end
-
-  post '/edit/:id' do |id|
-    if id == 'new'
-      @db[:logics].insert_one(params)
-      redirect "/"
-    else
-      logic = @db[:logics].find({sha: id}).update_one(params.merge({sha: id}))
-      redirect "/edit/#{id}"
-    end
+post '/edit/:id' do |id|
+  if id == 'new'
+    settings.db[:logics].insert_one(params)
+    redirect "/"
+  else
+    logic = settings.db[:logics].find({sha: id}).update_one(params.merge({sha: id}))
+    redirect "/edit/#{id}"
   end
 end
 
-Server.run!
+set :db, Mongo::Client.new([ CONFIG['database']['host_port'] ], :database => CONFIG['database']['dbname'])

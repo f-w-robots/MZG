@@ -1,3 +1,7 @@
+# Simple arduino device simulator
+#
+# send random state and accept commands by web-sockets
+#
 require 'byebug'
 
 require 'digest/sha1'
