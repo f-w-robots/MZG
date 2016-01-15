@@ -1,0 +1,6 @@
+db:
+  image: mongo:3.2
+  ports:
+    - "28001:27017"
+  volumes:
+    - mzg_db:/data/db

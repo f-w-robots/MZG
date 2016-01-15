@@ -3,6 +3,7 @@ GEM
   specs:
     addressable (2.4.0)
     bson (4.0.0)
+    byebug (8.2.1)
     daemons (1.2.3)
     em-websocket (0.3.8)
       addressable (>= 2.1.1)
@@ -37,6 +38,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   faye-websocket
   mongo (~> 2.2)
   sinatra
