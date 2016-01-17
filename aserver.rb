@@ -24,14 +24,22 @@ end
 # Evaluate logic from db
 #
 # Example:
-# if msg[:left] == 0
-#   'l'
-# elsif msg[:forward] == 0
-#   'f'
-# elsif msg[:right] == 0
-#   'r'
+# if msg[:left] == 2
+#   'ls'
+# elsif msg[:forward] == 2
+#   'fs'
+# elsif msg[:right] == 2
+#   'rs'
 # else
-#   'b'
+#   if msg[:left] == 0
+#     'l'
+#   elsif msg[:forward] == 0
+#     'f'
+#   elsif msg[:right] == 0
+#     'r'
+#   else
+#     'b'
+#   end
 # end
 def next_step sha, msg
   eval "def logic(msg)

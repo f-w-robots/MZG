@@ -11,19 +11,27 @@ class Labirint
   # Move current point in the direction as 'f' - forward, 'r' - right, 'l' - left, 'b' - back
   def move direction
     ny, nx, nangle = near_xy(direction)
-    if @labirint[ny][nx] == 0
+    if @labirint[ny][nx] == 0 || @labirint[ny][nx] == 2
       @x = nx
       @y = ny
+      print
       @angle = nangle % 4
-    elsif @labirint[ny][nx] == 2
-      @finished = true
     end
   end
 
   # Check wall in the direction as 'f' - forward, 'r' - right, 'l' - left, 'b' - back
-  def detector direction
-    ny, nx = near_xy(direction)
-    @labirint[ny][nx]
+  def sensors
+    result = []
+    ['f','r',nil,'l'].each do |d|
+      if !d
+        result << nil
+        next
+      end
+      ny, nx = near_xy(d)
+      result << @labirint[ny][nx]
+    end
+    puts result.inspect
+    result
   end
 
   private
@@ -33,9 +41,9 @@ class Labirint
      [1, 0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
       [1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1],
       [1,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1],
-      [1,0,0,0,0,1,0,1,0,0,0,1,1,1,0,1],
+      [1,0,0,0,0,1,0,0,0,0,0,1,1,1,0,1],
       [1,1,1,0,1,1,0,1,1,1,0,1,0,0,0,1],
-      [1,0,1,0,0,0,0,1,1,1,0,1,1,1,1,1],
+      [1,0,0,0,0,0,0,1,1,1,0,1,1,1,1,1],
       [1,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1],
       [1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
       [1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1],

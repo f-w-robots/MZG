@@ -23,7 +23,15 @@ def connect
       end
 
       @ws.on :message do |event|
-        @labirint.move event.data
+        event.data.each_char do |command|
+          if command == 's'
+            @stop = true
+            @ws.close
+          else
+            @labirint.move command
+          end
+          @recived = true
+        end
         p [:message, event.data]
       end
 
@@ -37,18 +45,22 @@ end
 
 def _init
   @labirint = Labirint.new
+  @recived = true
 end
 
 def _loop
+  return if @stop || !@recived
   if !@ws
     connect
   else
-    @ws.send("#{@labirint.detector('f')}#{@labirint.detector('r')}-#{@labirint.detector('l')}")
+    @recived = false
+    sensors = @labirint.sensors.map{|e|e ? e : '-'}
+    @ws.send("#{sensors[0]}#{sensors[1]}#{sensors[2]}#{sensors[3]}")
   end
 end
 
 _init
 loop do
   _loop
-  sleep 0.1
+  sleep 0.0001
 end
