@@ -21,29 +21,11 @@ end
 
 # Evaluate logic from db
 #
-# Example:
-# if msg[:left] == 2
-#   'ls'
-# elsif msg[:forward] == 2
-#   'fs'
-# elsif msg[:right] == 2
-#   'rs'
-# else
-#   if msg[:left] == 0
-#     'l'
-#   elsif msg[:forward] == 0
-#     'f'
-#   elsif msg[:right] == 0
-#     'r'
-#   else
-#     'b'
-#   end
-# end
 def next_step sha, msg
   eval "def logic(msg)
     #{get_logic(sha)}
   end"
-  logic({forward: msg[0].to_i, right: msg[1].to_i, left: msg[3].to_i})
+  logic(msg)
 end
 
 get '/devices/list' do

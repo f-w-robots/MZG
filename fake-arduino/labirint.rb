@@ -1,5 +1,23 @@
 # Simple labirint
 #
+# logic:
+# if msg[3] == '2'
+#   'ls'
+# elsif msg[0] == '2'
+#   'fs'
+# elsif msg[1] == '2'
+#   'rs'
+# else
+#   if msg[3] == '0'
+#     'l'
+#   elsif msg[0] == '0'
+#     'f'
+#   elsif msg[1] == '0'
+#     'r'
+#   else
+#     'b'
+#   end
+# end
 class Labirint
   def initialize
     generate
@@ -9,7 +27,7 @@ class Labirint
   end
 
   # Move current point in the direction as 'f' - forward, 'r' - right, 'l' - left, 'b' - back
-  def move direction
+  def command direction
     ny, nx, nangle = near_xy(direction)
     if @labirint[ny][nx] == 0 || @labirint[ny][nx] == 2
       @x = nx
@@ -30,7 +48,6 @@ class Labirint
       ny, nx = near_xy(d)
       result << @labirint[ny][nx]
     end
-    puts result.inspect
     result
   end
 

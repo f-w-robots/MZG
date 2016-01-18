@@ -7,11 +7,14 @@ require 'byebug'
 require 'digest/sha1'
 require 'faye/websocket'
 
-require './labirint'
+require "./#{File.dirname(__FILE__)}/labirint"
+require "./#{File.dirname(__FILE__)}/labirint2"
 
 SHA = Digest::SHA1.hexdigest ENV['ID'].to_s
 
 def connect
+  return if @try_connection
+  @try_connection = true
   Thread::abort_on_exception = true
   Thread.new do
     EM.run {
@@ -28,7 +31,7 @@ def connect
             @stop = true
             @ws.close
           else
-            @labirint.move command
+            @model.command command
           end
           @recived = true
         end
@@ -37,13 +40,15 @@ def connect
       @ws.on :close do |event|
         p [:close, event.code, event.reason]
         @ws = nil
+        @try_connection = false
       end
+
     }
   end
 end
 
 def _init
-  @labirint = Labirint.new
+  @model = Labirint.new
   @recived = true
 end
 
@@ -53,7 +58,7 @@ def _loop
     connect
   else
     @recived = false
-    sensors = @labirint.sensors.map{|e|e ? e : '-'}
+    sensors = @model.sensors.map{|e|e ? e : '-'}
     @ws.send("#{sensors[0]}#{sensors[1]}#{sensors[2]}#{sensors[3]}")
   end
 end
