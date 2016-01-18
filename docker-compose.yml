@@ -1,6 +1,24 @@
 db:
   image: mongo:3.2
-  ports:
-    - "28001:27017"
   volumes:
     - mzg_db:/data/db
+web:
+  build: .
+  command: ruby wserver.rb -o 0.0.0.0
+  ports:
+    - "4567:4567"
+  volumes:
+    - .:/app
+  links:
+    - db
+  env_file: .env
+aserver:
+  build: .
+  command: ruby aserver.rb -o 0.0.0.0
+  ports:
+    - "2500:2500"
+  volumes:
+    - .:/app
+  links:
+    - db
+  env_file: .env

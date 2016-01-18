@@ -10,8 +10,6 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-CONFIG = YAML.load_file("config.yml")
-
 def get_logic sha
   logic = settings.db[:logics].find({sha: sha}).first
   if logic
@@ -75,6 +73,6 @@ get '/:sha' do |sha|
 end
 
 set :sockets, {}
-set :port, CONFIG['aserver']['port']
-set :db, Mongo::Client.new([ "#{CONFIG['database']['host']}:#{CONFIG['database']['port']}" ],
-  :database => CONFIG['database']['dbname'])
+set :port, ENV['ASERVER_PORT']
+set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ],
+  :database => ENV['DB_NAME'])

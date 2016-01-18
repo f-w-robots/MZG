@@ -6,23 +6,23 @@ require 'byebug'
 
 require 'digest/sha1'
 require 'faye/websocket'
-require 'yaml'
 
 require './labirint'
 
-CONFIG = YAML.load_file("config.yml")
 SHA = Digest::SHA1.hexdigest ENV['ID'].to_s
 
 def connect
+  Thread::abort_on_exception = true
   Thread.new do
     EM.run {
-      @ws = Faye::WebSocket::Client.new("ws://localhost:#{CONFIG['aserver']['port']}/#{SHA}")
+      @ws = Faye::WebSocket::Client.new("ws://localhost:#{ENV['ASEVER_PORT'] || 2500}/#{SHA}")
 
       @ws.on :open do |event|
         p [:open]
       end
 
       @ws.on :message do |event|
+        p [:message, event.data]
         event.data.each_char do |command|
           if command == 's'
             @stop = true
@@ -32,7 +32,6 @@ def connect
           end
           @recived = true
         end
-        p [:message, event.data]
       end
 
       @ws.on :close do |event|

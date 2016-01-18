@@ -9,8 +9,6 @@ require 'sinatra'
 require 'mongo'
 require 'net/http'
 
-CONFIG = YAML.load_file("config.yml")
-
 get '/' do
   @logics = settings.db[:logics].find
   erb :index
@@ -35,6 +33,6 @@ post '/edit/:id' do |id|
   end
 end
 
-set :port, CONFIG['wserver']['port']
-set :db, Mongo::Client.new([ "#{CONFIG['database']['host']}:#{CONFIG['database']['port']}" ],
-  :database => CONFIG['database']['dbname'])
+set :port, ENV['WEB_PORT']
+set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ],
+  :database => ENV['DB_NAME'])
