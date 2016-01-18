@@ -25,7 +25,12 @@ def next_step sha, msg
   eval "def logic(msg)
     #{get_logic(sha)}
   end"
-  logic(msg)
+  begin
+    result = logic(msg)
+  rescue Exception => e
+    nil
+  end
+  result
 end
 
 get '/devices/list' do
@@ -43,8 +48,12 @@ get '/:sha' do |sha|
       end
       ws.onmessage do |msg|
         puts msg
-        a = next_step(sha, msg)
-        ws.send(a)
+        command = next_step(sha, msg)
+        if command
+          ws.send(command)
+        else
+          ws.close_websocket
+        end
       end
       ws.onclose do
         puts "disconnected with id: #{sha}"
@@ -56,5 +65,4 @@ end
 
 set :sockets, {}
 set :port, ENV['ASERVER_PORT']
-set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ],
-  :database => ENV['DB_NAME'])
+set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
