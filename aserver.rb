@@ -47,7 +47,7 @@ get '/:sha' do |sha|
         puts "connected with id: #{sha}"
       end
       ws.onmessage do |msg|
-        puts msg
+        puts "message #{msg}"
         command = next_step(sha, msg)
         if command
           ws.send(command)
@@ -66,3 +66,4 @@ end
 set :sockets, {}
 set :port, ENV['ASERVER_PORT']
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
+set :bind, '0.0.0.0'
