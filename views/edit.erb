@@ -8,10 +8,13 @@
 <form  method="POST" action="/edit/<%= @sha %>">
 
   <% if @sha == 'new' %>
-    <input type="text" name="sha" value="">
+    id: <input type="text" name="sha" value="">
   <% else %>
     <b><%= @sha %></b>
   <% end %>
+  <br>
+  <br>
+  ruby code:
   <br>
   <textarea cols="60" rows="25" name="logic"><%=@logic.to_s%></textarea>
   <br>

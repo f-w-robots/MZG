@@ -4,13 +4,11 @@
 #
 require 'byebug'
 
-require 'digest/sha1'
 require 'faye/websocket'
 
 require "./#{File.dirname(__FILE__)}/labirint"
-require "./#{File.dirname(__FILE__)}/labirint2"
 
-SHA = Digest::SHA1.hexdigest ARGV[0].to_s
+SHA = ARGV[0].to_s
 
 def connect
   return if @try_connection
