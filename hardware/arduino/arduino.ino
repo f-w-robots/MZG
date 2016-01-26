@@ -40,15 +40,8 @@ boolean readString(String &str, char b, char &last_byte) {
   }
 }
 
-void loop() {
-  if(conn1) {
-    if(Serial.available() > 0 )
-      sw.write(Serial.read());
-    if(sw.available() > 0 )
-      Serial.write(sw.read());
-    return;
-  }
-  
+// TODO - rewrite
+void connectToWebSocketByESP8266() {
   if(!conn) {
     Serial.println("try eps");
     sw.println("AT");
@@ -75,7 +68,8 @@ void loop() {
       if(sw.available()>0){
         readString(string, sw.read(), last_byte);
       }
-      delay(10);
+      Serial.println(string);
+      delay(300);
     }
     sw.println("AT:connect+" + host + "+" + sha);
     string = "";
@@ -87,6 +81,25 @@ void loop() {
     }
     conn1 = true;   
     return;
+  }
+}
+
+void connectToWebSocket() {
+  connectToWebSocketByESP8266();
+}
+
+void logic() {
+  if(Serial.available() > 0 )
+      sw.write(Serial.read());
+  if(sw.available() > 0 )
+    Serial.write(sw.read());
+}
+
+void loop() {
+  if(conn1) {
+    logic();
+  } else {
+    connectToWebSocket();
   }
 }
 

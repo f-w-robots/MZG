@@ -4,7 +4,7 @@ db:
     - mzg_db:/data/db
 web:
   build: .
-  command: ruby wserver.rb -o 0.0.0.0
+  command: ruby interface/app.rb
   ports:
     - "4567:4567"
   volumes:
@@ -14,7 +14,7 @@ web:
   env_file: .env
 aserver:
   build: .
-  command: ruby aserver.rb -o 0.0.0.0
+  command: ruby aserver.rb
   ports:
     - "2500:2500"
   volumes:

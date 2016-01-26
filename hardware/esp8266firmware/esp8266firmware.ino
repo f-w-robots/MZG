@@ -1,13 +1,7 @@
 #include <Arduino.h>
-
 #include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-
 #include <WebSocketsClient.h>
 
-#include <Hash.h>
-
-ESP8266WiFiMulti WiFiMulti;
 WebSocketsClient webSocket;
 
 char host[100];
@@ -80,26 +74,62 @@ void parseString(String stringx, int &i1, int &i2) {
 
 void setup() {
     Serial.begin(9600);
-    delay(1000);
-    Serial.println("ESP8266 loaded");
+    Serial.println();
 }
 
 void loop() {  
     if(Serial.available() > 0 && readString(tmpstring, Serial.read(), last_byte)) {
          string = tmpstring;
          tmpstring = "";
-         if(string == "AT")
-              Serial.println("OK");
+         if(string == "AT") {
+           Serial.println("OK");
+           return;
+         }
+              
+         if(string == "AT:status") {
+            if(setuped) {
+              Serial.print("connected to ssid:");
+              Serial.println(ssid);
+            } else {
+              Serial.println("disconnected");
+            }
+            if(connected) {
+              Serial.print("connection with host: ");
+              Serial.print(host);
+              Serial.print(":2500/");
+              Serial.println(sha);
+            }
+            return;
+         }
+
+         if(string == "AT:reset") {
+            if(connected) {
+              webSocket.disconnect();
+              while(connected) {
+                delay(10);
+              }                
+            }
+            if(setuped) {
+              WiFi.disconnect();
+              while (WiFi.status() == WL_CONNECTED) {
+                delay(10);
+              }
+              setuped = false;
+            }
+            delay(10);
+            Serial.println("OK");
+            return;
+         }
 
          if(string.startsWith("AT:setup") && !setuped) {
               parseString(string, index1, index2);
               string.substring(index1 + 1, index2).toCharArray(ssid, index2 - index1);
               string.substring(index2 + 1).toCharArray(password, string.length() - index2);
               
-              WiFiMulti.addAP(ssid, password);
-
-              while(WiFiMulti.run() != WL_CONNECTED) {
+              WiFi.begin(ssid, password);
+              while (WiFi.status() != WL_CONNECTED) {
                 delay(100);
+//                Serial.print(".");
               }
               Serial.println("OK");
               setuped = true;
@@ -110,6 +140,9 @@ void loop() {
               
               string.substring(index1a + 1, index2a).toCharArray(host, index2a - index1a);
               string.substring(index2a + 1).toCharArray(sha, string.length() - index2a);
+
+              Serial.println(sha);
+              Serial.println(strcat("/", sha));
               
               webSocket.begin(host, 2500, strcat("/", sha));
               webSocket.onEvent(webSocketEvent);
