@@ -6,7 +6,7 @@ WebSocketsClient webSocket;
 
 char host[100];
 const int port = 2500;
-char sha[100];
+char url[100];
 
 boolean setuped = false;
 boolean connected = false;
@@ -24,20 +24,24 @@ char ssid[100];
 char password[100];
 
 // Read String variables
-String string = "";
-String tmpstring = "";
-char last_byte = 0;
+String string;
+char buff[255] = "";
 
-boolean readString(String &str, char b, char &last_byte) {
-  if(b == 0x0D) {
-    last_byte = 0x0D;
-    return false;
-  }
-  if(b == 0x0A && last_byte == 0x0D) {
-    last_byte = 0;
+boolean readString(char b) {
+  int len = strlen(buff);
+
+  if(len >= 255) {
     return true;
+  }
+  
+  if(b == 0x0A) {
+    if(len > 0 && buff[len - 1] == 0x0D) {
+      buff[len - 1] = 0;
+      return true;
+    }
   } else {
-    str += b;
+    buff[len] = b;
+    buff[len + 1] = 0;
     return false;
   }
 }
@@ -78,9 +82,10 @@ void setup() {
 }
 
 void loop() {  
-    if(Serial.available() > 0 && readString(tmpstring, Serial.read(), last_byte)) {
-         string = tmpstring;
-         tmpstring = "";
+    if(Serial.available() > 0 && readString(Serial.read())) {
+         string = String(buff);
+         buff[0] = 0;
+
          if(string == "AT") {
            Serial.println("OK");
            return;
@@ -96,8 +101,8 @@ void loop() {
             if(connected) {
               Serial.print("connection with host: ");
               Serial.print(host);
-              Serial.print(":2500/");
-              Serial.println(sha);
+              Serial.print(":2500");
+              Serial.println(url);
             }
             return;
          }
@@ -129,30 +134,31 @@ void loop() {
               WiFi.begin(ssid, password);
               while (WiFi.status() != WL_CONNECTED) {
                 delay(100);
-//                Serial.print(".");
               }
               Serial.println("OK");
               setuped = true;
+              return;
          }
 
          if(string.startsWith("AT:connect") && !connected && setuped) {
               parseString(string, index1a, index2a);
               
               string.substring(index1a + 1, index2a).toCharArray(host, index2a - index1a);
-              string.substring(index2a + 1).toCharArray(sha, string.length() - index2a);
+              ("/" + string.substring(index2a + 1)).toCharArray(url, string.length() - index2a + 1);
 
-              Serial.println(sha);
-              Serial.println(strcat("/", sha));
               
-              webSocket.begin(host, 2500, strcat("/", sha));
+              webSocket.begin(host, 2500, url);
               webSocket.onEvent(webSocketEvent);
 
               Serial.println("OK");
               connected = true;
+              return;
          }
 
          if(setuped && connected) {
             webSocket.sendTXT(string);
+         } else {
+            Serial.println("fail");
          }
     }
     if(setuped && connected) {

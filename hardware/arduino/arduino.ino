@@ -17,39 +17,51 @@ boolean conn = false;
 boolean conn1 = false;
 
 // Read String variables
-String string = "";
-String tmpstring = "";
-char last_byte = 0;
+String string;
+char buff[255] = "";
+
+boolean readString(char b) {
+  int len = strlen(buff);
+
+  if(len >= 255) {
+    return true;
+  }
+
+  if(b == 0x0A) {
+    if(len > 0 && buff[len - 1] == 0x0D) {
+      buff[len - 1] = 0;
+      return true;
+    }
+  } else {
+    buff[len] = b;
+    buff[len + 1] = 0;
+    return false;
+  }
+}
 
 void setup() {
   Serial.begin(9600);
   sw.begin(9600);
 }
 
-boolean readString(String &str, char b, char &last_byte) {
-  if(b == 0x0D) {
-    last_byte = 0x0D;
-    return false;
+void loop() {
+  if(conn1) {
+    if(Serial.available() > 0 )
+      sw.write(Serial.read());
+    if(sw.available() > 0 )
+      Serial.write(sw.read());
+    return;
   }
-  if(b == 0x0A && last_byte == 0x0D) {
-    last_byte = 0;
-    return true;
-  } else {
-    str += b;
-    return false;
-  }
-}
-
-// TODO - rewrite
-void connectToWebSocketByESP8266() {
+  
   if(!conn) {
     Serial.println("try eps");
-    sw.println("AT");
-    delay(100);
+    sw.println("AT:reset");
+    delay(200);
     while(sw.available()>0) {
-      if(readString(tmpstring, sw.read(), last_byte)) {
-        string = tmpstring;
-        tmpstring = "";
+      if(readString(sw.read())) {
+        string = String(buff);
+         buff[0] = 0;
+         
         if(string == "OK") {
           conn = true;
         }
@@ -66,40 +78,28 @@ void connectToWebSocketByESP8266() {
     string = "";
     while(string != "OK") {
       if(sw.available()>0){
-        readString(string, sw.read(), last_byte);
+        if(readString(sw.read())) {
+          string = String(buff);
+          buff[0] = 0;
+        }        
       }
-      Serial.println(string);
-      delay(300);
+      delay(1000);
     }
     sw.println("AT:connect+" + host + "+" + sha);
+    Serial.println("AT:connect+" + host + "+" + sha);
     string = "";
+    Serial.println("try connect");
     while(string != "OK") {
       if(sw.available()>0){
-        readString(string, sw.read(), last_byte);
+        if(readString(sw.read())) {
+          string = String(buff);
+          buff[0] = 0;
+        }        
       }
       delay(10);
     }
     conn1 = true;   
     return;
-  }
-}
-
-void connectToWebSocket() {
-  connectToWebSocketByESP8266();
-}
-
-void logic() {
-  if(Serial.available() > 0 )
-      sw.write(Serial.read());
-  if(sw.available() > 0 )
-    Serial.write(sw.read());
-}
-
-void loop() {
-  if(conn1) {
-    logic();
-  } else {
-    connectToWebSocket();
   }
 }
 
