@@ -20,6 +20,8 @@ boolean conn1 = false;
 String string;
 char buff[255] = "";
 
+int connection_timeout = 0;
+
 boolean readString(char b) {
   int len = strlen(buff);
 
@@ -83,7 +85,12 @@ void loop() {
           buff[0] = 0;
         }        
       }
-      delay(1000);
+      connection_timeout += 1;
+      if (connection_timeout > 500) {
+        connection_timeout = 0;
+        return;
+      }
+      delay(10);
     }
     sw.println("AT:connect+" + host + "+" + sha);
     Serial.println("AT:connect+" + host + "+" + sha);
@@ -95,6 +102,11 @@ void loop() {
           string = String(buff);
           buff[0] = 0;
         }        
+      }
+      connection_timeout += 1;
+      if (connection_timeout > 500) {
+        connection_timeout = 0;
+        return;
       }
       delay(10);
     }
