@@ -1,10 +1,14 @@
 #include "Engine.h"
 #include "ESP8266Serial.h"
+#include "RGBIndication.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
 Engine engine(3, 2, 4, 5, 7, 6);
 // TX, RX
 ESP8266Serial esp(10, 11);
+//Red, Green, Blue
+RGBIndication rgb(12, 8, 9);
+
 
 boolean connected = false;
 
@@ -20,13 +24,17 @@ boolean connect() {
 void setup()
 {
   Serial.begin(9600);
-
+  rgb.power();
   while(!connected) {
     connected = connect();
-    delay(100);
+    if(!connected) {
+      Serial.println("unsuccessful");
+      rgb.error();
+      delay(1000);
+    }
   }
+  rgb.connection();
   Serial.println("connected");
-
 }
 void loop()
 {
