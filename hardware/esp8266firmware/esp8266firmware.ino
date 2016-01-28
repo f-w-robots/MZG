@@ -5,20 +5,17 @@
 WebSocketsClient webSocket;
 
 char host[100];
-const int port = 2500;
+uint16_t port = 0;
 char url[100];
 
 boolean setuped = false;
 boolean connected = false;
+int socketTimeout = 0;
 
 int i = 0;
 
-int index1 = -1;
-int index2 = -1;
-
-// TODO - use index1, index1
-int index1a = -1;
-int index2a = -1;
+int indexA = -1;
+int indexB = -1;
 
 char ssid[100];
 char password[100];
@@ -52,6 +49,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t lenght) {
             connected = false;
             break;
         case WStype_CONNECTED:
+            connected = true;
             break;
         case WStype_TEXT:
             Serial.printf("%s\n", payload);
@@ -63,14 +61,10 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t lenght) {
 
 }
 
-void parseString(String stringx, int &i1, int &i2) {
-  i1 == -1;
-  i2 == -1;
-  for(i = 0; i<= stringx.length(); i++) {
-    if(stringx[i] == '+' && i1 == -1)
-      i1 = i;
-    if(stringx[i] == '+' && i1 != -1)
-      i2 = i;
+int parseString(String string, int index1) {
+  for(i = index1; i<= string.length(); i++) {
+    if(string[i] == '+')
+      return i;
   }
 }
 
@@ -125,10 +119,11 @@ void loop() {
          }
 
          if(string.startsWith("AT:setup") && !setuped) {
-              parseString(string, index1, index2);
-              string.substring(index1 + 1, index2).toCharArray(ssid, index2 - index1);
-              string.substring(index2 + 1).toCharArray(password, string.length() - index2);
-              
+              indexA = parseString(string, 0);
+              indexB = parseString(string, indexA + 1);
+              string.substring(indexA + 1, indexB).toCharArray(ssid, indexB - indexA);
+              string.substring(indexB + 1).toCharArray(password, string.length() - indexB);
+
               WiFi.begin(ssid, password);
               while (WiFi.status() != WL_CONNECTED) {
                 delay(100);
@@ -139,24 +134,34 @@ void loop() {
          }
 
          if(string.startsWith("AT:connect") && !connected && setuped) {
-              parseString(string, index1a, index2a);
+              indexA = parseString(string, 0);
+              indexB = parseString(string, indexA + 1);
+              string.substring(indexA + 1, indexB).toCharArray(host, indexB - indexA);
+              indexA = parseString(string, indexB + 1);
+              port = string.substring(indexB + 1, indexA).toInt();
+              string.substring(indexA + 1).toCharArray(url, string.length() - indexA);
               
-              string.substring(index1a + 1, index2a).toCharArray(host, index2a - index1a);
-              ("/" + string.substring(index2a + 1)).toCharArray(url, string.length() - index2a + 1);
-
-              
-              webSocket.begin(host, 2500, url);
+              webSocket.begin(host, port, url);
               webSocket.onEvent(webSocketEvent);
 
+              while(!connected) {
+                webSocket.loop();
+                delay(10);
+                socketTimeout += 1;
+                 if(socketTimeout > 100) {
+                   Serial.println("FAIL");
+                   return;
+                 }
+              }
               Serial.println("OK");
-              connected = true;
+
               return;
          }
 
          if(setuped && connected) {
             webSocket.sendTXT(string);
          } else {
-            Serial.println("fail");
+            Serial.println("FAIL");
          }
     }
     if(setuped && connected) {
