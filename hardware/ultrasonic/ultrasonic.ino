@@ -8,19 +8,25 @@ ESP8266Serial esp(10, 11);
 
 boolean connected = false;
 
+String ssid = "ssid";
+String password = "password";
+String host = "192.168.2.168";
+String sha = "car";
+
 boolean connect() {
-  return esp.prepare() && esp.upWiFi("ssid", "password") && esp.connectToSocket("192.168.2.168", "sha1");
+  return esp.prepare() && esp.upWiFi(ssid, password) && esp.connectToSocket(host, sha);
 }
 
 void setup()
 {
   Serial.begin(9600);
 
-  if(connected = connect()) {
-    Serial.println("connected");
-  } else {
-    Serial.println("not connected");
+  while(!connected) {
+    connected = connect();
+    delay(100);
   }
+  Serial.println("connected");
+
 }
 void loop()
 {

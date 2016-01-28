@@ -49,11 +49,9 @@ boolean readString(char b) {
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t lenght) {
     switch(type) {
         case WStype_DISCONNECTED:
-            Serial.println("Disconnected");
             connected = false;
             break;
-        case WStype_CONNECTED:;
-            Serial.println("Connected");
+        case WStype_CONNECTED:
             break;
         case WStype_TEXT:
             Serial.printf("%s\n", payload);

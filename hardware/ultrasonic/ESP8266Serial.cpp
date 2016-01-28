@@ -23,6 +23,14 @@ int ESP8266Serial::status() {
   return 8;
 }
 
+String ESP8266Serial::request(String string) {
+  if(_socket) {
+    _serial->println(string);
+  } else {
+    return "";
+  }
+}
+
 boolean ESP8266Serial::prepare() {
   _serial->println("AT:reset");
   _espReady = responseIsOK();
@@ -48,25 +56,27 @@ boolean ESP8266Serial::connectToSocket(String host, String sha) {
 }
 
 boolean ESP8266Serial::responseIsOK() {
+  if(response() == "OK") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+String ESP8266Serial::response() {
   while(_connection_timeout < 500) {
     _connection_timeout += 1;
     while(_serial->available()>0) {
       if(readString(_serial->read())) {
         _string = String(_buff);
         _buff[0] = 0;
-         
-        if(_string == "OK") {
-          _espReady = true;
-          return true;
-        } else {
-          Serial.println(_string);
-          return false;
-        }
+        
+        return _string;
       }  
     }
     delay(10);
   }
-  return false;
+  return "";
 }
 
 boolean ESP8266Serial::readString(char b) {
