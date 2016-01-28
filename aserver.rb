@@ -29,7 +29,7 @@ def next_step hwid, msg
 end
 
 get '/devices/list/manual' do
-  {keys: settings.sockets.reject{|s|!s[:manual]}.keys}.to_json
+  {keys: settings.hwsockets.reject{|s|!s[:manual]}.keys}.to_json
 end
 
 get '/control/:hwid' do |hwid|
@@ -44,13 +44,16 @@ get '/control/:hwid' do |hwid|
 
   request.websocket do |ws|
     ws.onopen do
-      settings.sockets[hwid] = ws
+      settings.swsockets[hwid] = ws
     end
     ws.onmessage do |msg|
-      ws.send(msg)
+      hwsocket = settings.hwsockets[hwid]
+      if hwsocket
+        hwsocket[:socket].send(msg)
+      end
     end
     ws.onclose do
-      settings.sockets.delete(hwid)
+      settings.swsockets.delete(hwid)
     end
   end
 end
@@ -70,7 +73,7 @@ get '/:hwid' do |hwid|
 
   request.websocket do |ws|
     ws.onopen do
-      settings.sockets[hwid] = {manual: manual, socket: ws}
+      settings.hwsockets[hwid] = {manual: manual, socket: ws}
       puts "connected with id: #{hwid}"
     end
     ws.onmessage do |msg|
@@ -83,17 +86,21 @@ get '/:hwid' do |hwid|
           ws.close_websocket
         end
       else
-
+        swsocket = settings.swsockets[hwid]
+        if swsocket
+          swsocket.send(msg)
+        end
       end
     end
     ws.onclose do
       puts "disconnected with id: #{hwid}"
-      settings.sockets.delete(hwid)
+      settings.hwsockets.delete(hwid)
     end
   end
 end
 
-set :sockets, {}
+set :hwsockets, {}
+set :swsockets, {}
 set :port, ENV['ASERVER_PORT']
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :bind, '0.0.0.0'

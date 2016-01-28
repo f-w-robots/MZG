@@ -37,7 +37,13 @@
       <button disabled>Update</button>
     </div>
     <div class="controlBlock" style="display:none">
-      controlBlock
+      controlBlock<br>
+      left speed(-255..255):<input id="left "name="left" value="0"><br>
+      right speed(-255..255):<input id="right "name="right" value="0"><br>
+      <button id="sendToS">Send</button><br>
+      input log:
+      <div class="inputLog">
+      </div>
     </div>
     <script type="text/javascript">
     $('#selectButton').click(function (argument) {
@@ -57,12 +63,17 @@
       };
 
       socket.onmessage = function(event) {
-        alert("Получены данные " + event.data);
+        $(".inputLog").append(event.data+"<br>")
       };
 
       socket.onerror = function(error) {
-        alert("Ошибка " + error.message);
+        alert("Error " + error.message);
       };
+
+      $("#sendToS").click(function() {
+        console.log("l:0+r:0");
+        socket.send("l:0+r:0");
+      });
     })
     </script>
   </div>
