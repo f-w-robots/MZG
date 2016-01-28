@@ -5,21 +5,36 @@
 </head>
 <body>
 
-<form  method="POST" action="/edit/<%= @sha %>">
-
-  <% if @sha == 'new' %>
-    id: <input type="text" name="sha" value="">
+<form  method="POST" action="/edit/<%= @hwid %>">
+  <% if @hwid == 'new' %>
+    id: <input type="text" name="hwid" value="">
   <% else %>
-    <b><%= @sha %></b>
+    <b><%= @hwid %></b>
   <% end %>
   <br>
-  <br>
+  <input id="radio1" type="radio" name="useManual" value="on" <%= @manual ? 'checked' : '' %>> Manual<br>
+  <input id="radio2" type="radio" name="useManual" value="off" <%= @manual ? '' : 'checked' %>>Algorithm<br>
   ruby code:
   <br>
-  <textarea cols="60" rows="25" name="logic"><%=@logic.to_s%></textarea>
+  <textarea id="code" cols="60" rows="25" name="algorithm" <%= @manual ? 'disabled' : '' %>><%= @algorithm.to_s %></textarea>
   <br>
   <input type="submit">
 </form>
+<script type="text/javascript">
+  radio1 = document.getElementById('radio1');
+  radio2 = document.getElementById('radio2');
+  codearea = document.getElementById('code');
 
+  radio1.addEventListener("change", OnRadioStateChange, false);
+  radio2.addEventListener("change", OnRadioStateChange, false);
+  function OnRadioStateChange (event) {
+    var radio = event.target;
+    if(radio == radio1) {
+      codearea.disabled = true;
+    } else {
+      codearea.disabled = false;
+    }
+  }
+</script>
 </body>
 </html>

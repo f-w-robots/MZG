@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>logic</title>
+  <title>devices</title>
   <style type="text/css">
     #left-column {
       float: left;
@@ -15,17 +15,17 @@
 </head>
 <body>
   <div id="left-column">
-    <b>Available logics</b>, <a href="/edit/new">new</a>
+    <b>Available devices</b>, <a href="/edit/new">new</a>
   <br>
-  <% @logics.each do |logic| %>
-    <%= logic["sha"] %>, <a href="/edit/<%=logic["sha"]%>">edit</a><br>
-    <%= logic["logic"] %>
+  <% @records.each do |record| %>
+    <%= record["hwid"] %>, <a href="/edit/<%=record["hwid"]%>">edit</a>,
+    <a href="/delete/<%=record["hwid"]%>">delete</a><br>
+    <%= record["algorithm"] %>
     <hr>
   <% end %>
   </div>
   <div id="right-column">
     <b>Connected</b>
-
   </div>
 </body>
 </html>

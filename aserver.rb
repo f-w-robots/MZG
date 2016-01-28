@@ -10,10 +10,10 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-def get_logic sha
-  logic = settings.db[:logics].find({sha: sha}).first
-  if logic
-    logic[:logic]
+def get_logic hwid
+  record = settings.db[:devices].find({hwid: hwid}).first
+  if record
+    record[:algorithm]
   else
     ''
   end
@@ -21,9 +21,9 @@ end
 
 # Evaluate logic from db
 #
-def next_step sha, msg
+def next_step hwid, msg
   eval "def logic(msg)
-    #{get_logic(sha)}
+    #{get_logic(hwid)}
   end"
   begin
     result = logic(msg)
@@ -37,18 +37,18 @@ get '/devices/list' do
   {keys: settings.sockets.keys}.to_json
 end
 
-get '/:sha' do |sha|
+get '/:hwid' do |hwid|
   if !request.websocket?
     ''
   else
     request.websocket do |ws|
       ws.onopen do
-        settings.sockets[sha] = ws
-        puts "connected with id: #{sha}"
+        settings.sockets[hwid] = ws
+        puts "connected with id: #{hwid}"
       end
       ws.onmessage do |msg|
         puts "message #{msg}"
-        command = next_step(sha, msg)
+        command = next_step(hwid, msg)
         if command
           ws.send(command)
         else
@@ -56,8 +56,8 @@ get '/:sha' do |sha|
         end
       end
       ws.onclose do
-        puts "disconnected with id: #{sha}"
-        settings.sockets.delete(sha)
+        puts "disconnected with id: #{hwid}"
+        settings.sockets.delete(hwid)
       end
     end
   end

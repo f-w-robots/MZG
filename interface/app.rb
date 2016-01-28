@@ -10,27 +10,41 @@ require 'mongo'
 require 'net/http'
 
 get '/' do
-  @logics = settings.db[:logics].find
+  @records = settings.db[:devices].find
   erb :index
 end
 
 get '/edit/:id' do |id|
-  @sha = id
+  @hwid = id
   if id != 'new'
-    logic = settings.db[:logics].find({sha: id}).first
-    @logic = logic[:logic]
+    record = settings.db[:devices].find({hwid: id}).first
+    @algorithm = record[:algorithm]
+    @manual = record[:manual]
   end
   erb :edit
 end
 
 post '/edit/:id' do |id|
+  record = {}
+  record['algorithm'] = params['algorithm']
+  record['hwid'] = params['hwid']
+  params['useManual'] ? record['manual'] = true : record['manual'] = false
+
   if id == 'new'
-    settings.db[:logics].insert_one(params)
+    if record['hwid'] == ''
+      record['hwid'] = rand.to_s[2..-1]
+    end
+    settings.db[:devices].insert_one(record)
     redirect "/"
   else
-    logic = settings.db[:logics].find({sha: id}).update_one(params.merge({sha: id}))
-    redirect "/edit/#{id}"
+    settings.db[:devices].find({hwid: id}).update_one(record)
+    redirect "/edit/#{record['hwid']}"
   end
+end
+
+get '/delete/:id' do |id|
+  settings.db[:devices].find({hwid: id}).delete_one
+  redirect '/'
 end
 
 set :port, ENV['WEB_PORT']
