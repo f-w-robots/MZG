@@ -32,7 +32,7 @@ get '/devices/list/manual' do
   {keys: settings.sockets.reject{|s|!s[:manual]}.keys}.to_json
 end
 
-get '/control/:hwid' do
+get '/control/:hwid' do |hwid|
   if !request.websocket?
     return ''
   end

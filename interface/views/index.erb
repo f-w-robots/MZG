@@ -12,6 +12,7 @@
       width: 50%;
     }
   </style>
+  <script type="text/javascript" src="/jquery-2.2.0.min.js"></script>
 </head>
 <body>
   <div id="left-column">
@@ -25,7 +26,45 @@
   <% end %>
   </div>
   <div id="right-column">
-    <b>Connected</b>
+    <b>Manual control</b>
+    <br>
+    <div class="connectBlock">
+      <select multiple="multiple" size="3" style="width:100px" id="selectList">
+        <option selected>car</option>
+      </select>
+      <br>
+      <button id="selectButton">Select</button>
+      <button disabled>Update</button>
+    </div>
+    <div class="controlBlock" style="display:none">
+      controlBlock
+    </div>
+    <script type="text/javascript">
+    $('#selectButton').click(function (argument) {
+      if($('#selectList').find(":selected").text() != 'car'){
+        alert("select car");
+        return;
+      }
+      var socket = new WebSocket("ws://localhost:2500/control/car");
+      socket.onopen = function() {
+        $('.connectBlock').css('display', 'none');
+        $('.controlBlock').css('display', 'inherit');
+      };
+
+      socket.onclose = function(event) {
+        $('.connectBlock').css('display', 'inherit');
+        $('.controlBlock').css('display', 'none');
+      };
+
+      socket.onmessage = function(event) {
+        alert("Получены данные " + event.data);
+      };
+
+      socket.onerror = function(error) {
+        alert("Ошибка " + error.message);
+      };
+    })
+    </script>
   </div>
 </body>
 </html>
