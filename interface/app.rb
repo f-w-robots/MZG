@@ -27,18 +27,17 @@ end
 post '/edit/:id' do |id|
   record = {}
   record['algorithm'] = params['algorithm']
-  record['hwid'] = params['hwid']
-  params['useManual'] ? record['manual'] = true : record['manual'] = false
-
+  params['useManual'] == 'on' ? record['manual'] = true : record['manual'] = false
   if id == 'new'
+    record['hwid'] = params['hwid']
     if record['hwid'] == ''
       record['hwid'] = rand.to_s[2..-1]
     end
     settings.db[:devices].insert_one(record)
     redirect "/"
   else
-    settings.db[:devices].find({hwid: id}).update_one(record)
-    redirect "/edit/#{record['hwid']}"
+    settings.db[:devices].find({hwid: id}).update_one(record.merge!({hwid: id}))
+    redirect "/edit/#{record[:hwid]}"
   end
 end
 
