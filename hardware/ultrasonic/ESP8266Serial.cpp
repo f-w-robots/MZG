@@ -46,11 +46,11 @@ boolean ESP8266Serial::upWiFi(String ssid, String password) {
   return _wifi;
 }
 
-boolean ESP8266Serial::connectToSocket(String host, String sha) {  
+boolean ESP8266Serial::connectToSocket(String host, String port, String sha) {  
    if(!_wifi) {
     return false;
   }
-  _serial->println("AT:connect+" + host + "+" + sha);
+  _serial->println("AT:connect+" + host + "+" + port + "+/" + sha);
   _socket = responseIsOK();
   return _socket;
 }
@@ -63,7 +63,30 @@ boolean ESP8266Serial::responseIsOK() {
   }
 }
 
+boolean ESP8266Serial::responseAvailable() {
+  return _serial->available() > 0;
+}
+
+String ESP8266Serial::getResponse() {
+  if(!_socket)
+    return "FAIL";
+  while(_serial->available()>0) {
+    if(readString(_serial->read())) {
+      _string = String(_buff);
+      _buff[0] = 0;
+      
+      return _string;
+    }  
+  }
+  return "";
+}
+
+boolean ESP8266Serial::connected() {
+  return _socket;
+}
+
 String ESP8266Serial::response() {
+  _buff[0] = 0;
   while(_connection_timeout < 500) {
     _connection_timeout += 1;
     while(_serial->available()>0) {
@@ -71,12 +94,14 @@ String ESP8266Serial::response() {
         _string = String(_buff);
         _buff[0] = 0;
         
+        _connection_timeout = 0;
         return _string;
       }  
     }
     delay(10);
   }
-  return "";
+  _connection_timeout = 0;
+  return "FAIL";
 }
 
 boolean ESP8266Serial::readString(char b) {

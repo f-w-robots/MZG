@@ -52,7 +52,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t lenght) {
             connected = true;
             break;
         case WStype_TEXT:
-            Serial.printf("%s\n", payload);
+            Serial.printf("%s\r\n", payload);
             break;
         case WStype_BIN:
 //            USE_SERIAL.printf("[WSc] get binary lenght: %u\n", lenght);
@@ -150,9 +150,11 @@ void loop() {
                 socketTimeout += 1;
                  if(socketTimeout > 100) {
                    Serial.println("FAIL");
+                   socketTimeout = 0;
                    return;
                  }
               }
+              socketTimeout = 0;
               Serial.println("OK");
 
               return;
