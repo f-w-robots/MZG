@@ -1,14 +1,14 @@
-#include "Engine.h"
+#include "EngineStep.h"
 #include "ESP8266Serial.h"
 #include "RGBIndication.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
 Engine engine(3, 2, 4, 5, 7, 6);
+EngineStep engineStep(&engine);
 // TX, RX
 ESP8266Serial esp(10, 11);
 //Red, Green, Blue
 RGBIndication rgb(12, 8, 9);
-
 
 boolean connected = false;
 
@@ -27,8 +27,10 @@ boolean connect() {
 
   if(esp.prepare()) {
     Serial.println("check esp8266 is OK");
+    delay(1000);
     if(esp.upWiFi(ssid, password)) {
       Serial.println("connect to wifi is OK");
+        delay(1000);
         if(esp.connectToSocket(host, "2500", sha)) {
           Serial.println("connect to socket is OK");
           return true;
@@ -97,14 +99,15 @@ void loop()
   }
   if(esp.responseAvailable()) {
     response = esp.getResponse();
-    Serial.println(response);;
-    if(response == "FAIL") {
-      rgb.error();
-      return;
-    }
-    parseResponse(response);
-    engine.rightSpeed(leftSpeed);
-    engine.leftSpeed(rightSpeed);
+    engineStep.command(response);
+//    Serial.println(response);
+//    if(response == "FAIL") {
+//      rgb.error();
+//      return;
+//    }
+//    parseResponse(response);
+//    engine.rightSpeed(leftSpeed);
+//    engine.leftSpeed(rightSpeed);
   }
   delay(10);
 }

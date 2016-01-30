@@ -27,7 +27,6 @@ void Engine::stop() {
  digitalWrite(_enb,LOW);
 }
 
-
 void Engine::rightSpeed(int speed)
 {
   digitalWrite(_ena,LOW);
@@ -71,5 +70,5 @@ void Engine::leftDirection(boolean direction) {
     digitalWrite(_en3,HIGH);
     digitalWrite(_en4,LOW);
   }
-}  
+}
 
