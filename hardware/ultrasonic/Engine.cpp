@@ -33,10 +33,10 @@ void Engine::rightSpeed(int speed)
   digitalWrite(_ena,LOW);
   if(speed > -1) {
     rightDirection(true);
-    digitalWrite(_ena, speed);
+    analogWrite(_ena, speed);
   } else {
     rightDirection(false);
-    digitalWrite(_ena, abs(speed));
+    analogWrite(_ena, abs(speed));
   }
 }
 
@@ -44,11 +44,11 @@ void Engine::leftSpeed(int speed)
 {
   digitalWrite(_enb,LOW);
   if(speed > -1) {
-    rightDirection(true);
-    digitalWrite(_enb, speed);
+    leftDirection(true);
+    analogWrite(_enb, speed);
   } else {
-    rightDirection(false);
-    digitalWrite(_enb, abs(speed));
+    leftDirection(false);
+    analogWrite(_enb, abs(speed));
   }
 }
 

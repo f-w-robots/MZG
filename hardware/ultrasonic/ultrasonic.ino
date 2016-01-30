@@ -40,37 +40,37 @@ boolean connect() {
 
 // TODO - binary protocol
 void parseResponse(String response) {
-  int left = 0;
-  int right = 0;
+  boolean left = false;
+  boolean right = false;
+  int leftSign = 1;
+  int rightSign = 1;
   leftSpeed = 0;
   rightSpeed = 0;
   for(int i = 0; i < response.length(); i++) {
     if(response[i] == 'l') {
-      rightSpeed = rightSpeed * right;
-      right = 0;
+      right = false;
+      left = true;
       if(response[i+1] == '-') 
-        left = -1;
-      else
-        left = 1;
+        leftSign = -1;
     }
     if(response[i] == 'r') {
-      leftSpeed = leftSpeed * left;
-      left = 0;
+      left = false;
+      right = true;
       if(response[i+1] == '-') 
-        right = -1;
-      else
-        right = 1;
+        rightSign = -1;
     }
     if(response[i] > 47 && response[i] < 58) {
-      if(left != 0)
+      if(left)
         leftSpeed = leftSpeed * 10 + response[i] - 48;
-      if(right != 0)
+      if(right)
         rightSpeed = rightSpeed * 10 + response[i] - 48;
     }
   }
-  if(abs(leftSpeed) > 0)
-    leftSpeed = constrain(leftSpeed, -255, 255);
-    rightSpeed = constrain(rightSpeed, -255, 255);
+  leftSpeed = leftSpeed * leftSign;
+  rightSpeed = rightSpeed * rightSign;
+
+  leftSpeed = constrain(leftSpeed, -255, 255);
+  rightSpeed = constrain(rightSpeed, -255, 255);
 }
 
 void setup()
@@ -106,6 +106,6 @@ void loop()
     engine.rightSpeed(leftSpeed);
     engine.leftSpeed(rightSpeed);
   }
-  delay(1000);
+  delay(10);
 }
 
