@@ -29,7 +29,8 @@ def next_step hwid, msg
 end
 
 get '/devices/list/manual' do
-  {keys: settings.hwsockets.reject{|s|!s[:manual]}.keys}.to_json
+  response.headers['Access-Control-Allow-Origin'] = '*'
+  {keys: settings.hwsockets.reject{|k,v|!v[:manual]}.keys}.to_json
 end
 
 get '/control/:hwid' do |hwid|
