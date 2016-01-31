@@ -28,7 +28,7 @@ void EngineStep::command(String command) {
 void EngineStep::forward() {
   _engine->rightSpeed(defaultSpeed);
   _engine->leftSpeed(defaultSpeed);
-  delay(1000);
+  delay(950);
   _engine->stop();
 }
 
@@ -47,6 +47,6 @@ void EngineStep::left() {
 void EngineStep::revert() {
   _engine->rightSpeed(defaultSpeed);
   _engine->leftSpeed(-defaultSpeed);
-  delay(1100);
+  delay(1200);
   _engine->stop();
 }

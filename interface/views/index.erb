@@ -90,12 +90,12 @@
       };
 
       $('.controlBlock button').click(function(event) {
-        socket.send(event.target.className);
+        socket.send("S" + event.target.className);
         console.log(event.target.className);
       })
 
       // $("#sendToS").click(function() {
-      //   socket.send("l" + $('#left').val() + "r" + $('#right').val());
+      //   socket.send("Tl" + $('#left').val() + "r" + $('#right').val());
       // });
       // $("#stopBtn").click(function() {
       //   socket.send("l0r0");

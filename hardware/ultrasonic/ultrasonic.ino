@@ -99,15 +99,19 @@ void loop()
   }
   if(esp.responseAvailable()) {
     response = esp.getResponse();
-    engineStep.command(response);
-//    Serial.println(response);
-//    if(response == "FAIL") {
-//      rgb.error();
-//      return;
-//    }
-//    parseResponse(response);
-//    engine.rightSpeed(leftSpeed);
-//    engine.leftSpeed(rightSpeed);
+    Serial.println(response);
+    if(response == "FAIL") {
+      rgb.error();
+      return;
+    }
+    if(response.startsWith("S")) {
+      engineStep.command(response.substring(1));
+    }
+    if(response.startsWith("T")) {
+      parseResponse(response.substring(1));
+      engine.rightSpeed(leftSpeed);
+      engine.leftSpeed(rightSpeed);
+    }
   }
   delay(10);
 }
