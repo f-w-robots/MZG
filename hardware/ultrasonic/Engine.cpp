@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
-Engine::Engine(int ena, int en1, int en2, int en3, int en4, int enb)
+Engine::Engine(uint8_t ena, uint8_t en1, uint8_t en2, uint8_t en3, uint8_t en4, uint8_t enb)
 {
   _ena = ena;
   _en1 = en1;

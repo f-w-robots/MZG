@@ -4,19 +4,19 @@
 class Engine
 {
   public:
-    Engine(int ena, int en1, int en2, int en3, int en4, int enb);
+    Engine(uint8_t ena, uint8_t en1, uint8_t en2, uint8_t en3, uint8_t en4, uint8_t enb);
     void rightSpeed(int speed);
     void leftSpeed(int speed);
     void stop();
   private:
     void rightDirection(boolean direction);
     void leftDirection(boolean direction);
-    byte _ena;
-    byte _en1;
-    byte _en2;
-    byte _en3;
-    byte _en4;
-    byte _enb;
+    uint8_t _ena;
+    uint8_t _en1;
+    uint8_t _en2;
+    uint8_t _en3;
+    uint8_t _en4;
+    uint8_t _enb;
 };
 
 #endif

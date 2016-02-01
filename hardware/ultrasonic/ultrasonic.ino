@@ -15,8 +15,8 @@ SR04 sr04(A0, A1);
 
 boolean connected = false;
 
-String ssid = "kernel";
-String password = "axtr456E";
+String ssid = "ssid";
+String password = "password";
 String host = "192.168.1.4";
 String sha = "car";
 

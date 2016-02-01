@@ -6,12 +6,12 @@
 class SR04
 {
   public:
-    SR04(int trig, int echo);
-    long distance();
+    SR04(uint8_t trig, uint8_t echo);
+    unsigned int distance();
 
   private:
-    int _trig;
-    int _echo;    
+    uint8_t _trig;
+    uint8_t _echo;
 };
 
 #endif

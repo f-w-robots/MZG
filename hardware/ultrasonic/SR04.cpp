@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "SR04.h"
 
-SR04::SR04(int trig, int echo)
+SR04::SR04(uint8_t trig, uint8_t echo)
 {
    pinMode(trig, OUTPUT);
    pinMode(echo, INPUT);
@@ -9,7 +9,7 @@ SR04::SR04(int trig, int echo)
    _echo = echo;
 }
 
-long SR04::distance()
+unsigned int SR04::distance()
 {
   digitalWrite(_trig, LOW);
   delayMicroseconds(2);
