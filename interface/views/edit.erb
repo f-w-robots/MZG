@@ -2,6 +2,12 @@
 <html>
 <head>
   <title></title>
+  <style type="text/css">
+    .background-gray {
+      background: gray;
+    }
+  </style>
+  <script type="text/javascript" src="/jquery-2.2.0.min.js"></script>
 </head>
 <body>
 
@@ -16,11 +22,11 @@
   <input id="radio2" type="radio" name="useManual" value="off" <%= @manual ? '' : 'checked' %>>Algorithm<br>
   Interface:
   <br>
-  <textarea id="interface" cols="60" rows="10" name="interface" <%= @manual ? '' : 'disabled' %>><%= @interface.to_s %></textarea>
+  <textarea id="interface" cols="60" rows="10" name="interface" class="<%= !@manual ? 'background-gray' : '' %>"><%= @interface.to_s %></textarea>
   <br>
   Algorithm:
   <br>
-  <textarea id="code" cols="60" rows="10" name="algorithm" <%= @manual ? 'disabled' : '' %>><%= @algorithm.to_s %></textarea>
+  <textarea id="code" cols="60" rows="10" name="algorithm" class="<%= @manual ? 'background-gray' : '' %>"><%= @algorithm.to_s %></textarea>
   <br>
   init code:<br>
   loop code:<br>
@@ -31,18 +37,18 @@
   radio1 = document.getElementById('radio1');
   radio2 = document.getElementById('radio2');
   codearea = document.getElementById('code');
-  intfarea = document.getElementById('code');
+  intfarea = document.getElementById('interface');
 
   radio1.addEventListener("change", OnRadioStateChange, false);
   radio2.addEventListener("change", OnRadioStateChange, false);
   function OnRadioStateChange (event) {
     var radio = event.target;
     if(radio == radio1) {
-      codearea.disabled = true;
-      intfarea.disabled = false;
+      $(codearea).addClass('background-gray');
+      $(intfarea).removeClass('background-gray');
     } else {
-      codearea.disabled = false;
-      intfarea.disabled = true;
+      $(intfarea).addClass('background-gray');
+      $(codearea).removeClass('background-gray');
     }
   }
 </script>

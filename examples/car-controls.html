@@ -21,23 +21,6 @@ input log:
 </div>
 
 <script type="text/javascript">
-    var socket = new WebSocket("ws://localhost:2500/control/car");
-    socket.onopen = function() {
-
-    };
-
-    socket.onclose = function(event) {
-      alert("socket closed");
-    };
-
-    socket.onmessage = function(event) {
-      $(".inputLog").append(event.data+"<br>")
-    };
-
-    socket.onerror = function(error) {
-      alert("Error " + error.message);
-    };
-
     $('.controlBlock button').click(function(event) {
       socket.send("S" + event.target.className);
       console.log(event.target.className);

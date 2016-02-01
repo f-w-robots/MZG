@@ -28,6 +28,13 @@ def next_step hwid, msg
   result
 end
 
+def socket_code hwid, socket
+  eval "loop do
+    #{get_logic(hwid)}
+    sleep(0.001)
+  end"
+end
+
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
   {keys: settings.hwsockets.reject{|k,v|!v[:manual]}.keys}.to_json
@@ -76,16 +83,19 @@ get '/:hwid' do |hwid|
     ws.onopen do
       settings.hwsockets[hwid] = {manual: manual, socket: ws}
       puts "connected with id: #{hwid}"
+      if !manual
+        socket_code(hwid, ws)
+      end
     end
     ws.onmessage do |msg|
       puts "message #{msg}"
       if !manual
-        command = next_step(hwid, msg)
-        if command
-          ws.send(command)
-        else
-          ws.close_websocket
-        end
+        # command = next_step(hwid, msg)
+        # if command
+        #   ws.send(command)
+        # else
+        #   ws.close_websocket
+        # end
       else
         swsocket = settings.swsockets[hwid]
         if swsocket
