@@ -20,30 +20,11 @@ Web Server API
     - [ArduinoWebsocketClient](https://github.com/f-w-robots/ArduinoWebsocketClient)(WiFiShield)
 
 #### Usage
-   - ```docker-compose up```
-   - go to http://localhost:4567
-   - add new record with id "fake-sha" (without quotes) and code
-```
-if msg[3] == '2'
-  'ls'
-elsif msg[0] == '2'
-  'fs'
-elsif msg[1] == '2'
-  'rs'
-else
-  if msg[3] == '0'
-    'l'
-  elsif msg[0] == '0'
-    'f'
-  elsif msg[1] == '0'
-    'r'
-  else
-    'b'
-  end
-end
-```
+  - ```docker-compose up```
+  - go to http://localhost:4567
+  - add new record with id "fake-sha" (without quotes) and code
+  - select Algorithm and copy code from comments in file fake-arduino/labirint.rb into textarea
   - ```docker exec mzg_aserver_1 ruby fake-arduino/arduino.rb fake-sha```
-  - for example, restart server ```docker-compose restart aserver```
 
 #### Note
-На windows/osx http://localhost:4567 может не работать, нужно посмотреть ip командой ```docker-machine ls```
+On windows/osx instead http://localhost:4567 you must use http://\<docker-machine ip\>:4567, ip shows by ```docker-machine ls```
