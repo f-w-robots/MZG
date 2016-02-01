@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>iframe2</title>
+  <script type="text/javascript" src="/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+  <script type="text/javascript">
+    var socket = new WebSocket("ws://localhost:2500/control/<%= @deviceId %>");
+    socket.onopen = function() {
+
+    };
+
+    socket.onclose = function(event) {
+      alert("socket closed");
+    };
+
+    socket.onmessage = function(event) {
+      $(".inputLog").append(event.data+"<br>")
+    };
+
+    socket.onerror = function(error) {
+      alert("Error " + error.message);
+    };
+  </script>
+
+  <%= @iframe %>
+
+</body>
+</html>

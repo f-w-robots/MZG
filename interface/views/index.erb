@@ -11,6 +11,9 @@
       float: right;
       width: 50%;
     }
+    #selectList {
+      width: 100px;
+    }
   </style>
   <script type="text/javascript" src="/jquery-2.2.0.min.js"></script>
 </head>
@@ -29,78 +32,34 @@
     <b>Manual control</b>
     <br>
     <div class="connectBlock">
-      <select multiple="multiple" size="3" style="width:100px" id="selectList">
+      <select multiple="multiple" size="3" id="selectList">
       </select>
       <br>
       <button id="selectButton">Select</button>
       <button disabled>Update</button>
     </div>
-    <div class="controlBlock" style="display:none">
-      <button class="f">forward</button>
-      <button class="lf">left+forward</button>
-      <button class="rf">right+forward</button>
-      <button class="s">revert</button>
-      <br>
-      <br>
-      <button class="f">forward</button>
-      <button class="l">left</button>
-      <button class="r">right</button>
-      <button class="s">revert</button>
-      <!-- controlBlock<br>
-      left speed(-255..255):<input id="left" name="left" value="0"><br>
-      right speed(-255..255):<input id="right" name="right" value="0"><br>
-      <button id="sendToS">Send</button><button id="stopBtn">Stop</button><br>
-      input log:
-      <div class="inputLog">
-      </div> -->
+    <div class="controlBlock">
+
     </div>
     <script type="text/javascript">
     $(function() {
       $.get('http://localhost:2500/devices/list/manual', function( data ) {
+        $.each($.parseJSON(data)["keys"], function(i, key) {
+          $('#selectList').append("<option selected>" + key + "</option>")
+        });
+      });
 
-      $.each($.parseJSON(data)["keys"], function(i, key) {
-        $('#selectList').append("<option selected>" + key + "</option>")
+      $('#selectButton').click(function (argument) {
+        deviceId = $('#selectList').find(":selected").text();
+        if(deviceId != 'car'){
+          alert("Please, select a car!");
+          return;
+        } else {
+          $('.controlBlock').html('<iframe src="/control-iframe/' + deviceId + '"  width="400" height="500"></iframe>')
+        }
+
       });
     });
-
-   });
-    $('#selectButton').click(function (argument) {
-      if($('#selectList').find(":selected").text() != 'car'){
-        alert("Please, select a car!");
-        return;
-      }
-
-      var socket = new WebSocket("ws://localhost:2500/control/car");
-      socket.onopen = function() {
-        $('.connectBlock').css('display', 'none');
-        $('.controlBlock').css('display', 'inherit');
-      };
-
-      socket.onclose = function(event) {
-        $('.connectBlock').css('display', 'inherit');
-        $('.controlBlock').css('display', 'none');
-      };
-
-      socket.onmessage = function(event) {
-        $(".inputLog").append(event.data+"<br>")
-      };
-
-      socket.onerror = function(error) {
-        alert("Error " + error.message);
-      };
-
-      $('.controlBlock button').click(function(event) {
-        socket.send("S" + event.target.className);
-        console.log(event.target.className);
-      })
-
-      // $("#sendToS").click(function() {
-      //   socket.send("Tl" + $('#left').val() + "r" + $('#right').val());
-      // });
-      // $("#stopBtn").click(function() {
-      //   socket.send("l0r0");
-      // });
-    })
     </script>
   </div>
 </body>

@@ -1,0 +1,52 @@
+<div class="controlBlock">
+  <button class="f">forward</button>
+  <button class="lf">left+forward</button>
+  <button class="rf">right+forward</button>
+  <button class="s">revert</button>
+  <br>
+  <br>
+  <button class="f">forward</button>
+  <button class="l">left</button>
+  <button class="r">right</button>
+  <button class="s">revert</button>
+</div>
+
+<br>
+<br>
+left speed(-255..255):<input id="left" name="left" value="0"><br>
+right speed(-255..255):<input id="right" name="right" value="0"><br>
+<button id="sendToS">Send</button><button id="stopBtn">Stop</button><br>
+input log:
+<div class="inputLog">
+</div>
+
+<script type="text/javascript">
+    var socket = new WebSocket("ws://localhost:2500/control/car");
+    socket.onopen = function() {
+
+    };
+
+    socket.onclose = function(event) {
+      alert("socket closed");
+    };
+
+    socket.onmessage = function(event) {
+      $(".inputLog").append(event.data+"<br>")
+    };
+
+    socket.onerror = function(error) {
+      alert("Error " + error.message);
+    };
+
+    $('.controlBlock button').click(function(event) {
+      socket.send("S" + event.target.className);
+      console.log(event.target.className);
+    })
+
+    $("#sendToS").click(function() {
+      socket.send("Tl" + $('#left').val() + "r" + $('#right').val());
+    });
+    $("#stopBtn").click(function() {
+      socket.send("Tl0r0");
+    });
+</script>

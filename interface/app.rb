@@ -19,6 +19,7 @@ get '/edit/:id' do |id|
   if id != 'new'
     record = settings.db[:devices].find({hwid: id}).first
     @algorithm = record[:algorithm]
+    @interface = record[:interface]
     @manual = record[:manual]
   end
   erb :edit
@@ -27,6 +28,7 @@ end
 post '/edit/:id' do |id|
   record = {}
   record['algorithm'] = params['algorithm']
+  record['interface'] = params['interface']
   params['useManual'] == 'on' ? record['manual'] = true : record['manual'] = false
   if id == 'new'
     record['hwid'] = params['hwid']
@@ -44,6 +46,13 @@ end
 get '/delete/:id' do |id|
   settings.db[:devices].find({hwid: id}).delete_one
   redirect '/'
+end
+
+get '/control-iframe/:id' do |id|
+  record = settings.db[:devices].find({hwid: id}).first
+  @iframe = record[:interface]
+  @deviceId = id
+  erb :iframe
 end
 
 set :port, ENV['WEB_PORT']

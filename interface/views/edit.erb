@@ -14,16 +14,24 @@
   <br>
   <input id="radio1" type="radio" name="useManual" value="on" <%= @manual ? 'checked' : '' %>> Manual<br>
   <input id="radio2" type="radio" name="useManual" value="off" <%= @manual ? '' : 'checked' %>>Algorithm<br>
-  ruby code:
+  Interface:
   <br>
-  <textarea id="code" cols="60" rows="25" name="algorithm" <%= @manual ? 'disabled' : '' %>><%= @algorithm.to_s %></textarea>
+  <textarea id="interface" cols="60" rows="10" name="interface" <%= @manual ? '' : 'disabled' %>><%= @interface.to_s %></textarea>
   <br>
+  Algorithm:
+  <br>
+  <textarea id="code" cols="60" rows="10" name="algorithm" <%= @manual ? 'disabled' : '' %>><%= @algorithm.to_s %></textarea>
+  <br>
+  init code:<br>
+  loop code:<br>
+  manual proxy code:<br>
   <input type="submit">
 </form>
 <script type="text/javascript">
   radio1 = document.getElementById('radio1');
   radio2 = document.getElementById('radio2');
   codearea = document.getElementById('code');
+  intfarea = document.getElementById('code');
 
   radio1.addEventListener("change", OnRadioStateChange, false);
   radio2.addEventListener("change", OnRadioStateChange, false);
@@ -31,8 +39,10 @@
     var radio = event.target;
     if(radio == radio1) {
       codearea.disabled = true;
+      intfarea.disabled = false;
     } else {
       codearea.disabled = false;
+      intfarea.disabled = true;
     }
   }
 </script>
