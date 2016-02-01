@@ -28,6 +28,19 @@ def next_step hwid, msg
   result
 end
 
+def push_msg hwid, msg
+  settings.hwsockets_messages[hwid] ||= []
+  settings.hwsockets_messages[hwid].push msg
+end
+
+def msg_empty? hwid
+  !(settings.hwsockets_messages[hwid] && !settings.hwsockets_messages[hwid].empty?)
+end
+
+def shift_msg hwid
+  settings.hwsockets_messages[hwid].shift
+end
+
 def socket_code hwid, socket
   eval "loop do
     #{get_logic(hwid)}
@@ -85,11 +98,13 @@ get '/:hwid' do |hwid|
       puts "connected with id: #{hwid}"
       if !manual
         socket_code(hwid, ws)
+        settings.hwsockets_messages[hwid] = []
       end
     end
     ws.onmessage do |msg|
       puts "message #{msg}"
       if !manual
+        push_msg hwid, msg
         # command = next_step(hwid, msg)
         # if command
         #   ws.send(command)
@@ -112,6 +127,7 @@ end
 
 set :hwsockets, {}
 set :swsockets, {}
+set :hwsockets_messages, {}
 set :port, ENV['ASERVER_PORT']
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :bind, '0.0.0.0'

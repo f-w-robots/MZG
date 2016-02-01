@@ -1,7 +1,11 @@
 # Simple labirint
 #
 # logic:
-# if msg[3] == '2'
+# while msg_empty?(hwid)
+#   sleep(0.1)
+# end
+# msg = shift_msg(hwid)
+# result = if msg[3] == '2'
 #   'ls'
 # elsif msg[0] == '2'
 #   'fs'
@@ -18,6 +22,8 @@
 #     'b'
 #   end
 # end
+# socket.send(result)
+#
 class Labirint
   def initialize
     generate
