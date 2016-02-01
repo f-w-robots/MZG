@@ -1,6 +1,7 @@
 #include "EngineStep.h"
 #include "ESP8266Serial.h"
 #include "RGBIndication.h"
+#include "SR04.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
 Engine engine(3, 2, 4, 5, 7, 6);
@@ -9,17 +10,21 @@ EngineStep engineStep(&engine);
 ESP8266Serial esp(10, 11);
 //Red, Green, Blue
 RGBIndication rgb(12, 8, 9);
+//TRIG, ECHO
+SR04 sr04(A0, A1);
 
 boolean connected = false;
 
-String ssid = "ssid";
-String password = "password";
-String host = "192.168.2.168";
+String ssid = "kernel";
+String password = "axtr456E";
+String host = "192.168.1.4";
 String sha = "car";
 
 String response = "";
 int rightSpeed = 0;
 int leftSpeed = 0;
+
+int requestTimeout = 0;
 
 boolean connect() {
 //  return esp.prepare() && esp.upWiFi(ssid, password) && esp.connectToSocket(host, sha);
@@ -113,6 +118,12 @@ void loop()
       engine.leftSpeed(rightSpeed);
     }
   }
+
+//  requestTimeout += 1;
+//  if(requestTimeout > 100) {
+//    esp.request(String(sr04.distance()));
+//    requestTimeout = 0;
+//  }
   delay(10);
 }
 
