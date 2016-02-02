@@ -43,7 +43,11 @@
     </div>
     <script type="text/javascript">
     $(function() {
-      $.get('http://localhost:2500/devices/list/manual', function( data ) {
+      function currentHost() {
+        return location.protocol + '//' + location.host ':' + <%= ENV['ASERVER_PORT'] %>
+      }
+
+      $.get(currentHost() + '/devices/list/manual', function( data ) {
         $.each($.parseJSON(data)["keys"], function(i, key) {
           $('#selectList').append("<option selected>" + key + "</option>")
         });
@@ -51,12 +55,8 @@
 
       $('#selectButton').click(function (argument) {
         deviceId = $('#selectList').find(":selected").text();
-        if(deviceId != 'car'){
-          alert("Please, select a car!");
-          return;
-        } else {
-          $('.controlBlock').html('<iframe src="/control-iframe/' + deviceId + '"  width="400" height="500"></iframe>')
-        }
+        $('.controlBlock')
+          .html('<iframe src="/control-iframe/' + deviceId + '"  width="400" height="500"></iframe>')
 
       });
     });

@@ -6,7 +6,11 @@
 </head>
 <body>
   <script type="text/javascript">
-    var socket = new WebSocket("ws://localhost:2500/control/<%= @deviceId %>");
+    function currentHost() {
+        return 'ws://' + location.host ':' + <%= ENV['ASERVER_PORT'] %>
+    }
+
+    var socket = new WebSocket(currentHost() + "/control/<%= @deviceId %>");
     socket.onopen = function() {
 
     };
