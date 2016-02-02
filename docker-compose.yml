@@ -22,3 +22,18 @@ aserver:
   links:
     - db
   env_file: .env
+web2:
+  build: ./web2
+  command: npm start
+  ports:
+    - "4200:4200"
+  volumes:
+    - ./web2/:/app
+    - /app/node_modules/
+    - /app/bower_components/
+    - /app/async-disk-cache/
+    - /app/tmp/
+    - /app/dist/
+  links:
+    - db
+  env_file: .env
