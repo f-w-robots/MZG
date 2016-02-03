@@ -10,20 +10,27 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-class Control
+class ControlBackend
   def initialize algorithm
     @algorithm = algorithm
     @unread_messages = []
   end
 
-  def get_logic
-    @algorithm
+  def on_open socket
+    eval "loop do
+      #{@algorithm}
+      sleep(0.001)
+    end"
   end
 
-  def push_msg msg
+  def on_message msg
     @unread_messages.push msg
   end
 
+  def on_close
+  end
+
+  private
   def msg_empty?
     @unread_messages.empty?
   end
@@ -31,38 +38,83 @@ class Control
   def shift_msg
     @unread_messages.shift
   end
+end
 
-  def socket_code socket
-    eval "loop do
-      #{@algorithm}
-      sleep(0.001)
-    end"
+class ManualBackend
+  def initialize hwid, swsockets
+    @hwid = hwid
+    @swsockets = swsockets
+  end
+
+  def on_open socket
+    swsocket = get_swsocket
+    swsocket.send('device connected') if swsocket
+  end
+
+  def on_message msg
+    swsocket = get_swsocket
+    swsocket.send(msg) if swsocket
+  end
+
+  def on_close
+    swsocket = get_swsocket
+    swsocket.send('device disconnected') if swsocket
+  end
+
+  private
+  def get_swsocket
+    @swsockets[@hwid]
+  end
+end
+
+class WebSocket
+  def initialize hwid, backend
+    @hwid = hwid
+    @backend = backend
+  end
+
+  def start request
+    request.websocket do |ws|
+      @ws = ws
+
+      ws.onopen do
+        puts "connected with id: #{@hwid}"
+        @backend.on_open(ws)
+      end
+      ws.onmessage do |msg|
+        puts "message #{msg}"
+        @backend.on_message msg
+      end
+      ws.onclose do
+        puts "disconnected with id: #{@hwid}"
+        @backend.on_close
+      end
+    end
+  end
+
+  def on_message msg
+    @ws.send(msg)
   end
 end
 
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
-  {keys: settings.hwsockets.reject{|k,v|!v[:manual]}.keys}.to_json
+  {keys: settings.manual_hwsockets.keys}.to_json
 end
 
 get '/control/:hwid' do |hwid|
-  if !request.websocket?
-    return ''
-  end
-
-  record = settings.db[:devices].find({hwid: hwid}).first
-  if !record['manual']
-    return ''
-  end
+  return '' if !request.websocket?
+  record = settings.db[:devices].find(hwid: hwid).first
+  return '' if !record
 
   request.websocket do |ws|
     ws.onopen do
       settings.swsockets[hwid] = ws
     end
     ws.onmessage do |msg|
-      hwsocket = settings.hwsockets[hwid]
+      hwsocket = settings.manual_hwsockets[hwid]
       if hwsocket
-        hwsocket[:socket].send(msg)
+        hwsocket.on_message(msg)
       end
     end
     ws.onclose do
@@ -73,39 +125,25 @@ end
 
 get '/:hwid' do |hwid|
   return '' if !request.websocket?
+  record = settings.db[:devices].find(hwid: hwid).first
+  return '' if !record
 
-  record = settings.db[:devices].find({hwid: hwid}).first
-  if !record['manual']
-    device = Control.new record['algorithm']
+  if record['manual']
+    backend = ManualBackend.new hwid, settings.swsockets
+  else
+    backend = ControlBackend.new record['algorithm']
   end
 
-  request.websocket do |ws|
-    ws.onopen do
-      settings.hwsockets[hwid] = {manual: record['manual'], socket: ws}
-      puts "connected with id: #{hwid}"
-      if !record['manual']
-        device.socket_code(ws)
-      end
-    end
-    ws.onmessage do |msg|
-      puts "message #{msg}"
-      if !record['manual']
-        device.push_msg msg
-      else
-        swsocket = settings.swsockets[hwid]
-        if swsocket
-          swsocket.send(msg)
-        end
-      end
-    end
-    ws.onclose do
-      puts "disconnected with id: #{hwid}"
-      settings.hwsockets.delete(hwid)
-    end
+  socket = WebSocket.new hwid, backend
+  response = socket.start request
+
+  if record['manual']
+    settings.manual_hwsockets[hwid] = socket
   end
+  response
 end
 
-set :hwsockets, {}
+set :manual_hwsockets, {}
 set :swsockets, {}
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :port, ENV['ASERVER_PORT']

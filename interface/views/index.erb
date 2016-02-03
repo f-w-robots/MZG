@@ -44,7 +44,7 @@
     <script type="text/javascript">
     $(function() {
       function currentHost() {
-        return location.protocol + '//' + location.host ':' + <%= ENV['ASERVER_PORT'] %>
+        return location.protocol + '//' + location.hostname + ':' + <%= ENV['ASERVER_PORT'] %>
       }
 
       $.get(currentHost() + '/devices/list/manual', function( data ) {
