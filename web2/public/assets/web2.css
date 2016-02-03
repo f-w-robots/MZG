@@ -1,0 +1,11 @@
+#left-column {
+  float: left;
+  width: 50%;
+}
+#right-column {
+  float: right;
+  width: 50%;
+}
+#selectList {
+  width: 100px;
+}
