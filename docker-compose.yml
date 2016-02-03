@@ -43,7 +43,7 @@ apiserver:
   ports:
     - "2600:2600"
   volumes:
-    - ./server:/app
+    - ./apiserver:/app
   links:
     - db
   env_file: .env

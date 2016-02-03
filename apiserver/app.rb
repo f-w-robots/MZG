@@ -41,7 +41,7 @@ put '/api/v1/devices/:hwid' do |hwid|
 end
 
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
-set :port, ENV['SERVER_PORT']
+set :port, ENV['API_SERVER_PORT']
 set :bind, '0.0.0.0'
 
 Device.init settings.db
