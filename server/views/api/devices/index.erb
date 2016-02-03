@@ -1,0 +1,15 @@
+{
+  "data": [
+  <% @devices.each_with_index do |device, index| %>
+    {
+      "type": "devices",
+      "id": "<%= device[:hwid] %>",
+      "attributes": {
+        "manual": <%= device[:manual] %>,
+        "hwid": "<%= device[:hwid] %>"
+      }
+    }<%= @devices.count - 1 == index ? '' : ',' %>
+  <% end %>
+
+  ]
+}

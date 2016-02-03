@@ -37,3 +37,13 @@ web2:
   links:
     - db
   env_file: .env
+server:
+  build: .
+  command: ruby app.rb
+  ports:
+    - "2600:2600"
+  volumes:
+    - ./server:/app
+  links:
+    - db
+  env_file: .env
