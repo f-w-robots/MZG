@@ -1,0 +1,18 @@
+{{outlet}}
+<form  method="POST" action="/edit/<%= @hwid %>">
+  <br>
+  <input id="radio1" type="radio" name="useManual" value="on"> Manual<br>
+  <input id="radio2" type="radio" name="useManual" value="off">Algorithm<br>
+  Interface:
+  <br>
+  <textarea id="interface" cols="60" rows="10" name="interface" class="<%= !@manual ? 'background-gray' : '' %>"></textarea>
+  <br>
+  Algorithm:
+  <br>
+  <textarea id="code" cols="60" rows="10" name="algorithm" class="<%= @manual ? 'background-gray' : '' %>"></textarea>
+  <br>
+  init code:<br>
+  loop code:<br>
+  manual proxy code:<br>
+  <input type="submit">
+</form>
