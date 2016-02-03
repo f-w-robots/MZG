@@ -10,42 +10,34 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-def get_logic hwid
-  settings.algorithms[hwid]
-end
-
-# Evaluate logic from db
-#
-def next_step hwid, msg
-  eval "def logic(msg)
-    #{get_logic(hwid)}
-  end"
-  begin
-    result = logic(msg)
-  rescue Exception => e
-    nil
+class Control
+  def initialize algorithm
+    @algorithm = algorithm
+    @unread_messages = []
   end
-  result
-end
 
-def push_msg hwid, msg
-  settings.hwsockets_messages[hwid] ||= []
-  settings.hwsockets_messages[hwid].push msg
-end
+  def get_logic
+    @algorithm
+  end
 
-def msg_empty? hwid
-  !(settings.hwsockets_messages[hwid] && !settings.hwsockets_messages[hwid].empty?)
-end
+  def push_msg msg
+    @unread_messages.push msg
+  end
 
-def shift_msg hwid
-  settings.hwsockets_messages[hwid].shift
-end
+  def msg_empty?
+    @unread_messages.empty?
+  end
 
-def socket_code hwid, socket
-  eval "loop do
-    #{get_logic(hwid)}
-    sleep(0.001)
-  end"
+  def shift_msg
+    @unread_messages.shift
+  end
+
+  def socket_code socket
+    eval "loop do
+      #{@algorithm}
+      sleep(0.001)
+    end"
+  end
 end
 
 get '/devices/list/manual' do
@@ -80,37 +72,25 @@ get '/control/:hwid' do |hwid|
 end
 
 get '/:hwid' do |hwid|
-  if !request.websocket?
-    return ''
-  end
+  return '' if !request.websocket?
 
   record = settings.db[:devices].find({hwid: hwid}).first
-  manual = record['manual']
-  if !manual
-    settings.algorithms[hwid] = record['algorithm']
-  else
-
+  if !record['manual']
+    device = Control.new record['algorithm']
   end
 
   request.websocket do |ws|
     ws.onopen do
-      settings.hwsockets[hwid] = {manual: manual, socket: ws}
+      settings.hwsockets[hwid] = {manual: record['manual'], socket: ws}
       puts "connected with id: #{hwid}"
-      if !manual
-        socket_code(hwid, ws)
-        settings.hwsockets_messages[hwid] = []
+      if !record['manual']
+        device.socket_code(ws)
       end
     end
     ws.onmessage do |msg|
       puts "message #{msg}"
-      if !manual
-        push_msg hwid, msg
-        # command = next_step(hwid, msg)
-        # if command
-        #   ws.send(command)
-        # else
-        #   ws.close_websocket
-        # end
+      if !record['manual']
+        device.push_msg msg
       else
         swsocket = settings.swsockets[hwid]
         if swsocket
@@ -127,8 +107,6 @@ end
 
 set :hwsockets, {}
 set :swsockets, {}
-set :hwsockets_messages, {}
-set :port, ENV['ASERVER_PORT']
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
+set :port, ENV['ASERVER_PORT']
 set :bind, '0.0.0.0'
-set :algorithms, {}
