@@ -146,5 +146,5 @@ end
 set :manual_hwsockets, {}
 set :swsockets, {}
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
-set :port, ENV['ASERVER_PORT']
+set :port, ENV['HWSERVER_PORT']
 set :bind, '0.0.0.0'

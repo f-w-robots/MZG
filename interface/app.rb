@@ -55,6 +55,6 @@ get '/control-iframe/:id' do |id|
   erb :iframe
 end
 
-set :port, ENV['WEB_PORT']
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
+set :port, ENV['WEB_PORT']
 set :bind, "0.0.0.0"

@@ -12,9 +12,9 @@ web:
   links:
     - db
   env_file: .env
-aserver:
+hwserver:
   build: .
-  command: ruby aserver.rb
+  command: ruby hwserver/server.rb
   ports:
     - "2500:2500"
   volumes:
@@ -37,7 +37,7 @@ web2:
   links:
     - db
   env_file: .env
-server:
+apiserver:
   build: .
   command: ruby app.rb
   ports:

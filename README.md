@@ -24,7 +24,7 @@ Web Server API
   - go to http://localhost:4567
   - add new record with id "fake-sha" (without quotes) and code
   - select Algorithm and copy code from comments in file fake-arduino/labirint.rb into textarea
-  - ```docker exec -it mzg_aserver_1 ruby fake-arduino/arduino.rb fake-sha```
+  - ```docker exec -it mzg_hwserver_1 ruby fake-arduino/arduino.rb fake-sha```
 
 #### Note
 On windows/osx instead http://localhost:4567 you must use http://\<docker-machine ip\>:4567, ip shows by ```docker-machine ls```

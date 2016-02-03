@@ -7,7 +7,7 @@
 <body>
   <script type="text/javascript">
     function currentHost() {
-        return 'ws://' + location.hostname + ':' + <%= ENV['ASERVER_PORT'] %>
+        return 'ws://' + location.hostname + ':' + <%= ENV['HWSERVER_PORT'] %>
     }
 
     var socket = new WebSocket(currentHost() + "/control/<%= @deviceId %>");
