@@ -1,13 +1,10 @@
 FROM node:4
 
-RUN npm install -g bower
+RUN mkdir /app && npm install -g bower ember-cli
 
-RUN mkdir /app
 WORKDIR /app
 
-COPY package.json /app/package.json
-COPY bower.json /app/bower.json
-RUN npm install
-RUN bower install --allow-root
+COPY *.json /app/
+RUN npm install && bower install --allow-root
 
 ADD ./ /app
