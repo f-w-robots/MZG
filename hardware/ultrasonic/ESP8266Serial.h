@@ -11,7 +11,7 @@ class ESP8266Serial
     boolean upWiFi(String ssid, String password);
     boolean connectToSocket(String host, String port, String sha);
     int status();
-    String request(String string);
+    void request(String string);
     String getResponse();
     boolean responseAvailable();
     boolean connected();

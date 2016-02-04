@@ -23,11 +23,9 @@ int ESP8266Serial::status() {
   return 8;
 }
 
-String ESP8266Serial::request(String string) {
+void ESP8266Serial::request(String string) {
   if(_socket) {
     _serial->println(string);
-  } else {
-    return "";
   }
 }
 
