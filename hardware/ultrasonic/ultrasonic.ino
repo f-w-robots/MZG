@@ -7,9 +7,9 @@
 Engine engine(3, 2, 4, 5, 7, 6);
 EngineStep engineStep(&engine);
 // TX, RX
-ESP8266Serial esp(10, 11);
+ESP8266Serial esp(8, 9);
 //Red, Green, Blue
-RGBIndication rgb(12, 8, 9);
+RGBIndication rgb(10, 11, 12);
 //TRIG, ECHO
 //SR04 sr04(A0, A1);
 
@@ -78,7 +78,7 @@ void parseResponse(String response) {
 }
 
 boolean presenceSensor(uint8_t pin) {
-  return (analogRead(pin) < 1000 );
+  return (analogRead(pin) > 25 );
 }
 
 void setup()
@@ -123,7 +123,7 @@ void loop()
 
   requestTimeout += 1;
   if(requestTimeout > 100) {
-    esp.request(String(presenceSensor(A0)) + " " + presenceSensor(A1));
+    esp.request(String(presenceSensor(A0)));
     requestTimeout = 0;
   }
   delay(10);
