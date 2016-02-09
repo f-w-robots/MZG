@@ -10,7 +10,7 @@ char url[100];
 
 boolean setuped = false;
 boolean connected = false;
-int socketTimeout = 0;
+int timeout = 0;
 
 int i = 0;
 
@@ -73,7 +73,7 @@ void setup() {
     Serial.println();
 }
 
-void loop() {  
+void loop() {
     if(Serial.available() > 0 && readString(Serial.read())) {
          string = String(buff);
          buff[0] = 0;
@@ -102,19 +102,17 @@ void loop() {
          if(string == "AT:reset") {
             if(connected) {
               webSocket.disconnect();
-              while(connected) {
-                delay(10);
-              }                
             }
             if(setuped) {
               WiFi.disconnect();
-              while (WiFi.status() == WL_CONNECTED) {
-                delay(10);
-              }
+            }
+            if(WiFi.status() == WL_CONNECTED || connected)
+              Serial.println("FAIL:reset");
+            else {
+              Serial.println("OK");
               setuped = false;
             }
-            delay(10);
-            Serial.println("OK");
+
             return;
          }
 
@@ -125,11 +123,17 @@ void loop() {
               string.substring(indexB + 1).toCharArray(password, string.length() - indexB);
 
               WiFi.begin(ssid, password);
-              while (WiFi.status() != WL_CONNECTED) {
+              while (WiFi.status() != WL_CONNECTED && timeout < 100) {
                 delay(100);
+                timeout += 1;
               }
-              Serial.println("OK");
-              setuped = true;
+              if(WiFi.status() == WL_CONNECTED) {
+                Serial.println("OK");
+                setuped = true;
+              } else {
+                Serial.println("FAIL: WiFi up");
+              }
+
               return;
          }
 
@@ -144,17 +148,16 @@ void loop() {
               webSocket.begin(host, port, url);
               webSocket.onEvent(webSocketEvent);
 
+              timeout = 0;
               while(!connected) {
                 webSocket.loop();
                 delay(10);
-                socketTimeout += 1;
-                 if(socketTimeout > 100) {
-                   Serial.println("FAIL");
-                   socketTimeout = 0;
-                   return;
-                 }
+                timeout += 1;
+                if(timeout > 100) {
+                  Serial.println("FAIL: can't be connected");
+                  return;
+                }
               }
-              socketTimeout = 0;
               Serial.println("OK");
 
               return;
@@ -163,7 +166,7 @@ void loop() {
          if(setuped && connected) {
             webSocket.sendTXT(string);
          } else {
-            Serial.println("FAIL");
+            Serial.println("FAIL: disconnected");
          }
     }
     if(setuped && connected) {
