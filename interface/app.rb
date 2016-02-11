@@ -19,7 +19,7 @@ get '/edit/:id' do |id|
   if id != 'new'
     record = settings.db[:devices].find({hwid: id}).first
     @algorithm = record[:algorithm]
-    @interface = record[:interface]
+    @interface = record[:interface].gsub('<', '&lt')
     @manual = record[:manual]
   end
   erb :edit
