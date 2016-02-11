@@ -6,6 +6,8 @@
 </head>
 <body>
   <script type="text/javascript">
+    messageStack = [];
+
     function currentHost() {
         return 'ws://' + location.hostname + ':' + <%= ENV['HWSERVER_PORT'] %>
     }
@@ -20,7 +22,8 @@
     };
 
     socket.onmessage = function(event) {
-      $(".inputLog").append(event.data+"<br>")
+      messageStack.push(event.data);
+      $(".inputLog").append(event.data + "<br>");
     };
 
     socket.onerror = function(error) {
