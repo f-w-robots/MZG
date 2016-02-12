@@ -31,6 +31,10 @@ class ControlBackend
   def on_close
   end
 
+  def getSendMessagePermission!
+    true
+  end
+
   private
   def msg_empty?
     @unread_messages.empty?
