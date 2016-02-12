@@ -16,7 +16,7 @@ Web Server API
     - On linux you may  add udev rule, for use IDE whitout root previlgies
   - To work with esp8266, install Arduino core for ESP8266 WiFi chip, [staging branch](https://github.com/esp8266/Arduino#staging-version-)
   - Libraries
-    - [ArduinoWebSockets](rduinoWebSockets)(ESP8266)
+    - [ArduinoWebSockets](https://github.com/Links2004/arduinoWebSockets)(ESP8266)
     - [ArduinoWebsocketClient](https://github.com/f-w-robots/ArduinoWebsocketClient)(WiFiShield)
 
 #### Usage
