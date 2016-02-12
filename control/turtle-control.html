@@ -1,0 +1,62 @@
+<div class="controlBlock">
+  <button class="f">forward</button>
+  <button class="l">left</button>
+  <button class="r">right</button>
+  <button class="s">revert</button>
+</div>
+
+<br>
+<button id="start">Start</button>
+<br>
+<div class="commandList">
+  <div class="wait">f</div>
+  <div class="wait">f</div>
+  <div class="wait">l</div>
+  <div class="wait">f</div>
+</div>
+
+<style media="screen">
+  .commandList {
+    width: 100px;
+  }
+
+  .commandList .wait {
+    background: green;
+  }
+
+  .commandList .error {
+    background: red;
+  }
+
+  .commandList .ready {
+    background: blue;
+  }
+</style>
+
+<script type="text/javascript">
+    $('.controlBlock button').click(function(event) {
+      $('#stack').val($('#stack').val() + event.target.className);
+    });
+
+    $('#start').click(function(){
+      $('.commandList div.wait').each(function(i,e){
+        commands = "S" + $(e).html();
+        console.log(commands);
+        socket.send(commands);
+      });
+    });
+
+    function downCommand() {
+      var command = $('.commandList div.wait').first()
+      command.removeClass('wait').addClass('ready')
+    }
+
+    setInterval(function() {
+      if(messageStack.length > 0) {
+        downCommand()
+        messageStack = []
+        console.log(messageStack);
+      }
+    }, 1000);
+
+</script>

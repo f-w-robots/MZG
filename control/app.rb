@@ -4,6 +4,9 @@ require 'mongo'
 get '/:id' do |id|
   record = settings.db[:devices].find({hwid: id}).first
   @iframe = record[:interface]
+  if(@iframe.start_with?('file:'))
+    @iframe = open(@iframe.gsub('file:','').strip).read
+  end
   @deviceId = id
   erb :iframe
 end
