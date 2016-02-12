@@ -30,13 +30,11 @@ end
   end
 
   post "/api/v1/#{model}" do
-    params = JSON.parse(request.body.read)["data"]["attributes"]
+    params = JSON.parse(request.body.read)
 
-    Device.create params
+    Device.create params["data"]["attributes"]
 
-    @device = params
-
-    erb :"api/#{model}/show"
+    params.to_json
   end
 
   delete "/api/v1/#{model}/:hwid" do |id|
