@@ -43,11 +43,11 @@
     </div>
     <script type="text/javascript">
     $(function() {
-      function currentHost() {
-        return location.protocol + '//' + location.hostname + ':' + <%= ENV['HWSERVER_PORT'] %>
+      function currentHost(port) {
+        return location.protocol + '//' + location.hostname + ':' + port
       }
 
-      $.get(currentHost() + '/devices/list/manual', function( data ) {
+      $.get(currentHost('<%= ENV['HWSERVER_PORT'] %>') + '/devices/list/manual', function( data ) {
         $.each($.parseJSON(data)["keys"], function(i, key) {
           $('#selectList').append("<option selected>" + key + "</option>")
         });
@@ -56,8 +56,7 @@
       $('#selectButton').click(function (argument) {
         deviceId = $('#selectList').find(":selected").text();
         $('.controlBlock')
-          .html('<iframe src="/control-iframe/' + deviceId + '"  width="400" height="500"></iframe>')
-
+          .html('<iframe src="' + currentHost('<%= ENV['CONTROL_PORT'] %>') + '/' + deviceId + '"  width="400" height="500"></iframe>')
       });
     });
     </script>

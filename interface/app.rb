@@ -7,7 +7,6 @@ require 'byebug'
 
 require 'sinatra'
 require 'mongo'
-require 'net/http'
 
 get '/' do
   @records = settings.db[:devices].find
@@ -46,13 +45,6 @@ end
 get '/delete/:id' do |id|
   settings.db[:devices].find({hwid: id}).delete_one
   redirect '/'
-end
-
-get '/control-iframe/:id' do |id|
-  record = settings.db[:devices].find({hwid: id}).first
-  @iframe = record[:interface]
-  @deviceId = id
-  erb :iframe
 end
 
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])

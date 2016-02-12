@@ -12,6 +12,16 @@ web:
   links:
     - db
   env_file: .env
+control:
+  build: .
+  command: ruby control/app.rb
+  ports:
+    - "3900:3900"
+  volumes:
+    - .:/app
+  links:
+    - db
+  env_file: .env
 hwserver:
   build: .
   command: ruby hwserver/server.rb
