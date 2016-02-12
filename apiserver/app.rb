@@ -5,7 +5,7 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-require './device'
+require './models/device'
 
 before '/api/*' do
   response.headers['Access-Control-Allow-Origin'] = '*'
@@ -13,39 +13,43 @@ before '/api/*' do
   content_type :json
 end
 
-get '/api/v1/devices' do
-  @devices = Device.all
+['devices', 'algorithms', 'interfaces'].each do |model|
 
-  erb :'api/devices/index'
-end
+  get "/api/v1/#{model}" do
+    @devices = Device.all
 
-get '/api/v1/devices/:hwid' do |hwid|
-  Device.get hwid
-end
+    erb :'api/devices/index'
+  end
 
-options '/api/v1/devices' do
-  ''
-end
+  get "/api/v1/#{model}/:hwid" do |id|
+    Device.get hwid
+  end
 
-post '/api/v1/devices' do
-  params = JSON.parse(request.body.read)["data"]["attributes"]
+  options "/api/v1/#{model}" do
+    ''
+  end
 
-  Device.create params
+  post "/api/v1/#{model}" do
+    params = JSON.parse(request.body.read)["data"]["attributes"]
 
-  @device = params
+    Device.create params
 
-  erb :'api/devices/show'
-end
+    @device = params
 
-delete '/api/v1/devices/:hwid' do |id|
-  Device.delete hwid
-end
+    erb :"api/#{model}/show"
+  end
 
-put '/api/v1/devices/:hwid' do |hwid|
-  params.delete "captures"
-  params.delete "splat"
+  delete "/api/v1/#{model}/:hwid" do |id|
+    Device.delete hwid
+  end
 
-  Device.update hwid, params
+  put '/api/v1/#{model}/:hwid' do |hwid|
+    params.delete "captures"
+    params.delete "splat"
+
+    Device.update hwid, params
+  end
+
 end
 
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
