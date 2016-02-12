@@ -4,6 +4,7 @@
 # and control devices through the connections
 #
 require 'byebug'
+Thread::abort_on_exception = true
 
 require 'json'
 require 'sinatra'
@@ -45,12 +46,10 @@ class ManualBackend
     @hwid = hwid
     @swsockets = swsockets
 
-    @stack = []
-    @waiting = false
     # TODO - protocol
     @init_message = false
+    @waiting = false
     @wait = true
-    @ready_count = 0
   end
 
   def on_open socket
@@ -60,7 +59,11 @@ class ManualBackend
 
   def on_message msg
     if(@waiting)
-      @wait = true
+      if(msg == 'wait')
+        @wait = true
+      elsif(msg == 'crash')
+        send_direct('crash')
+      end
     elsif(!@init_message)
       @init_message = true
       if(msg == 'waiting')
@@ -77,15 +80,10 @@ class ManualBackend
     # swsocket.send('device disconnected') if swsocket
   end
 
-  def stack
-    @stack
-  end
-
   def getSendMessagePermission!
     if @wait
       @wait = false
-      @ready_count += 1
-      send_direct(@ready_count)
+      send_direct('executed')
       return true
     else
       return false
@@ -109,6 +107,21 @@ class DeviceWebSocket
     @backend = backend
 
     @list = []
+
+    Thread.new do
+      loop do
+        while !@ws
+          sleep(0.1)
+        end
+        while(!@backend.getSendMessagePermission!)
+          sleep(0.1)
+        end
+        while @list.size < 1
+          sleep(0.1)
+        end
+        @ws.send(@list.shift)
+      end
+    end
   end
 
   def start request
@@ -131,15 +144,7 @@ class DeviceWebSocket
   end
 
   def on_message msg
-    Thread.new do
-      @list.push msg
-      puts "MSG: #{msg}"
-      while(!@backend.getSendMessagePermission!)
-        puts 'sleep'
-        sleep(1)
-      end
-      @ws.send(@list.shift)
-    end
+    @list.push(msg)
   end
 end
 
