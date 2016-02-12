@@ -47,6 +47,11 @@ get '/delete/:id' do |id|
   redirect '/'
 end
 
+get '/delete/' do
+  settings.db[:devices].find({hwid: nil}).delete_many
+  redirect '/'
+end
+
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :port, ENV['WEB_PORT']
 set :bind, "0.0.0.0"

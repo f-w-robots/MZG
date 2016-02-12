@@ -9,6 +9,7 @@ require './device'
 
 before '/api/*' do
   response.headers['Access-Control-Allow-Origin'] = '*'
+  response.headers['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept"
   content_type :json
 end
 
@@ -22,11 +23,18 @@ get '/api/v1/devices/:hwid' do |hwid|
   Device.get hwid
 end
 
-post '/api/v1/devices/' do
-  params.delete "captures"
-  params.delete "splat"
+options '/api/v1/devices' do
+  ''
+end
+
+post '/api/v1/devices' do
+  params = JSON.parse(request.body.read)["data"]["attributes"]
 
   Device.create params
+
+  @device = params
+
+  erb :'api/devices/show'
 end
 
 delete '/api/v1/devices/:hwid' do |id|
