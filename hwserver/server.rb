@@ -44,6 +44,8 @@ class ManualBackend
   def initialize hwid, swsockets
     @hwid = hwid
     @swsockets = swsockets
+
+    @stack = []
   end
 
   def on_open socket
@@ -52,6 +54,7 @@ class ManualBackend
   end
 
   def on_message msg
+    # @stack.push(msg)
     swsocket = get_swsocket
     swsocket.send(msg) if swsocket
   end
@@ -61,13 +64,17 @@ class ManualBackend
     swsocket.send('device disconnected') if swsocket
   end
 
+  def stack
+    @stack
+  end
+
   private
   def get_swsocket
     @swsockets[@hwid]
   end
 end
 
-class WebSocket
+class DeviceWebSocket
   def initialize hwid, backend
     @hwid = hwid
     @backend = backend
@@ -134,7 +141,7 @@ get '/:hwid' do |hwid|
     backend = ControlBackend.new record['algorithm']
   end
 
-  socket = WebSocket.new hwid, backend
+  socket = DeviceWebSocket.new hwid, backend
   response = socket.start request
 
   if record['manual']
