@@ -46,26 +46,55 @@ class ManualBackend
     @swsockets = swsockets
 
     @stack = []
+    @waiting = false
+    # TODO - protocol
+    @init_message = false
+    @wait = true
+    @ready_count = 0
   end
 
   def on_open socket
-    swsocket = get_swsocket
-    swsocket.send('device connected') if swsocket
+    # swsocket = get_swsocket
+    # swsocket.send('device connected') if swsocket
   end
 
   def on_message msg
-    # @stack.push(msg)
-    swsocket = get_swsocket
-    swsocket.send(msg) if swsocket
+    if(@waiting)
+      @wait = true
+    elsif(!@init_message)
+      @init_message = true
+      if(msg == 'waiting')
+        @waiting = true
+      end
+    else
+      swsocket = get_swsocket
+      swsocket.send(msg) if swsocket
+    end
   end
 
   def on_close
-    swsocket = get_swsocket
-    swsocket.send('device disconnected') if swsocket
+    # swsocket = get_swsocket
+    # swsocket.send('device disconnected') if swsocket
   end
 
   def stack
     @stack
+  end
+
+  def getSendMessagePermission!
+    if @wait
+      @wait = false
+      @ready_count += 1
+      send_direct(@ready_count)
+      return true
+    else
+      return false
+    end
+  end
+
+  def send_direct msg
+    swsocket = get_swsocket
+    swsocket.send(msg.to_s) if swsocket
   end
 
   private
@@ -78,6 +107,8 @@ class DeviceWebSocket
   def initialize hwid, backend
     @hwid = hwid
     @backend = backend
+
+    @list = []
   end
 
   def start request
@@ -100,7 +131,15 @@ class DeviceWebSocket
   end
 
   def on_message msg
-    @ws.send(msg)
+    Thread.new do
+      @list.push msg
+      puts "MSG: #{msg}"
+      while(!@backend.getSendMessagePermission!)
+        puts 'sleep'
+        sleep(1)
+      end
+      @ws.send(@list.shift)
+    end
   end
 end
 
