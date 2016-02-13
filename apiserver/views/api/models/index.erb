@@ -1,5 +1,5 @@
 {
-  "data": [
+  "data": <%= @individual ? '' : '[' %>
   <% @records.each_with_index do |model, index| %>
     {
       "type": "devices",
@@ -12,5 +12,5 @@
       }
     }<%= @records.count - 1 == index ? '' : ',' %>
   <% end %>
-  ]
+  <%= @individual ? '' : ']' %>
 }

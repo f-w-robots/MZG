@@ -40,6 +40,7 @@ end
   get "/api/v1/#{model}/:id" do |id|
     @records = model_class.get id
     @attributes = model_class.attributes
+    @individual = true
 
     erb :'api/models/index'
   end
@@ -49,6 +50,7 @@ end
 
     Device.create params["data"]["attributes"]
 
+    status 201
     {meta:{}}.to_json
   end
 

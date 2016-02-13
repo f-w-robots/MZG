@@ -5,9 +5,9 @@
   Manual: {{input type="checkbox" checked=model.manual}}
   <br>
   {{#if model.manual}}
-    Algorithm ID:{{input value=model.algorithmId}}
-  {{else}}
     Interface ID:{{input value=model.interfaceId}}
+  {{else}}
+    Algorithm ID:{{input value=model.algorithmId}}
   {{/if}}
   <br>
   <button {{action "saveRecord"}}>Save</button>
