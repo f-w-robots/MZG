@@ -4,7 +4,8 @@ export default Ember.Route.extend({
   controllerName: 'devices',
 
   model() {
-    return this.store.createRecord('device',{hwid: '', manual: false});
+    // return this.store.createRecord('device',{hwid: '', manual: false});
+    return {hwid: '', manual: false};
   },
 
   renderTemplate() {
