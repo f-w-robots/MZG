@@ -3,7 +3,7 @@ GEM
   specs:
     addressable (2.4.0)
     bson (4.0.1)
-    byebug (8.2.1)
+    byebug (8.2.2)
     daemons (1.2.3)
     em-websocket (0.3.8)
       addressable (>= 2.1.1)
@@ -21,7 +21,6 @@ GEM
       rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    sinatra-cross_origin (0.3.2)
     sinatra-websocket (0.3.1)
       em-websocket (~> 0.3.6)
       eventmachine
@@ -41,10 +40,9 @@ PLATFORMS
 DEPENDENCIES
   byebug
   faye-websocket
-  mongo (~> 2.2)
-  sinatra
-  sinatra-cross_origin
-  sinatra-websocket
+  mongo (~> 2.2.2)
+  sinatra (~> 1.4.7)
+  sinatra-websocket (~> 0.3.1)
 
 BUNDLED WITH
    1.11.2

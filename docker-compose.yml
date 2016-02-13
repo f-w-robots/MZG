@@ -48,7 +48,7 @@ web2:
     - db
   env_file: .env
 apiserver:
-  build: .
+  build: apiserver/.
   command: ruby app.rb
   ports:
     - "2600:2600"

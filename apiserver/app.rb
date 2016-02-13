@@ -2,7 +2,6 @@ require 'byebug'
 
 require 'json'
 require 'sinatra'
-require 'sinatra-websocket'
 require 'sinatra/cross_origin'
 require 'mongo'
 
