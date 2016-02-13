@@ -3,30 +3,42 @@ require 'byebug'
 require 'json'
 require 'sinatra'
 require 'sinatra-websocket'
+require 'sinatra/cross_origin'
 require 'mongo'
+
+configure do
+  enable :cross_origin
+end
 
 require './models/device'
 
 before '/api/*' do
-  response.headers['Access-Control-Allow-Origin'] = '*'
-  response.headers['Access-Control-Allow-Headers'] = "Origin, X-Requested-With, Content-Type, Accept"
   content_type :json
 end
 
-['devices', 'algorithms', 'interfaces'].each do |model|
+options "*" do
+  response.headers["Access-Control-Allow-Methods"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
+  response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
+  200
+end
+
+[
+  ['devices', Device],
+  ['algorithms'],
+  ['interfaces'],
+].each do |model|
+
+  model_class = model[1]
+  model = model[0]
 
   get "/api/v1/#{model}" do
-    @devices = Device.all
+    @records = model_class.all
 
-    erb :'api/devices/index'
+    erb :'api/models/index'
   end
 
   get "/api/v1/#{model}/:hwid" do |id|
     Device.get hwid
-  end
-
-  options "/api/v1/#{model}" do
-    ''
   end
 
   post "/api/v1/#{model}" do
@@ -37,8 +49,9 @@ end
     params.to_json
   end
 
-  delete "/api/v1/#{model}/:hwid" do |id|
-    Device.delete hwid
+  delete "/api/v1/#{model}/:id" do |id|
+    Device.delete id
+    {meta:{}}.to_json
   end
 
   put '/api/v1/#{model}/:hwid' do |hwid|
