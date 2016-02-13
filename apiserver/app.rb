@@ -17,7 +17,7 @@ before '/api/*' do
 end
 
 options "*" do
-  response.headers["Access-Control-Allow-Methods"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
+  response.headers["Access-Control-Allow-Methods"] = "HEAD,GET,PUT, PATCH,POST,DELETE,OPTIONS"
   response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
   200
 end
@@ -37,8 +37,10 @@ end
     erb :'api/models/index'
   end
 
-  get "/api/v1/#{model}/:hwid" do |id|
-    Device.get hwid
+  get "/api/v1/#{model}/:id" do |id|
+    @records = Device.get id
+
+    erb :'api/models/index'
   end
 
   post "/api/v1/#{model}" do
@@ -46,7 +48,7 @@ end
 
     Device.create params["data"]["attributes"]
 
-    params.to_json
+    {meta:{}}.to_json
   end
 
   delete "/api/v1/#{model}/:id" do |id|
@@ -54,11 +56,11 @@ end
     {meta:{}}.to_json
   end
 
-  put '/api/v1/#{model}/:hwid' do |hwid|
-    params.delete "captures"
-    params.delete "splat"
+  patch "/api/v1/#{model}/:id" do |id|
+    params = JSON.parse(request.body.read)
+    Device.update id, params["data"]["attributes"]
 
-    Device.update hwid, params
+    {meta:{}}.to_json
   end
 
 end

@@ -1,12 +1,14 @@
 {
   "data": [
+  <% @record.each_with_index do |model, index| %>
     {
       "type": "devices",
-      "id": "<%= @device[:hwid] %>",
+      "id": "<%= model[:hwid] %>",
       "attributes": {
-        "manual": <%= @device[:manual] %>,
-        "hwid": "<%= @device[:hwid] %>"
+        "manual": <%= model[:manual] %>,
+        "hwid": "<%= model[:hwid] %>"
       }
-    }
+    }<%= @records.count - 1 == index ? '' : ',' %>
+  <% end %>
   ]
 }

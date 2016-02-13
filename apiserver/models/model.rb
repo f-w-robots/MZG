@@ -8,14 +8,14 @@ class Model
   end
 
   def self.get id
-    @db[@table].find({@idname => id}).first.to_json
+    @db[@table].find({@idname => id})
   end
 
   def self.delete id
     @db[@table].find({@idname => id}).delete_one
   end
 
-  def self.update hwid, params
+  def self.update id, params
     @db[@table].find({@idname => id}).update_one(params)
   end
 end
