@@ -8,6 +8,7 @@ const Router = Ember.Router.extend({
 Router.map(function() {
   this.route('devices', function() {
     this.route('new');
+    this.route('edit', { path: '/devices/edit/:device_id' });
   });
 });
 

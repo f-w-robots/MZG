@@ -3,14 +3,15 @@
   <b>Available devices</b>, {{#link-to 'devices.new'}}new{{/link-to}}
   <br>
   {{#each model as |device|}}
-    <h2>{{device.hwid}}</h2>
-    <p>
-      {{#if device.manual}}
-        manual
-      {{else}}
-        algorithm
-      {{/if}}
-    </p>
+    <b>{{device.hwid}}</b> -
+    {{#if device.manual}}
+      manual,
+    {{else}}
+      algorithm,
+    {{/if}}
+    {{#link-to 'devices.edit' device}}edit{{/link-to}},
+    <a href="#" {{action "deleteDevice" device}}>delete</a>
+    <br>
   {{/each}}
 </div>
 <div id="right-column">
