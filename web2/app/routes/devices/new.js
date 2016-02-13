@@ -5,5 +5,9 @@ export default Ember.Route.extend({
 
   model() {
     return this.store.createRecord('device',{hwid: '', manual: false});
-  }
+  },
+
+  renderTemplate() {
+    this.render('devices.edit');
+  },
 });

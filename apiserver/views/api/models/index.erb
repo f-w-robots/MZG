@@ -5,8 +5,10 @@
       "type": "devices",
       "id": "<%= model[:hwid] %>",
       "attributes": {
-        "manual": <%= model[:manual] %>,
-        "hwid": "<%= model[:hwid] %>"
+        <% @attributes.each_with_index do |attribute, index| %>
+          "<%= attribute %>": "<%= model[attribute] %>"
+            <%= @attributes.count - 1 == index ? '' : ',' %>
+        <% end %>
       }
     }<%= @records.count - 1 == index ? '' : ',' %>
   <% end %>

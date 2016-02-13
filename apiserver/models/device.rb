@@ -6,4 +6,13 @@ class Device < Model
     @table = :devices
     @idname = :hwid
   end
+
+  def self.attributes
+    [
+      :manual,
+      :hwid,
+      :'algorithm-id',
+      :'interface-id'
+    ]
+  end
 end

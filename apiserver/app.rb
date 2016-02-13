@@ -33,12 +33,13 @@ end
 
   get "/api/v1/#{model}" do
     @records = model_class.all
-
+    @attributes = model_class.attributes
     erb :'api/models/index'
   end
 
   get "/api/v1/#{model}/:id" do |id|
-    @records = Device.get id
+    @records = model_class.get id
+    @attributes = model_class.attributes
 
     erb :'api/models/index'
   end
