@@ -2,16 +2,16 @@ db:
   image: mongo:3.2
   volumes:
     - mzg_db:/data/db
-web:
-  build: .
-  command: ruby interface/app.rb
-  ports:
-    - "4567:4567"
-  volumes:
-    - .:/app
-  links:
-    - db
-  env_file: .env
+# web:
+#   build: .
+#   command: ruby interface/app.rb
+#   ports:
+#     - "4567:4567"
+#   volumes:
+#     - .:/app
+#   links:
+#     - db
+#   env_file: .env
 control:
   build: .
   command: ruby control/app.rb
