@@ -15,6 +15,11 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: '/edit/:interface_id' });
   });
+
+  this.route('algorithm', function() {
+    this.route('new');
+    this.route('edit', { path: '/edit/:algorithm_id' });
+  });
 });
 
 export default Router;

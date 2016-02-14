@@ -6,9 +6,13 @@
       "id": "<%= record['_id'].to_s %>",
       "attributes": {
         <% @attributes.each_with_index do |attribute, index| %>
-          "<%= attribute %>": "<%= record[attribute] %>"
-            <%= @attributes.count - 1 == index ? '' : ',' %>
-        <% end %>
+          "<%= attribute %>": "<%=
+          if record[attribute].is_a? String
+            record[attribute].gsub('"', '\"').gsub("\n",'\n')
+          else
+            record[attribute]
+          end
+          %>"<%= @attributes.count - 1 == index ? '' : ',' %><% end %>
       }
     }<%= @records.count - 1 == index ? '' : ',' %>
   <% end %>

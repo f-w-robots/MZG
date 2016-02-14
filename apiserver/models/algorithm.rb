@@ -4,12 +4,11 @@ class Algorithm < Model
   def self.init db
     @db = db
     @table = :algorithms
-    @idname = :id
   end
 
   def self.attributes
     [
-      :id,
+      :'algorithm-id',
       :algorithm,
     ]
   end
