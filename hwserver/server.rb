@@ -85,12 +85,16 @@ class ManualBackend
   end
 
   def getSendMessagePermission!
-    if @wait
-      @wait = false
-      send_direct('executed')
-      return true
+    if @waiting
+      if @wait
+        @wait = false
+        send_direct('executed')
+        return true
+      else
+        return false
+      end
     else
-      return false
+      return true
     end
   end
 
@@ -186,7 +190,8 @@ get '/:hwid' do |hwid|
   if record['manual']
     backend = ManualBackend.new hwid, settings.swsockets
   else
-    backend = ControlBackend.new record['algorithm']
+    backend = ControlBackend.new settings.db[:algorithms]
+      .find(:'algorithm-id' => record['algorithm-id']).first['algorithm']
   end
 
   socket = DeviceWebSocket.new hwid, backend

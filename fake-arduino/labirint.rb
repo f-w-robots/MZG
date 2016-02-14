@@ -1,10 +1,28 @@
 # Simple labirint
 #
-# logic:
-# while msg_empty?(hwid)
+###############
+# HTML code for manual control:
+#
+# <div class="controlBlock">
+#   <button class="f">forward</button>
+#   <button class="l">left</button>
+#   <button class="r">right</button>
+#   <button class="b">back</button>
+# </div>
+#
+#
+# <script type="text/javascript">
+#     $('.controlBlock button').click(function(event) {
+#         socket.send(event.target.className);
+#     });
+# </script>
+###############
+# Algorithm on ruby:
+#
+# while msg_empty?
 #   sleep(0.1)
 # end
-# msg = shift_msg(hwid)
+# msg = shift_msg
 # result = if msg[3] == '2'
 #   'ls'
 # elsif msg[0] == '2'
@@ -23,6 +41,7 @@
 #   end
 # end
 # socket.send(result)
+###############
 #
 class Labirint
   def initialize

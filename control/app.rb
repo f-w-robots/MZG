@@ -3,7 +3,11 @@ require 'mongo'
 
 get '/:id' do |id|
   record = settings.db[:devices].find({hwid: id}).first
-  @iframe = record[:interface]
+
+  interface = settings.db[:interfaces]
+    .find(:'interface-id' => record['interface-id']).first['interface']
+
+  @iframe = interface
   if(@iframe.start_with?('file:'))
     @iframe = open(@iframe.gsub('file:','').strip).read
   end
