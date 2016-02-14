@@ -34,7 +34,7 @@ hwserver:
   env_file: .env
 web2:
   build: ./web2
-  command: npm start
+  command: ember server
   ports:
     - "4200:4200"
   volumes:
@@ -46,6 +46,7 @@ web2:
     - /app/dist/
   links:
     - db
+    - apiserver
   env_file: .env
 apiserver:
   build: apiserver/.
