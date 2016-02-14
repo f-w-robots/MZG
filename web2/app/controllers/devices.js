@@ -10,5 +10,13 @@ export default Ember.Controller.extend({
         this.store.createRecord('device', model).save();
       }
     },
-  }
+
+    selectAlgorithm(algorithm) {
+      this.get('model').set('algorithmId', algorithm);
+    },
+
+    selectInterface(interfac) {
+      this.get('model').set('interfaceId', interfac);
+    },
+  },
 });

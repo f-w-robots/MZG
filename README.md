@@ -22,8 +22,8 @@ Web Server API
 #### Usage
   - ```docker-compose up```
   - go to http://localhost:4200
-  - add new devices with id "fake" and Algorithm ID "fake"
   - add new algorithm with id "fake" and code from fake-arduino/labirint.rb
+  - add new devices with id "fake" and select algorithm "fake"
   - ```docker exec -it mzg_hwserver_1 ruby fake-arduino/arduino.rb fake-sha```
   - for manual control you must set manual checkbox and create interfece, with code from fake-arduino/arduino.rb
 

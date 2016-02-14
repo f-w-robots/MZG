@@ -5,4 +5,5 @@ export default DS.Model.extend({
   hwid: DS.attr('string'),
   algorithmId: DS.attr('string'),
   interfaceId: DS.attr('string'),
+  // interface: DS.belongsTo('interface'),
 });

@@ -5,9 +5,20 @@
   Manual: {{input type="checkbox" checked=model.manual}}
   <br>
   {{#if model.manual}}
-    Interface ID:{{input value=model.interfaceId}}
+    Interface:
+    <select onchange={{action "selectInterface" value="target.value"}}>
+      <option value="" selected={{eq interface.interfaceId model.interfaceId}}></option>
+      {{#each interfaces as |interface|}}
+        <option value={{interface.interfaceId}} selected={{eq interface.interfaceId model.interfaceId}}>{{interface.interfaceId}}</option>
+      {{/each}}
+    </select>
   {{else}}
-    Algorithm ID:{{input value=model.algorithmId}}
+    Algorithm:
+    <select onchange={{action "selectAlgorithm" value="target.value"}}>
+      {{#each algorithms as |algorithm|}}
+        <option value={{algorithm.algorithmId}} selected={{eq algorithm.algorithmId model.algorithmId}}>{{algorithm.algorithmId}}</option>
+      {{/each}}
+    </select>
   {{/if}}
   <br>
   <button {{action "saveRecord"}}>Save</button>
