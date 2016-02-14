@@ -8,14 +8,18 @@ class Model
   end
 
   def self.get id
-    @db[@table].find({@idname => id})
+    @db[@table].find({'_id' => BSON::ObjectId(id)})
   end
 
   def self.delete id
-    @db[@table].find({@idname => id}).delete_one
+    @db[@table].find({'_id' => BSON::ObjectId(id)}).delete_one
+  end
+
+  def self.delete_all
+    @db[@table].find({}).delete_many
   end
 
   def self.update id, params
-    @db[@table].find({@idname => id}).update_one(params)
+    @db[@table].find({'_id' => BSON::ObjectId(id)}).update_one(params)
   end
 end

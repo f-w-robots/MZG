@@ -1,12 +1,12 @@
 {
   "data": <%= @individual ? '' : '[' %>
-  <% @records.each_with_index do |model, index| %>
+  <% @records.each_with_index do |record, index| %>
     {
-      "type": "devices",
-      "id": "<%= model[:hwid] %>",
+      "type": "<%= @model.pluralize %>",
+      "id": "<%= record['_id'].to_s %>",
       "attributes": {
         <% @attributes.each_with_index do |attribute, index| %>
-          "<%= attribute %>": "<%= model[attribute] %>"
+          "<%= attribute %>": "<%= record[attribute] %>"
             <%= @attributes.count - 1 == index ? '' : ',' %>
         <% end %>
       }

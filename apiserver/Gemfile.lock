@@ -5,6 +5,7 @@ GEM
     byebug (8.2.2)
     mongo (2.2.2)
       bson (~> 4.0)
+    puma (2.16.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -21,6 +22,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   mongo (~> 2.2.2)
+  puma
   sinatra (~> 1.4.7)
   sinatra-cross_origin (~> 0.3.2)
 

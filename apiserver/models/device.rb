@@ -15,4 +15,8 @@ class Device < Model
       :'interface-id'
     ]
   end
+
+  def self.pluralize
+    'devices'
+  end
 end

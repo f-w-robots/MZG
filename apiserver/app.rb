@@ -10,57 +10,59 @@ configure do
 end
 
 require './models/device'
+require './models/algorithm'
+require './models/interface'
 
 before '/api/*' do
   content_type :json
 end
 
-options "*" do
+options "/api/*" do
   response.headers["Access-Control-Allow-Methods"] = "HEAD,GET,PUT, PATCH,POST,DELETE,OPTIONS"
   response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
   200
 end
 
 [
-  ['devices', Device],
-  ['algorithms'],
-  ['interfaces'],
+  Device,
+  Algorithm,
+  Interface,
 ].each do |model|
+  get "/api/v1/#{model.pluralize}" do
+    @records = model.all
+    @attributes = model.attributes
+    @model = model
 
-  model_class = model[1]
-  model = model[0]
-
-  get "/api/v1/#{model}" do
-    @records = model_class.all
-    @attributes = model_class.attributes
     erb :'api/models/index'
   end
 
-  get "/api/v1/#{model}/:id" do |id|
-    @records = model_class.get id
-    @attributes = model_class.attributes
+  get "/api/v1/#{model.pluralize}/:id" do |id|
+    @records = model.get id
+    @attributes = model.attributes
     @individual = true
+    @model = model
 
     erb :'api/models/index'
   end
 
-  post "/api/v1/#{model}" do
+  post "/api/v1/#{model.pluralize}" do
     params = JSON.parse(request.body.read)
+    attrs = params["data"]["attributes"]
+    attrs['id'] ||= rand.to_s[2..-1]
 
-    Device.create params["data"]["attributes"]
-
+    model.create attrs
     status 201
     {meta:{}}.to_json
   end
 
-  delete "/api/v1/#{model}/:id" do |id|
-    Device.delete id
+  delete "/api/v1/#{model.pluralize}/:id" do |id|
+    model.delete id
     {meta:{}}.to_json
   end
 
-  patch "/api/v1/#{model}/:id" do |id|
+  patch "/api/v1/#{model.pluralize}/:id" do |id|
     params = JSON.parse(request.body.read)
-    Device.update id, params["data"]["attributes"]
+    model.update id, params["data"]["attributes"]
 
     {meta:{}}.to_json
   end
@@ -72,3 +74,5 @@ set :port, ENV['API_SERVER_PORT']
 set :bind, '0.0.0.0'
 
 Device.init settings.db
+Algorithm.init settings.db
+Interface.init settings.db

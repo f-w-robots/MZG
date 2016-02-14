@@ -49,6 +49,7 @@ end
 
 get '/delete/' do
   settings.db[:devices].find({hwid: nil}).delete_many
+  settings.db[:devices].find({hwid: ""}).delete_many
   redirect '/'
 end
 
