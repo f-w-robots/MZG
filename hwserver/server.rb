@@ -18,10 +18,7 @@ class ControlBackend
   end
 
   def on_open socket
-    eval "loop do
-      #{@algorithm}
-      sleep(0.001)
-    end"
+    eval "#{@algorithm}"
   end
 
   def on_message msg

@@ -19,6 +19,7 @@
 ###############
 # Algorithm on ruby:
 #
+# loop do
 # while msg_empty?
 #   sleep(0.1)
 # end
@@ -41,6 +42,7 @@
 #   end
 # end
 # socket.send(result)
+# end
 ###############
 #
 class Labirint
