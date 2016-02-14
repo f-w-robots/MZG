@@ -10,6 +10,11 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: '/devices/edit/:device_id' });
   });
+
+  this.route('interface', function() {
+    this.route('new');
+    this.route('edit', { path: '/devices/edit/:interface_id' });
+  });
 });
 
 export default Router;

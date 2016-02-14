@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
       if(model.store) {
         model.save();
       } else {
-        this.store.createRecord('device', model).save();
+        this.store.createRecord('interface', model).save();
       }
     },
   }

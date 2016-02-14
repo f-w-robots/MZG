@@ -1,10 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  controllerName: 'devices',
+  controllerName: 'interfaces',
 
   model() {
-    return {hwid: '', manual: false};
+    return {id: ''};
   },
 
   renderTemplate() {

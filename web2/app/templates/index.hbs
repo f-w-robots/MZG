@@ -13,6 +13,15 @@
     <a href="#" {{action "deleteDevice" device}}>delete</a>
     <br>
   {{/each}}
+  <br>
+  <b>Interfaces</b>, {{#link-to 'interface.new'}}new{{/link-to}}
+  <br>
+  {{#each interfaces as |interface|}}
+    <b>{{interface.id}}</b>
+    {{#link-to 'interface.edit' interface}}edit{{/link-to}},
+    <a href="#" {{action "deleteInterface" interface}}>delete</a>
+    <br>
+  {{/each}}
 </div>
 <div id="right-column">
   <b>Manual control</b>
