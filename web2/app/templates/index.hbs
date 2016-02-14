@@ -2,7 +2,7 @@
 <div id="left-column">
   <b>Available devices</b>, {{#link-to 'devices.new'}}new{{/link-to}}
   <br>
-  {{#each model as |device|}}
+  {{#each model.devices as |device|}}
     <b>{{device.hwid}}</b> -
     {{#if device.manual}}
       manual,
@@ -16,8 +16,9 @@
   <br>
   <b>Interfaces</b>, {{#link-to 'interface.new'}}new{{/link-to}}
   <br>
-  {{#each interfaces as |interface|}}
-    <b>{{interface.id}}</b>
+  {{interfaces}}
+  {{#each model.interfaces as |interface|}}
+    <b>{{interface.interfaceId}}</b>
     {{#link-to 'interface.edit' interface}}edit{{/link-to}},
     <a href="#" {{action "deleteInterface" interface}}>delete</a>
     <br>

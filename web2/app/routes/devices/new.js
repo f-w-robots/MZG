@@ -8,6 +8,6 @@ export default Ember.Route.extend({
   },
 
   renderTemplate() {
-    this.render('interface.edit');
+    this.render('devices.edit');
   },
 });
