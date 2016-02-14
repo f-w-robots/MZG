@@ -1,0 +1,5 @@
+/app/node_modules/
+/app/bower_components/
+/app/async-disk-cache/
+/app/tmp/
+/app/dist/
