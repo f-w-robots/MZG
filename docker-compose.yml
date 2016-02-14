@@ -38,15 +38,14 @@ web2:
   ports:
     - "4200:4200"
   volumes:
-    - ./web2/:/app
-    - /app/node_modules/
-    - /app/bower_components/
-    - /app/async-disk-cache/
-    - /app/tmp/
-    - /app/dist/
+    - ./web2/app:/app/app
+    - ./web2/public:/app/public
+    - ./web2/tests:/app/tests
+    - ./web2/config:/app/config
   links:
     - db
     - apiserver
+    - control
   env_file: .env
 apiserver:
   build: apiserver/.

@@ -6,3 +6,5 @@ WORKDIR /app
 
 COPY *.json /app/
 RUN npm install && bower install --allow-root
+
+ADD . /app/
