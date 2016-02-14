@@ -21,10 +21,11 @@ Web Server API
 
 #### Usage
   - ```docker-compose up```
-  - go to http://localhost:4567
-  - add new record with id "fake-sha" (without quotes) and code
-  - select Algorithm and copy code from comments in file fake-arduino/labirint.rb into textarea
+  - go to http://localhost:4200
+  - add new devices with id "fake" and Algorithm ID "fake"
+  - add new algorithm with id "fake" and code from fake-arduino/labirint.rb
   - ```docker exec -it mzg_hwserver_1 ruby fake-arduino/arduino.rb fake-sha```
+  - for manual control you must set manual checkbox and create interfece, with code from fake-arduino/arduino.rb
 
 #### Note
 On windows/osx instead http://localhost:4567 you must use http://\<docker-machine ip\>:4567, ip shows by ```docker-machine ls```
