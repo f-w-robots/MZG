@@ -15,9 +15,9 @@ RGBIndication rgb(10, 11, 12);
 
 boolean connected = false;
 
-String ssid = "ssid";
-String password = "password";
-String host = "192.168.1.4";
+String ssid = "kernel2";
+String password = "axtr456E";
+String host = "192.168.2.168";
 String sha = "car";
 
 String response = "";
@@ -31,10 +31,13 @@ boolean connect() {
 
   if(esp.prepare()) {
     Serial.println("check esp8266 is OK");
+    delay(100);
     if(esp.upWiFi(ssid, password)) {
       Serial.println("connect to wifi is OK");
+      delay(100);
         if(esp.connectToSocket(host, "2500", sha)) {
           Serial.println("connect to socket is OK");
+          delay(100);
           return true;
         }
     }
@@ -126,6 +129,5 @@ void loop()
     esp.request(String(presenceSensor(A0)));
     requestTimeout = 0;
   }
-  delay(10);
 }
 

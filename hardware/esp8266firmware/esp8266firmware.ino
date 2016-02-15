@@ -93,7 +93,8 @@ void loop() {
             if(connected) {
               Serial.print("connection with host: ");
               Serial.print(host);
-              Serial.print(":2500");
+              Serial.print(":");
+              Serial.print(String(port));
               Serial.println(url);
             }
             return;
@@ -105,13 +106,9 @@ void loop() {
             }
             if(setuped) {
               WiFi.disconnect();
-            }
-            if(WiFi.status() == WL_CONNECTED || connected)
-              Serial.println("FAIL:reset");
-            else {
-              Serial.println("OK");
               setuped = false;
             }
+            Serial.println("OK");
 
             return;
          }
@@ -131,7 +128,12 @@ void loop() {
                 Serial.println("OK");
                 setuped = true;
               } else {
-                Serial.println("FAIL: WiFi up");
+                Serial.print("FAIL: WiFi up, ");
+                if(WiFi.status() != WL_CONNECTED)
+                  Serial.print("abort");
+                if(timeout > 100)
+                  Serial.print("timeout");
+                Serial.println();
               }
 
               return;
@@ -153,8 +155,8 @@ void loop() {
                 webSocket.loop();
                 delay(10);
                 timeout += 1;
-                if(timeout > 100) {
-                  Serial.println("FAIL: can't be connected");
+                if(timeout > 500) {
+                  Serial.println("FAIL: can't be connected, timeout");
                   return;
                 }
               }

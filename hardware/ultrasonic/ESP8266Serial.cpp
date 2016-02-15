@@ -54,11 +54,9 @@ boolean ESP8266Serial::connectToSocket(String host, String port, String sha) {
 }
 
 boolean ESP8266Serial::responseIsOK() {
-  if(response() == "OK") {
-    return true;
-  } else {
-    return false;
-  }
+  String resp = response();
+  Serial.println(resp);
+  return resp.endsWith("OK");
 }
 
 boolean ESP8266Serial::responseAvailable() {
@@ -67,7 +65,7 @@ boolean ESP8266Serial::responseAvailable() {
 
 String ESP8266Serial::getResponse() {
   if(!_socket)
-    return "FAIL";
+    return "FAIL not socket";
   while(_serial->available()>0) {
     if(readString(_serial->read())) {
       _string = String(_buff);
@@ -84,8 +82,9 @@ boolean ESP8266Serial::connected() {
 }
 
 String ESP8266Serial::response() {
+  _connection_timeout = 0;
   _buff[0] = 0;
-  while(_connection_timeout < 500) {
+  while(_connection_timeout < 5000) {
     _connection_timeout += 1;
     while(_serial->available()>0) {
       if(readString(_serial->read())) {
@@ -98,8 +97,7 @@ String ESP8266Serial::response() {
     }
     delay(10);
   }
-  _connection_timeout = 0;
-  return "FAIL";
+  return "FAIL timeout resounse";
 }
 
 boolean ESP8266Serial::readString(char b) {
