@@ -26,25 +26,6 @@ int leftSpeed = 0;
 
 int requestTimeout = 0;
 
-boolean connect() {
-  delay(1000);
-
-  if(esp.prepare()) {
-    Serial.println("check esp8266 is OK");
-    delay(100);
-    if(esp.upWiFi(ssid, password)) {
-      Serial.println("connect to wifi is OK");
-      delay(100);
-        if(esp.connectToSocket(host, "2500", sha)) {
-          Serial.println("connect to socket is OK");
-          delay(100);
-          return true;
-        }
-    }
-  }
-  return false;
-}
-
 // TODO - binary protocol
 void parseResponse(String response) {
   boolean left = false;
@@ -53,23 +34,23 @@ void parseResponse(String response) {
   int rightSign = 1;
   leftSpeed = 0;
   rightSpeed = 0;
-  for(int i = 0; i < response.length(); i++) {
-    if(response[i] == 'l') {
+  for (int i = 0; i < response.length(); i++) {
+    if (response[i] == 'l') {
       right = false;
       left = true;
-      if(response[i+1] == '-') 
+      if (response[i + 1] == '-')
         leftSign = -1;
     }
-    if(response[i] == 'r') {
+    if (response[i] == 'r') {
       left = false;
       right = true;
-      if(response[i+1] == '-') 
+      if (response[i + 1] == '-')
         rightSign = -1;
     }
-    if(response[i] > 47 && response[i] < 58) {
-      if(left)
+    if (response[i] > 47 && response[i] < 58) {
+      if (left)
         leftSpeed = leftSpeed * 10 + response[i] - 48;
-      if(right)
+      if (right)
         rightSpeed = rightSpeed * 10 + response[i] - 48;
     }
   }
@@ -88,36 +69,48 @@ void setup()
 {
   Serial.begin(9600);
   rgb.power();
-  while(!connected) {
-    connected = connect();
-    if(!connected) {
-      Serial.println("unsuccessful");
-      rgb.error();
-      delay(1000);
-    }
+
+  Serial.println("prepare");
+  while (!esp.prepare()) {
+    Serial.println("try prepare");
+    rgb.error();
+    delay(500);
+    rgb.power();
   }
-  rgb.connection();
+  Serial.println("connect to wifi");
+  while (!esp.upWiFi(ssid, password)) {
+    Serial.println("try connect to wifi");
+    rgb.error();
+    delay(500);
+    rgb.power();
+  }
+  Serial.println("connect to socket");
+  while (!esp.connectToSocket(host, "2200", sha)) {
+    Serial.println("try connect to socket");
+    rgb.error();
+  }
+
   Serial.println("connected");
 }
 
 void loop()
 {
-  if(!esp.connected()) {
+  if (!esp.connected()) {
     rgb.error();
     Serial.println("Error");
     return;
   }
-  if(esp.responseAvailable()) {
+  if (esp.responseAvailable()) {
     response = esp.getResponse();
     Serial.println(response);
-    if(response == "FAIL") {
+    if (response == "FAIL") {
       rgb.error();
       return;
     }
-    if(response.startsWith("S")) {
+    if (response.startsWith("S")) {
       engineStep.command(response.substring(1));
     }
-    if(response.startsWith("T")) {
+    if (response.startsWith("T")) {
       parseResponse(response.substring(1));
       engine.rightSpeed(leftSpeed);
       engine.leftSpeed(rightSpeed);
@@ -125,7 +118,7 @@ void loop()
   }
 
   requestTimeout += 1;
-  if(requestTimeout > 100) {
+  if (requestTimeout > 100) {
     esp.request(String(presenceSensor(A0)));
     requestTimeout = 0;
   }

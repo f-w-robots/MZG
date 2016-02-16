@@ -8,6 +8,7 @@ class ESP8266Serial
   public:
     ESP8266Serial(uint8_t rx, uint8_t tx);
     boolean prepare();
+    boolean check();
     boolean upWiFi(String ssid, String password);
     boolean connectToSocket(String host, String port, String sha);
     int status();
@@ -18,7 +19,7 @@ class ESP8266Serial
   private:
     boolean readString(char b);
     String response();
-    boolean responseIsOK();
+    boolean responseIsOK(String type);
     
     boolean _espReady;
     boolean _wifi;

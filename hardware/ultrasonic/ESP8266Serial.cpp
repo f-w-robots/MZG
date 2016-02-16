@@ -31,7 +31,7 @@ void ESP8266Serial::request(String string) {
 
 boolean ESP8266Serial::prepare() {
   _serial->println("AT:reset");
-  _espReady = responseIsOK();
+  _espReady = responseIsOK("reset");
   return _espReady;
 }
 
@@ -40,7 +40,7 @@ boolean ESP8266Serial::upWiFi(String ssid, String password) {
     return false;
   }
   _serial->println("AT:setup+" + ssid + "+" + password);
-  _wifi = responseIsOK();
+  _wifi = responseIsOK("wifi");
   return _wifi;
 }
 
@@ -49,14 +49,14 @@ boolean ESP8266Serial::connectToSocket(String host, String port, String sha) {
     return false;
   }
   _serial->println("AT:connect+" + host + "+" + port + "+/" + sha);
-  _socket = responseIsOK();
+  _socket = responseIsOK("connect");
   return _socket;
 }
 
-boolean ESP8266Serial::responseIsOK() {
+boolean ESP8266Serial::responseIsOK(String type) {
   String resp = response();
   Serial.println(resp);
-  return resp.endsWith("OK");
+  return resp.endsWith("OK:" + type);
 }
 
 boolean ESP8266Serial::responseAvailable() {
@@ -82,28 +82,26 @@ boolean ESP8266Serial::connected() {
 }
 
 String ESP8266Serial::response() {
-  _connection_timeout = 0;
   _buff[0] = 0;
-  while(_connection_timeout < 5000) {
-    _connection_timeout += 1;
+  while (true) {
     while(_serial->available()>0) {
-      if(readString(_serial->read())) {
+      char b = _serial->read();
+//      Serial.println(int(b));
+      if(readString(b)) {
         _string = String(_buff);
         _buff[0] = 0;
         
-        _connection_timeout = 0;
         return _string;
       }  
     }
-    delay(10);
   }
-  return "FAIL timeout resounse";
 }
 
 boolean ESP8266Serial::readString(char b) {
   int len = strlen(_buff);
 
   if(len >= 255) {
+    _buff[255] = 0;
     return true;
   }
 
