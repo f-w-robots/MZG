@@ -108,9 +108,10 @@ class ManualBackend
 end
 
 class DeviceWebSocket
-  def initialize hwid, backend
+  def initialize hwid, backend, sockets
     @hwid = hwid
     @backend = backend
+    @sockets = sockets
 
     @list = []
 
@@ -156,6 +157,7 @@ class DeviceWebSocket
 
   def destroy
     @thread.terminate
+    @sockets.delete @hwid
   end
 end
 
@@ -202,7 +204,7 @@ get '/:hwid' do |hwid|
     backend = ControlBackend.new algorithm['algorithm']
   end
 
-  socket = DeviceWebSocket.new hwid, backend
+  socket = DeviceWebSocket.new hwid, backend, settings.manual_hwsockets
   response = socket.start request
 
   if record['manual']
