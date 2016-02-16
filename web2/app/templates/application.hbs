@@ -11,8 +11,12 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li>{{link-to 'Settings' 'settings'}}</li>
-        <li>{{link-to 'Devices' 'devices'}}</li>
+        {{#navbar-link route='settings' currentRouteNameBinding=currentRouteName }}
+          Settings
+        {{/navbar-link}}
+        {{#navbar-link route='devices.index' currentRouteNameBinding=currentRouteName }}
+          Devices
+        {{/navbar-link}}
       </ul>
     </div>
   </div>
@@ -20,6 +24,6 @@
 {{outlet}}
 <footer class="footer">
   <div class="container">
-    <p class="text-muted">НИЛ Робототехники</p>
+    <p class="text-muted">НИЛ Робототехники {{currentRouteName}}</p>
   </div>
 </footer>
