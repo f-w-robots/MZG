@@ -13,6 +13,7 @@ boolean connected = false;
 int timeout = 0;
 
 int i = 0;
+boolean at_command = false;
 
 int indexA = -1;
 int indexB = -1;
@@ -24,10 +25,18 @@ char password[100];
 String string;
 char buff[255] = "";
 
+void responseFail(String reason) {
+  while(Serial.available())
+    Serial.read();
+  Serial.print("FAIL: ");
+  Serial.println(reason);
+}
+
 boolean readString(char b) {
   int len = strlen(buff);
 
   if (len >= 255) {
+    buff[255] = 0;
     return true;
   }
 
@@ -78,8 +87,12 @@ void loop() {
     string = String(buff);
     buff[0] = 0;
 
+    at_command = false;
+    if (string.startsWith("AT"))
+      at_command = true;
+
     if (string == "AT") {
-      Serial.println("OK");
+      Serial.println("OK:AT");
       return;
     }
 
@@ -108,7 +121,7 @@ void loop() {
         WiFi.disconnect();
         setuped = false;
       }
-      Serial.println("OK");
+      Serial.println("OK:reset");
 
       return;
     }
@@ -120,20 +133,16 @@ void loop() {
       string.substring(indexB + 1).toCharArray(password, string.length() - indexB);
 
       WiFi.begin(ssid, password);
+      timeout = 0;
       while (WiFi.status() != WL_CONNECTED && timeout < 100) {
         delay(100);
         timeout += 1;
       }
       if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("OK");
+        Serial.println("OK:wifi");
         setuped = true;
       } else {
-        Serial.print("FAIL: WiFi up, ");
-        if (WiFi.status() != WL_CONNECTED)
-          Serial.print("abort");
-        if (timeout > 100)
-          Serial.print("timeout");
-        Serial.println();
+        responseFail("WiFi up, timeout");
       }
 
       return;
@@ -156,19 +165,27 @@ void loop() {
         delay(10);
         timeout += 1;
         if (timeout > 500) {
-          Serial.println("FAIL: can't be connected, timeout");
+          responseFail("can't be connected, timeout");
+
           return;
         }
       }
-      Serial.println("OK");
+      Serial.println("OK:connect");
 
+      return;
+    }
+
+    if (at_command) {
+      Serial.print("AT command not executed: ");
+      Serial.println(string);
+      at_command = false;
       return;
     }
 
     if (setuped && connected) {
       webSocket.sendTXT(string);
     } else {
-      Serial.println("FAIL: disconnected");
+      responseFail("disconnected");
     }
   }
   if (setuped && connected) {
