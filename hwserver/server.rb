@@ -47,28 +47,21 @@ class ManualBackend
     @hwid = hwid
     @swsockets = swsockets
 
-    # TODO - protocol
     @init_message = false
     @waiting = false
-    @wait = true
   end
 
   def on_open socket
-    # swsocket = get_swsocket
-    # swsocket.send('device connected') if swsocket
+
   end
 
   def on_message msg
+    init_protocol(msg)
     if(@waiting)
       if(msg == 'wait')
         @wait = true
       elsif(msg == 'crash')
         send_direct('crash')
-      end
-    elsif(!@init_message)
-      @init_message = true
-      if(msg == 'waiting')
-        @waiting = true
       end
     else
       swsocket = get_swsocket
@@ -77,8 +70,7 @@ class ManualBackend
   end
 
   def on_close
-    # swsocket = get_swsocket
-    # swsocket.send('device disconnected') if swsocket
+
   end
 
   def getSendMessagePermission!
@@ -104,6 +96,15 @@ class ManualBackend
   def get_swsocket
     @swsockets[@hwid]
   end
+
+  def init_protocol msg
+    return if @init_message
+    @init_message = true
+    @wait = true
+    if(msg == 'waiting')
+      @waiting = true
+    end
+  end
 end
 
 class DeviceWebSocket
@@ -113,7 +114,7 @@ class DeviceWebSocket
 
     @list = []
 
-    Thread.new do
+    @thread = Thread.new do
       loop do
         while !@ws
           sleep(0.1)
@@ -143,6 +144,7 @@ class DeviceWebSocket
       end
       ws.onclose do
         puts "disconnected with id: #{@hwid}"
+        destroy
         @backend.on_close
       end
     end
@@ -150,6 +152,10 @@ class DeviceWebSocket
 
   def on_message msg
     @list.push(msg)
+  end
+
+  def destroy
+    @thread.terminate
   end
 end
 
