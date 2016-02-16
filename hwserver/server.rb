@@ -187,8 +187,13 @@ get '/:hwid' do |hwid|
   if record['manual']
     backend = ManualBackend.new hwid, settings.swsockets
   else
-    backend = ControlBackend.new settings.db[:algorithms]
-      .find(:'algorithm-id' => record['algorithm-id']).first['algorithm']
+    algorithm = ControlBackend.new settings.db[:algorithms]
+      .find(:'algorithm-id' => record['algorithm-id']).first
+    if !algorithm
+      puts "Device hasn't algorithm"
+      return ''
+    end
+    backend = ControlBackend.new algorithm['algorithm']
   end
 
   socket = DeviceWebSocket.new hwid, backend
