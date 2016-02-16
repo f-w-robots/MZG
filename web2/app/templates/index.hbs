@@ -1,39 +1,42 @@
 {{outlet}}
-<div id="left-column">
-  <b>Available devices</b>, {{#link-to 'devices.new'}}new{{/link-to}}
-  <br>
-  {{#each model.devices as |device|}}
-    <b>{{device.hwid}}</b> -
-    {{#if device.manual}}
-      manual,
-    {{else}}
-      algorithm,
-    {{/if}}
-    {{#link-to 'devices.edit' device}}edit{{/link-to}},
-    <a href="#" {{action "deleteRecord" device}}>delete</a>
+<div class="container">
+  <div id="left-column">
+    <b>Available devices</b>, {{#link-to 'devices.new'}}new{{/link-to}}
     <br>
-  {{/each}}
-  <br>
-  <b>Interfaces</b>, {{#link-to 'interface.new'}}new{{/link-to}}
-  <br>
-  {{#each model.interfaces as |interface|}}
-    <b>{{interface.interfaceId}}</b>
-    {{#link-to 'interface.edit' interface}}edit{{/link-to}},
-    <a href="#" {{action "deleteRecord" interface}}>delete</a>
+    {{#each model.devices as |device|}}
+      <b>{{device.hwid}}</b> -
+      {{#if device.manual}}
+        manual,
+      {{else}}
+        algorithm,
+      {{/if}}
+      {{#link-to 'devices.edit' device}}edit{{/link-to}},
+      <a href="#" {{action "deleteRecord" device}}>delete</a>
+      <br>
+    {{/each}}
     <br>
-  {{/each}}
-  <br>
-  <b>Algorithms</b>, {{#link-to 'algorithm.new'}}new{{/link-to}}
-  <br>
-  {{#each model.algorithms as |algorithm|}}
-    <b>{{algorithm.algorithmId}}</b>
-    {{#link-to 'algorithm.edit' algorithm}}edit{{/link-to}},
-    <a href="#" {{action "deleteRecord" algorithm}}>delete</a>
+    <b>Interfaces</b>, {{#link-to 'interface.new'}}new{{/link-to}}
     <br>
-  {{/each}}
-</div>
-<div id="right-column">
-  <b>Manual control</b>
-  <br>
-  {{manual-control}}
+    {{#each model.interfaces as |interface|}}
+      <b>{{interface.interfaceId}}</b>
+      {{#link-to 'interface.edit' interface}}edit{{/link-to}},
+      <a href="#" {{action "deleteRecord" interface}}>delete</a>
+      <br>
+    {{/each}}
+    <br>
+    <b>Algorithms</b>, {{#link-to 'algorithm.new'}}new{{/link-to}}
+    <br>
+    {{#each model.algorithms as |algorithm|}}
+      <b>{{algorithm.algorithmId}}</b>
+      {{#link-to 'algorithm.edit' algorithm}}edit{{/link-to}},
+      <a href="#" {{action "deleteRecord" algorithm}}>delete</a>
+      <br>
+    {{/each}}
+  </div>
+  <div id="right-column">
+    <b>Manual control</b>
+    <br>
+    {{manual-control}}
+  </div>
+
 </div>

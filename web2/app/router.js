@@ -20,6 +20,7 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: '/edit/:algorithm_id' });
   });
+  this.route('settings');
 });
 
 export default Router;
