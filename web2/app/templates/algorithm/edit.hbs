@@ -1,8 +1,11 @@
-{{outlet}}
-<form>
-  Algorithm ID: {{input value=model.algorithmId}}
-  <br>
-  Algorithm body: <br>
-  {{#textarea value=model.algorithm cols="80" rows="40"}}{{/textarea}}
-  <button {{action "saveRecord"}}>Save</button>
-</form>
+<div class="container">
+  {{outlet}}
+  <form>
+    Algorithm ID: {{input value=model.algorithmId}}
+    <br>
+    Algorithm body: <br>
+    {{#textarea value=model.algorithm cols="80" rows="20"}}{{/textarea}}
+    <br>
+    <button {{action "saveRecord"}}>Save</button>
+  </form>
+</div>
