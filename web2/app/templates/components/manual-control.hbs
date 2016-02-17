@@ -1,9 +1,12 @@
-<div class="connectBlock">
-  <select multiple="multiple" size="6" id="selectList">
-  </select>
-  <br>
-  <button {{action "select"}}>Select</button>
-  <button disabled>Update</button>
-</div>
-<div class="controlBlock">
-</div>
+{{#each devices as |deviceId|}}
+  <div class="col-md-1 col-md-offset-1">
+    <a href="#" {{action "select" deviceId}}>
+      <img src="images/device.png" height="100">
+      {{deviceId}}
+    </a>
+  </div>
+{{/each}}
+{{#if url}}
+  <iframe src="{{url}}" width="600" height="400" class="control">
+  </iframe>
+{{/if}}
