@@ -4,7 +4,7 @@ export default Ember.Route.extend({
   controllerName: 'interfaces',
 
   model() {
-    return {id: ''};
+    return this.store.createRecord('interface', {});
   },
 
   renderTemplate() {

@@ -10,7 +10,7 @@ export default Ember.Route.extend({
   },
 
   model() {
-    return {hwid: '', manual: false};
+    return this.store.createRecord('device', {hwid: '', manual: false});
   },
 
   renderTemplate() {

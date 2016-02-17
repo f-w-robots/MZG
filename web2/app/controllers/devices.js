@@ -1,14 +1,14 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+  setModels() {
+    this.set('algorithms', this.store.findAll('algorithm'));
+    this.set('interfaces', this.store.findAll('interface'));
+  },
+
   actions: {
-    saveRecord: function() {
-      var model = this.get('model');
-      if(model.store) {
-        model.save();
-      } else {
-        this.store.createRecord('device', model).save();
-      }
+    saveRecord() {
+      this.get('model').save();
     },
 
     selectAlgorithm(algorithm) {

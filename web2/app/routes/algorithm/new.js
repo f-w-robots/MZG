@@ -4,7 +4,7 @@ export default Ember.Route.extend({
   controllerName: 'algorithms',
 
   model() {
-    return {};
+    return this.store.createRecord('algorithm', {});
   },
 
   renderTemplate() {
