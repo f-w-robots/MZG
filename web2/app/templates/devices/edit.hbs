@@ -1,27 +1,44 @@
+{{outlet}}
 <div class="container">
-  {{outlet}}
   <form>
-    Device ID: {{input value=model.hwid}}
+    <div class="row">
+      <div class="form-group col-md-3">
+        Device ID: {{input value=model.hwid class="form-control"}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="checkbox form-group">
+        <label>
+          {{input type="checkbox" checked=model.manual}} Manual
+        </label>
+      </div>
+    </div>
     <br>
-    Manual: {{input type="checkbox" checked=model.manual}}
+    <div class="row">
+      <div class="col-md-3">
+        {{#if model.manual}}
+          Interface:
+          <select class="form-control" onchange={{action "selectInterface" value="target.value"}}>
+            <option value="" selected={{eq interface.interfaceId model.interfaceId}}></option>
+            {{#each interfaces as |interface|}}
+              <option value={{interface.interfaceId}} selected={{eq interface.interfaceId model.interfaceId}}>{{interface.interfaceId}}</option>
+            {{/each}}
+          </select>
+        {{else}}
+          Algorithm:
+          <select class="form-control " onchange={{action "selectAlgorithm" value="target.value"}}>
+            {{#each algorithms as |algorithm|}}
+              <option value={{algorithm.algorithmId}} selected={{eq algorithm.algorithmId model.algorithmId}}>{{algorithm.algorithmId}}</option>
+              {{/each}}
+          </select>
+        {{/if}}
+      </div>
+    </div>
     <br>
-    {{#if model.manual}}
-      Interface:
-      <select onchange={{action "selectInterface" value="target.value"}}>
-        <option value="" selected={{eq interface.interfaceId model.interfaceId}}></option>
-        {{#each interfaces as |interface|}}
-          <option value={{interface.interfaceId}} selected={{eq interface.interfaceId model.interfaceId}}>{{interface.interfaceId}}</option>
-        {{/each}}
-      </select>
-    {{else}}
-      Algorithm:
-      <select onchange={{action "selectAlgorithm" value="target.value"}}>
-        {{#each algorithms as |algorithm|}}
-          <option value={{algorithm.algorithmId}} selected={{eq algorithm.algorithmId model.algorithmId}}>{{algorithm.algorithmId}}</option>
-        {{/each}}
-      </select>
-    {{/if}}
-    <br>
-    <button {{action "saveRecord"}}>Save</button>
+    <div class="row">
+      <div class="form-group col-md-3">
+        <div class="btn btn-default" {{action "saveRecord"}}>Save</div>
+      </div>
+    </div>
   </form>
 </div>
