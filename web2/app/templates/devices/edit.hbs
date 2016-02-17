@@ -27,9 +27,10 @@
         {{else}}
           Algorithm:
           <select class="form-control " onchange={{action "selectAlgorithm" value="target.value"}}>
+            <option value="" selected={{eq interface.interfaceId model.interfaceId}}></option>
             {{#each algorithms as |algorithm|}}
               <option value={{algorithm.algorithmId}} selected={{eq algorithm.algorithmId model.algorithmId}}>{{algorithm.algorithmId}}</option>
-              {{/each}}
+            {{/each}}
           </select>
         {{/if}}
       </div>
