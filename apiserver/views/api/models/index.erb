@@ -5,14 +5,9 @@
       "type": "<%= @model.pluralize %>",
       "id": "<%= record['_id'].to_s %>",
       "attributes": {
-        <% @attributes.each_with_index do |attribute, index| %>
-          "<%= attribute %>": "<%=
-          if record[attribute].is_a? String
-            record[attribute].gsub('"', '\"').gsub("\n",'\n')
-          else
-            record[attribute]
-          end
-          %>"<%= @attributes.count - 1 == index ? '' : ',' %><% end %>
+        <% @attributes.each_with_index do |attr, index| %>
+          <%= attribute(attr, record[attr], @attributes.count - 1 != index) %>
+        <% end %>
       }
     }<%= @records.count - 1 == index ? '' : ',' %>
   <% end %>

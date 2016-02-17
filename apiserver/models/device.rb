@@ -11,7 +11,8 @@ class Device < Model
       :manual,
       :hwid,
       :'algorithm-id',
-      :'interface-id'
+      :'interface-id',
+      :icon,
     ]
   end
 

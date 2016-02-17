@@ -5,13 +5,30 @@ require 'sinatra'
 require 'sinatra/cross_origin'
 require 'mongo'
 
+require './models/device'
+require './models/algorithm'
+require './models/interface'
+
 configure do
   enable :cross_origin
 end
 
-require './models/device'
-require './models/algorithm'
-require './models/interface'
+helpers do
+  def attribute attr_name, attr, comma
+    result = "\"#{attr_name}\": "
+    if attr.is_a?(String)
+      result += "\"#{attr.gsub('"', '\"').gsub("\n",'\n')}\""
+    elsif attr.nil?
+      result += '""'
+    elsif attr.is_a?(Hash)
+      result += attr.to_json
+    else
+      result += attr.to_s
+    end
+    result += ',' if comma
+    result
+  end
+end
 
 before '/api/*' do
   content_type :json
@@ -48,7 +65,6 @@ end
   post "/api/v1/#{model.pluralize}" do
     params = JSON.parse(request.body.read)
     attrs = params["data"]["attributes"]
-    attrs['id'] ||= rand.to_s[2..-1]
 
     model.create attrs
     status 201
