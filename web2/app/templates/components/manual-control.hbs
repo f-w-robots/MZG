@@ -6,6 +6,9 @@
     </a>
   </div>
 {{/each}}
+{{#if (eq devices.length 0)}}
+  no avaliable devices
+{{/if}}
 {{#if url}}
   <iframe src="{{url}}" width="600" height="400" class="control">
   </iframe>
