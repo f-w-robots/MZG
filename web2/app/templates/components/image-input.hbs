@@ -1,7 +1,8 @@
 {{#if file}}
   <img src="{{file.dataURL}}" width="{{imageWidth}}">
+  <div class="btn btn-danger" {{action "removeImage"}}>x</div>
 {{/if}}
 
 <br>
 
-{{ file-input fileChanged="fileSelectionChanged"}}
+{{file-input fileChanged="fileSelectionChanged"}}
