@@ -1,6 +1,3 @@
-import Ember from 'ember';
-const { getOwner } = Ember
-
 export default Ember.Component.extend({
     tagName: 'li',
 
@@ -17,6 +14,6 @@ export default Ember.Component.extend({
     }.property('isCurrentRoute'),
 
     updateState: function() {
-      return this.set('isCurrentRoute', this.get('route') == this.get('currentRouteName'));
+      return this.set('isCurrentRoute', this.get('route') === this.get('currentRouteName'));
     },
 });
