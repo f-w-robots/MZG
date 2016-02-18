@@ -17,20 +17,10 @@
       <div class="col-md-3">
         {{#if model.manual}}
           Interface:
-          <select class="form-control" onchange={{action "selectInterface" value="target.value"}}>
-            <option value="" selected={{eq interface.interfaceId model.interfaceId}}></option>
-            {{#each interfaces as |interface|}}
-              <option value={{interface.interfaceId}} selected={{eq interface.interfaceId model.interfaceId}}>{{interface.interfaceId}}</option>
-            {{/each}}
-          </select>
+          {{select-bootstrap options=interfaces valueKey="interfaceId" labelKey="interfaceId" value=model.interfaceId}}
         {{else}}
           Algorithm:
-          <select class="form-control " onchange={{action "selectAlgorithm" value="target.value"}}>
-            <option value="" selected={{eq interface.interfaceId model.interfaceId}}></option>
-            {{#each algorithms as |algorithm|}}
-              <option value={{algorithm.algorithmId}} selected={{eq algorithm.algorithmId model.algorithmId}}>{{algorithm.algorithmId}}</option>
-            {{/each}}
-          </select>
+          {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.algorithmId}}
         {{/if}}
       </div>
     </div>

@@ -1,0 +1,6 @@
+<select class="form-control" onchange={{action "select"}}>
+  <option value=""></option>
+  {{#each optionsList as |option|}}
+    <option value={{option.value}} selected={{eq option.value value}}>{{option.label}}</option>
+  {{/each}}
+</select>
