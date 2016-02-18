@@ -2,6 +2,7 @@
 #include "ESP8266Serial.h"
 #include "RGBIndication.h"
 //#include "SR04.h"
+#include "CD4051.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
 Engine engine(3, 2, 4, 5, 7, 6);
@@ -12,11 +13,13 @@ ESP8266Serial esp(8, 9);
 RGBIndication rgb(10, 11, 12);
 //TRIG, ECHO
 //SR04 sr04(A0, A1);
+// S0, S1, S2
+CD4051 cd4051(A3, A4, A5);
 
 boolean connected = false;
 
-String ssid = "kernel2";
-String password = "axtr456E";
+String ssid = "ssid";
+String password = "password";
 String host = "192.168.2.168";
 String sha = "car";
 
@@ -119,7 +122,13 @@ void loop()
 
   requestTimeout += 1;
   if (requestTimeout > 100) {
-    esp.request(String(presenceSensor(A0)));
+    String req = "";
+    for(int i = 0; i < 8; i++) {
+      cd4051.switchInput(i);
+      req += analogRead(A0);
+      req += " ";
+    }
+    esp.request(req);
     requestTimeout = 0;
   }
 }
