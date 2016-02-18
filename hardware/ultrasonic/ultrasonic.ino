@@ -5,12 +5,12 @@
 #include "CD4051.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
-Engine engine(3, 2, 4, 5, 7, 6);
+Engine engine(6, 7, 5, 4, 2, 3);
 EngineStep engineStep(&engine);
 // TX, RX
 ESP8266Serial esp(8, 9);
 //Red, Green, Blue
-RGBIndication rgb(10, 11, 12);
+RGBIndication rgb(12, 11, 10);
 //TRIG, ECHO
 //SR04 sr04(A0, A1);
 // S0, S1, S2
@@ -88,7 +88,7 @@ void setup()
     rgb.power();
   }
   Serial.println("connect to socket");
-  while (!esp.connectToSocket(host, "2200", sha)) {
+  while (!esp.connectToSocket(host, "2500", sha)) {
     Serial.println("try connect to socket");
     rgb.error();
   }
@@ -121,7 +121,7 @@ void loop()
   }
 
   requestTimeout += 1;
-  if (requestTimeout > 100) {
+  if (requestTimeout > 1000) {
     String req = "";
     for(int i = 0; i < 8; i++) {
       cd4051.switchInput(i);
@@ -131,5 +131,6 @@ void loop()
     esp.request(req);
     requestTimeout = 0;
   }
+  delay(1);
 }
 
