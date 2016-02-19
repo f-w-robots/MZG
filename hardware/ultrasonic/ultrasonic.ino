@@ -1,8 +1,7 @@
 #include "EngineStep.h"
 #include "ESP8266Serial.h"
 #include "RGBIndication.h"
-//#include "SR04.h"
-#include "CD4051.h"
+#include "LineSensor.h"
 
 // ENA, EN1, EN2, EN3, EN4, ENB
 Engine engine(6, 7, 5, 4, 2, 3);
@@ -11,21 +10,22 @@ EngineStep engineStep(&engine);
 ESP8266Serial esp(8, 9);
 //Red, Green, Blue
 RGBIndication rgb(12, 11, 10);
-//TRIG, ECHO
-//SR04 sr04(A0, A1);
-// S0, S1, S2
-CD4051 cd4051(A3, A4, A5);
+// S0, S1, S2, Z
+LineSensor line(A5, A4, A3, A2);
 
 boolean connected = false;
 
-String ssid = "ssid";
-String password = "password";
-String host = "192.168.2.168";
+String ssid = "AndroidAP";
+String password = "axtr456E";
+String host = "192.168.43.252";
 String sha = "car";
 
 String response = "";
 int rightSpeed = 0;
 int leftSpeed = 0;
+
+boolean lineMode = false;
+const uint8_t lineModeSpeed = 120;
 
 int requestTimeout = 0;
 
@@ -64,15 +64,7 @@ void parseResponse(String response) {
   rightSpeed = constrain(rightSpeed, -255, 255);
 }
 
-boolean presenceSensor(uint8_t pin) {
-  return (analogRead(pin) > 25 );
-}
-
-void setup()
-{
-  Serial.begin(9600);
-  rgb.power();
-
+void connect() {
   Serial.println("prepare");
   while (!esp.prepare()) {
     Serial.println("try prepare");
@@ -92,22 +84,34 @@ void setup()
     Serial.println("try connect to socket");
     rgb.error();
   }
+}
+
+void setup()
+{
+  Serial.begin(9600);
+  rgb.power();
+
+  connect();
+  rgb.connection();
+  connected = true;
 
   Serial.println("connected");
 }
 
 void loop()
 {
-  if (!esp.connected()) {
+  if (!esp.connected() || !connected) {
     rgb.error();
-    Serial.println("Error");
+    connect();
+    rgb.connection();
     return;
   }
   if (esp.responseAvailable()) {
     response = esp.getResponse();
     Serial.println(response);
-    if (response == "FAIL") {
+    if (response.startsWith("FAIL:")) {
       rgb.error();
+      connected = false;
       return;
     }
     if (response.startsWith("S")) {
@@ -118,16 +122,31 @@ void loop()
       engine.rightSpeed(leftSpeed);
       engine.leftSpeed(rightSpeed);
     }
+    if (response.startsWith("L")) {
+      lineMode = true;
+      leftSpeed = lineModeSpeed;
+      rightSpeed = lineModeSpeed;
+      engine.rightSpeed(leftSpeed);
+      engine.leftSpeed(rightSpeed);
+    }
   }
-
+  if(lineMode) {
+    int position = line.sensorsPosition();
+    if(position == 1)
+      engine.stop();
+    if(position == 2) {
+      engine.rightSpeed(leftSpeed + 5);
+      engine.leftSpeed(rightSpeed);
+    }
+    if(position == 3) {
+      engine.rightSpeed(leftSpeed);
+      engine.leftSpeed(rightSpeed + 5);
+    }
+  }
   requestTimeout += 1;
   if (requestTimeout > 1000) {
-    String req = "";
-    for(int i = 0; i < 8; i++) {
-      cd4051.switchInput(i);
-      req += analogRead(A0);
-      req += " ";
-    }
+    line.readSensors();
+    String req = line.printSensors();
     esp.request(req);
     requestTimeout = 0;
   }
