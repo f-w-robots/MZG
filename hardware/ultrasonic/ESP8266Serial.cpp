@@ -65,12 +65,14 @@ boolean ESP8266Serial::responseAvailable() {
 
 String ESP8266Serial::getResponse() {
   if(!_socket)
-    return "FAIL not socket";
+    return "FAIL: not socket";
   while(_serial->available()>0) {
     if(readString(_serial->read())) {
       _string = String(_buff);
       _buff[0] = 0;
-      
+      if(_string.startsWith("FAIL:"))
+        _socket = false;
+
       return _string;
     }  
   }

@@ -13,8 +13,6 @@ RGBIndication rgb(12, 11, 10);
 // S0, S1, S2, Z
 LineSensor line(A5, A4, A3, A2);
 
-boolean connected = false;
-
 String ssid = "AndroidAP";
 String password = "axtr456E";
 String host = "192.168.43.252";
@@ -93,14 +91,13 @@ void setup()
 
   connect();
   rgb.connection();
-  connected = true;
 
   Serial.println("connected");
 }
 
 void loop()
 {
-  if (!esp.connected() || !connected) {
+  if (!esp.connected()) {
     rgb.error();
     connect();
     rgb.connection();
@@ -111,7 +108,6 @@ void loop()
     Serial.println(response);
     if (response.startsWith("FAIL:")) {
       rgb.error();
-      connected = false;
       return;
     }
     if (response.startsWith("S")) {
