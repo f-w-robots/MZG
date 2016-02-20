@@ -29,6 +29,10 @@ void Engine::stop() {
 
 void Engine::rightSpeed(int speed)
 {
+  if(speed > 35)
+    speed += 30;
+  if(speed < -35)
+    speed -= 30;
   digitalWrite(_ena,LOW);
   if(speed > -1) {
     rightDirection(true);

@@ -1,16 +1,12 @@
 <div class="controlBlock">
   <button class="f">forward</button>
-  <button class="lf">left+forward</button>
-  <button class="rf">right+forward</button>
-  <button class="s">revert</button>
-  <br>
-  <br>
-  <button class="f">forward</button>
   <button class="l">left</button>
   <button class="r">right</button>
   <button class="s">revert</button>
+  <br>
 </div>
-
+<button id="line1">line</button>
+<button id="line0">stop</button>
 <br>
 <br>
 left speed(-255..255):<input id="left" name="left" value="0"><br>
@@ -21,6 +17,15 @@ input log:
 </div>
 
 <script type="text/javascript">
+    $('#line1').click(function(event) {
+      socket.send("L1");
+      console.log("L1");
+    })
+    $('#line0').click(function(event) {
+      socket.send("L0");
+      console.log("L0");
+    })
+
     $('.controlBlock button').click(function(event) {
       socket.send("S" + event.target.className);
       console.log(event.target.className);

@@ -3,13 +3,13 @@
 #include "RGBIndication.h"
 #include "LineSensor.h"
 
-// ENA, EN1, EN2, EN3, EN4, ENB
+// ENA, IN1, IN2, IN3, IN4, ENB
 Engine engine(6, 7, 5, 4, 2, 3);
 EngineStep engineStep(&engine);
 // TX, RX
 ESP8266Serial esp(8, 9);
 //Red, Green, Blue
-RGBIndication rgb(12, 11, 10);
+RGBIndication rgb(11, 12, 13);
 // S0, S1, S2, Z
 LineSensor line(A5, A4, A3, A2);
 
@@ -23,7 +23,7 @@ int rightSpeed = 0;
 int leftSpeed = 0;
 
 boolean lineMode = false;
-const uint8_t lineModeSpeed = 120;
+const uint8_t lineModeSpeed = 90;
 
 int requestTimeout = 0;
 
@@ -118,12 +118,15 @@ void loop()
       engine.rightSpeed(leftSpeed);
       engine.leftSpeed(rightSpeed);
     }
-    if (response.startsWith("L")) {
+    if (response.startsWith("L1")) {
       lineMode = true;
-      leftSpeed = lineModeSpeed;
-      rightSpeed = lineModeSpeed;
-      engine.rightSpeed(leftSpeed);
-      engine.leftSpeed(rightSpeed);
+      engine.rightSpeed(lineModeSpeed);
+      engine.leftSpeed(lineModeSpeed);
+    }
+    if (response.startsWith("L0")) {
+      lineMode = false;
+      engine.rightSpeed(0);
+      engine.leftSpeed(0);
     }
   }
   if(lineMode) {
