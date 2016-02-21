@@ -28,31 +28,38 @@ void LineSensor::readSensors() {
   for(int i = 0; i < 6; i++) {
     _cd4051->switchInput(i);
     delayMicroseconds(100);
-    _sensors[i] = analogRead(_analog) - _sensorsColibration[i];
+    _sensors[i] = (analogRead(_analog) - _sensorsColibration[i]) * (1023.0/_sensorsColibrationUp[i]);
   }
 }
 
 int LineSensor::sensorsPosition() {
   readSensors();
-  return correctPath(_sensors[5] > 400, _sensors[2] > 400, _sensors[3] > 400,
-    _sensors[1] > 400, _sensors[4] > 400, _sensors[0] > 400);
+  return correctPath(_sensors[5] > 500, _sensors[2] > 500, _sensors[3] > 500,
+    _sensors[1] > 500, _sensors[4] > 500, _sensors[0] > 500);
 }
 
 // 1 - stop
 // 2 - right
 // 3 - left
 int LineSensor::correctPath(boolean v0, boolean vc, boolean vr, boolean vl, boolean vr2, boolean vl2) {
-  if(!v0) {
-    return 1;
+//  if(!v0) {
+//    return 1;
+//  }
+//  if(!vc) {
+//    return 1;
+//  }
+  if(!vr && !vc) {
+    return 4;
   }
-  if(!vc) {
-    return 1;
+  if(!vl && !vc) {
+    return 5;
   }
   if(!vr) {
     return 2;
-  } 
+  }
   if(!vl) {
     return 3;
-  } 
+  }
+  
 }
 

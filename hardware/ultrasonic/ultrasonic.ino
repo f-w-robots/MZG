@@ -11,7 +11,7 @@ ESP8266Serial esp(8, 9);
 //Red, Green, Blue
 RGBIndication rgb(11, 12, 13);
 // S0, S1, S2, Z
-LineSensor line(A5, A4, A3, A2);
+LineSensor line(A3, A4, A5, A2);
 
 String ssid = "AndroidAP";
 String password = "axtr456E";
@@ -23,7 +23,7 @@ int rightSpeed = 0;
 int leftSpeed = 0;
 
 boolean lineMode = false;
-const uint8_t lineModeSpeed = 90;
+const uint8_t lineModeSpeed = 70;
 
 int requestTimeout = 0;
 
@@ -63,6 +63,7 @@ void parseResponse(String response) {
 }
 
 void connect() {
+  delay(500);
   Serial.println("prepare");
   while (!esp.prepare()) {
     Serial.println("try prepare");
@@ -134,12 +135,20 @@ void loop()
     if(position == 1)
       engine.stop();
     if(position == 2) {
-      engine.rightSpeed(leftSpeed + 5);
-      engine.leftSpeed(rightSpeed);
+      engine.rightSpeed(lineModeSpeed + 3);
+      engine.leftSpeed(lineModeSpeed);
+    }
+    if(position == 4) {
+      engine.rightSpeed(lineModeSpeed + 3 * 2);
+      engine.leftSpeed(lineModeSpeed);
     }
     if(position == 3) {
-      engine.rightSpeed(leftSpeed);
-      engine.leftSpeed(rightSpeed + 5);
+      engine.rightSpeed(lineModeSpeed);
+      engine.leftSpeed(lineModeSpeed + 3);
+    }
+    if(position == 5) {
+      engine.rightSpeed(lineModeSpeed);
+      engine.leftSpeed(lineModeSpeed + 3 * 2);
     }
   }
   requestTimeout += 1;
