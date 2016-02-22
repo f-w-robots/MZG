@@ -13,8 +13,8 @@ RGBIndication rgb(11, 12, 13);
 // S0, S1, S2, Z
 LineSensor line(A3, A4, A5, A2);
 
-String ssid = "AndroidAP";
-String password = "axtr456E";
+String ssid = "robohub";
+String password = "robohub1";
 String host = "192.168.43.252";
 String sha = "car";
 
@@ -63,6 +63,7 @@ void parseResponse(String response) {
 }
 
 void connect() {
+  rgb.power();
   delay(500);
   Serial.println("prepare");
   while (!esp.prepare()) {
@@ -71,6 +72,9 @@ void connect() {
     delay(500);
     rgb.power();
   }
+  rgb.connection();
+  delay(300);
+  rgb.power();
   Serial.println("connect to wifi");
   while (!esp.upWiFi(ssid, password)) {
     Serial.println("try connect to wifi");
@@ -78,6 +82,9 @@ void connect() {
     delay(500);
     rgb.power();
   }
+  rgb.connection();
+  delay(300);
+  rgb.power();
   Serial.println("connect to socket");
   while (!esp.connectToSocket(host, "2500", sha)) {
     Serial.println("try connect to socket");
@@ -88,7 +95,7 @@ void connect() {
 void setup()
 {
   Serial.begin(9600);
-  rgb.power();
+
 
   connect();
   rgb.connection();
@@ -130,34 +137,23 @@ void loop()
       engine.leftSpeed(0);
     }
   }
-  if(lineMode) {
-    int position = line.sensorsPosition();
-    if(position == 1)
-      engine.stop();
-    if(position == 2) {
-      engine.rightSpeed(lineModeSpeed + 3);
-      engine.leftSpeed(lineModeSpeed);
+  if (lineMode) {
+    int position = line.sensorsPosition() / 2;
+    if (position != 0) {
+      if (requestTimeout == 0) {
+        esp.request("l " + String(lineModeSpeed + position) + " r " + String(lineModeSpeed - position));
+      }
+      engine.rightSpeed(lineModeSpeed - position);
+      engine.leftSpeed(lineModeSpeed + position);
     }
-    if(position == 4) {
-      engine.rightSpeed(lineModeSpeed + 3 * 2);
-      engine.leftSpeed(lineModeSpeed);
-    }
-    if(position == 3) {
-      engine.rightSpeed(lineModeSpeed);
-      engine.leftSpeed(lineModeSpeed + 3);
-    }
-    if(position == 5) {
-      engine.rightSpeed(lineModeSpeed);
-      engine.leftSpeed(lineModeSpeed + 3 * 2);
-    }
+
   }
   requestTimeout += 1;
-  if (requestTimeout > 1000) {
-    line.readSensors();
-    String req = line.printSensors();
-    esp.request(req);
+  if (requestTimeout > 15) {
+    //    line.readSensors();
+    //    String req = line.printSensors();
+    //    esp.request(req);
     requestTimeout = 0;
   }
-  delay(1);
 }
 

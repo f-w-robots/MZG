@@ -11,7 +11,7 @@ class LineSensor
     String printSensors();
     int sensorsPosition();
   private:
-    int correctPath(boolean v0, boolean vc, boolean vr, boolean vl, boolean vr2, boolean vl2);
+    int correctPath(int v0, int vc, int vr, int vl, int vr2, int vl2);
     uint8_t _pins[3];
     uint8_t _analog;
     int _sensors[6];
