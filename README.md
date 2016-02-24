@@ -10,7 +10,7 @@ Web Server API
 
 #### Usage
   - ```docker-compose up```
-  - localhost:4200 - web interface
+  - http://localhost:4200 - web interface
 
 ##### Run fake arduino
   - go to http://localhost:4200
@@ -19,5 +19,6 @@ Web Server API
   - ```docker exec -it mzg_hwserver_1 ruby fake-arduino/arduino.rb fake-sha```
   - for manual control you must set manual checkbox and create interfece, with code from fake-arduino/arduino.rb
 
-#### Note
-On windows/osx instead http://localhost:4567 you must use http://\<docker-machine ip\>:4567, ip shows by ```docker-machine ls```
+#### Notes
+  - On windows/osx instead http://localhost:4200 you must use http://\<docker-machine ip\>:4200, ip shows by ```docker-machine ls```
+  - exec ```docker-compose build``` after pulling new code
