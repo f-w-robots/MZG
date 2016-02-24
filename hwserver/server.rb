@@ -11,155 +11,9 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-class ControlBackend
-  def initialize algorithm
-    @algorithm = algorithm
-    @unread_messages = []
-  end
-
-  def on_open socket
-    eval "#{@algorithm}"
-  end
-
-  def on_message msg
-    @unread_messages.push msg
-  end
-
-  def on_close
-  end
-
-  def getSendMessagePermission!
-    true
-  end
-
-  private
-  def msg_empty?
-    @unread_messages.empty?
-  end
-
-  def shift_msg
-    @unread_messages.shift
-  end
-end
-
-class ManualBackend
-  def initialize hwid, swsockets
-    @hwid = hwid
-    @swsockets = swsockets
-
-    @init_message = false
-    @waiting = false
-  end
-
-  def on_open socket
-
-  end
-
-  def on_message msg
-    init_protocol(msg)
-    if(@waiting)
-      if(msg == 'wait')
-        @wait = true
-      elsif(msg == 'crash')
-        send_direct('crash')
-      end
-    else
-      swsocket = get_swsocket
-      swsocket.send(msg) if swsocket
-    end
-  end
-
-  def on_close
-
-  end
-
-  def getSendMessagePermission!
-    if @waiting
-      if @wait
-        @wait = false
-        send_direct('executed')
-        return true
-      else
-        return false
-      end
-    else
-      return true
-    end
-  end
-
-  def send_direct msg
-    swsocket = get_swsocket
-    swsocket.send(msg.to_s) if swsocket
-  end
-
-  private
-  def get_swsocket
-    @swsockets[@hwid]
-  end
-
-  def init_protocol msg
-    return if @init_message
-    @init_message = true
-    @wait = true
-    if(msg == 'waiting')
-      @waiting = true
-    end
-  end
-end
-
-class DeviceWebSocket
-  def initialize hwid, backend, sockets
-    @hwid = hwid
-    @backend = backend
-    @sockets = sockets
-
-    @list = []
-
-    @thread = Thread.new do
-      loop do
-        while !@ws
-          sleep(0.1)
-        end
-        while(!@backend.getSendMessagePermission!)
-          sleep(0.1)
-        end
-        while @list.size < 1
-          sleep(0.1)
-        end
-        @ws.send(@list.shift)
-      end
-    end
-  end
-
-  def start request
-    request.websocket do |ws|
-      @ws = ws
-
-      ws.onopen do
-        puts "connected with id: #{@hwid}"
-        @backend.on_open(ws)
-      end
-      ws.onmessage do |msg|
-        puts "message #{msg}"
-        @backend.on_message msg
-      end
-      ws.onclose do
-        puts "disconnected with id: #{@hwid}"
-        destroy
-        @backend.on_close
-      end
-    end
-  end
-
-  def on_message msg
-    @list.push(msg)
-  end
-
-  def destroy
-    @thread.terminate
-    @sockets.delete @hwid
-  end
-end
+require_relative 'algorithm_backend'
+require_relative 'device_websocket'
+require_relative 'manual_backend'
 
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
@@ -167,33 +21,62 @@ get '/devices/list/manual' do
 end
 
 get '/group/info/:name' do |name|
+  response.headers['Access-Control-Allow-Origin'] = '*'
   group = settings.groups[name]
   if !group
     status 404
     return
   end
-  group[:info].to_s
+  group.options[:info].to_s
 end
 
-post '/group/up/:name' do |name|
-  record = settings.db[:games].find(name: name).first
-  settings.groups[name] = {record: record, list: [], info: {}}
-  group = settings.groups[name]
-  code = record[:code]
+class Group
+  def initialize options, hwsockets
+    @options = options
+    @hwsockets = hwsockets
+  end
 
-  thread = Thread.new do
-    theend = Time.now + 90
-    loop do
-      sleep 1
-      group[:info][:timout] = theend - Time.now
-      if theend < Time.now
-        puts "MSGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
-        puts group[:list]
-        puts "-"*30
+  def start
+    @thread = Thread.new do
+      theend = Time.now + 15
+      loop do
+        sleep 0.1
+        @options[:info][:timout] = theend - Time.now
+        if theend < Time.now
+          puts "MSGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+          puts @options[:commands]
+          @options[:commands].keys.each do |key|
+            @options[:commands][key].each do |command|
+              @hwsockets[key].direct_on_message command
+            end
+          end
+          puts "-"*30
+          destroy
+        end
       end
     end
   end
 
+  def destroy
+    @thread.terminate
+  end
+
+  def options
+    @options
+  end
+end
+
+post '/group/up/:name' do |name|
+  response.headers['Access-Control-Allow-Origin'] = '*'
+  record = settings.db[:games].find(name: name).first
+  group = Group.new({record: record, commands: {}, info: {}}, settings.hwsockets)
+  if !settings.groups[name]
+    settings.groups[name] = group
+  else
+    settings.groups[name].destroy
+    settings.groups[name] = group
+  end
+  group.start
 end
 
 get '/control/:hwid' do |hwid|
@@ -207,34 +90,17 @@ get '/control/:hwid' do |hwid|
     return if !group
   end
 
-  if group
-    request.websocket do |ws|
-      ws.onopen do
-        settings.swsockets[hwid] = ws
-      end
-      ws.onmessage do |msg|
-        hwsocket = settings.manual_hwsockets[hwid]
-        return if !hwsocket
-        group[:list].push(msg);
-      end
-      ws.onclose do
-        settings.swsockets.delete(hwid)
-      end
+  request.websocket do |ws|
+    ws.onopen do
+      settings.swsockets[hwid] = ws
     end
-  else
-    request.websocket do |ws|
-      ws.onopen do
-        settings.swsockets[hwid] = ws
-      end
-      ws.onmessage do |msg|
-        hwsocket = settings.manual_hwsockets[hwid]
-        if hwsocket
-          hwsocket.on_message(msg)
-        end
-      end
-      ws.onclose do
-        settings.swsockets.delete(hwid)
-      end
+    ws.onmessage do |msg|
+      hwsocket = settings.manual_hwsockets[hwid]
+      return if !hwsocket
+      hwsocket.on_message(msg)
+    end
+    ws.onclose do
+      settings.swsockets.delete(hwid)
     end
   end
 end
@@ -251,27 +117,31 @@ get '/:hwid' do |hwid|
   if record['manual']
     backend = ManualBackend.new hwid, settings.swsockets
   else
-    algorithm = ControlBackend.new settings.db[:algorithms]
+    algorithm = AlgorithmBackend.new settings.db[:algorithms]
       .find(:'algorithm-id' => record['algorithm-id']).first
     if !algorithm
       puts "Device hasn't algorithm"
       return ''
     end
-    backend = ControlBackend.new algorithm['algorithm']
+    backend = AlgorithmBackend.new algorithm['algorithm']
   end
 
   socket = DeviceWebSocket.new hwid, backend, settings.manual_hwsockets
+  if group
+    socket = DeviceWebSocketForGroup.new socket, settings.groups, group['name']
+  end
   response = socket.start request
 
   if record['manual']
     settings.manual_hwsockets[hwid] = socket
   end
+  settings.hwsockets[hwid] = socket
   response
 end
 
 set :manual_hwsockets, {}
+set :hwsockets, {}
 set :swsockets, {}
-set :game_tmp, {}
 set :groups, {}
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :port, ENV['HWSERVER_PORT']
