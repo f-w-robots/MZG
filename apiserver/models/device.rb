@@ -13,6 +13,7 @@ class Device < Model
       :'algorithm-id',
       :'interface-id',
       :icon,
+      :group,
     ]
   end
 

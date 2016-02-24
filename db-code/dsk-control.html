@@ -2,11 +2,10 @@
   <button class="f">forward</button>
   <button class="l">left</button>
   <button class="r">right</button>
-  <button class="s">revert</button>
 </div>
 
 <br>
-<button id="start">Start</button>
+<button id="commit">Commit</button>
 <br>
 <br>
 <div class="commandList">
@@ -36,7 +35,7 @@
       $(".commandList").append("<div class='wait'>" + event.target.className + "</div>")
     });
 
-    $('#start').click(function(){
+    $('#commit').click(function(){
       $('.commandList div.wait').each(function(i,e){
         commands = "S" + $(e).html();
         console.log(commands);

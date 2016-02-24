@@ -166,23 +166,75 @@ get '/devices/list/manual' do
   {keys: settings.manual_hwsockets.keys}.to_json
 end
 
+get '/group/info/:name' do |name|
+  group = settings.groups[name]
+  if !group
+    status 404
+    return
+  end
+  group[:info].to_s
+end
+
+post '/group/up/:name' do |name|
+  record = settings.db[:games].find(name: name).first
+  settings.groups[name] = {record: record, list: [], info: {}}
+  group = settings.groups[name]
+  code = record[:code]
+
+  thread = Thread.new do
+    theend = Time.now + 90
+    loop do
+      sleep 1
+      group[:info][:timout] = theend - Time.now
+      if theend < Time.now
+        puts "MSGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+        puts group[:list]
+        puts "-"*30
+      end
+    end
+  end
+
+end
+
 get '/control/:hwid' do |hwid|
   return '' if !request.websocket?
   record = settings.db[:devices].find(hwid: hwid).first
   return '' if !record
 
-  request.websocket do |ws|
-    ws.onopen do
-      settings.swsockets[hwid] = ws
-    end
-    ws.onmessage do |msg|
-      hwsocket = settings.manual_hwsockets[hwid]
-      if hwsocket
-        hwsocket.on_message(msg)
+  if !record['group'].nil? && !record['group'].empty?
+    name = record['group']
+    group = settings.groups[name]
+    return if !group
+  end
+
+  if group
+    request.websocket do |ws|
+      ws.onopen do
+        settings.swsockets[hwid] = ws
+      end
+      ws.onmessage do |msg|
+        hwsocket = settings.manual_hwsockets[hwid]
+        return if !hwsocket
+        group[:list].push(msg);
+      end
+      ws.onclose do
+        settings.swsockets.delete(hwid)
       end
     end
-    ws.onclose do
-      settings.swsockets.delete(hwid)
+  else
+    request.websocket do |ws|
+      ws.onopen do
+        settings.swsockets[hwid] = ws
+      end
+      ws.onmessage do |msg|
+        hwsocket = settings.manual_hwsockets[hwid]
+        if hwsocket
+          hwsocket.on_message(msg)
+        end
+      end
+      ws.onclose do
+        settings.swsockets.delete(hwid)
+      end
     end
   end
 end
@@ -191,6 +243,10 @@ get '/:hwid' do |hwid|
   return '' if !request.websocket?
   record = settings.db[:devices].find(hwid: hwid).first
   return '' if !record
+
+  if !record['group'].nil? && !record['group'].empty?
+    group = settings.db[:games].find(name: record['group']).first
+  end
 
   if record['manual']
     backend = ManualBackend.new hwid, settings.swsockets
@@ -215,6 +271,8 @@ end
 
 set :manual_hwsockets, {}
 set :swsockets, {}
+set :game_tmp, {}
+set :groups, {}
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :port, ENV['HWSERVER_PORT']
 set :bind, '0.0.0.0'

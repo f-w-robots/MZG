@@ -11,6 +11,8 @@ class Game < Model
       :rounds,
       :'timeout-m',
       :'timeout-s',
+      :code,
+      :name,
     ]
   end
 

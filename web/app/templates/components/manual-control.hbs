@@ -1,3 +1,4 @@
+<div class="row">
 {{#each devices as |deviceId|}}
   <div class="col-md-1 col-md-offset-1">
     <a href="#" {{action "select" deviceId}}>
@@ -9,7 +10,10 @@
 {{#if (eq devices.length 0)}}
   no avaliable devices
 {{/if}}
+</div>
 {{#if url}}
+<div class="row">
   <iframe src="{{url}}" width="600" height="400" class="control">
   </iframe>
+</div>
 {{/if}}
