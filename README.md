@@ -14,10 +14,10 @@ Web Server API
 
 ##### Run fake arduino
   - go to http://localhost:4200
-  - add new algorithm with id "fake" and code from fake-arduino/labirint.rb
+  - add new algorithm with id "fake" and code from MZG/db-code/fake-labirint.rb
+  - add new interface with id "fake" and code from MZG/db-code/fake-labirint.html
   - add new devices with id "fake" and select algorithm "fake"
-  - ```docker exec -it mzg_hwserver_1 ruby fake-arduino/arduino.rb fake-sha```
-  - for manual control you must set manual checkbox and create interfece, with code from fake-arduino/arduino.rb
+  - ```docker exec -it mzg_hwserver_1 ruby fake-arduino/arduino.rb fake```
 
 #### Notes
   - On windows/osx instead http://localhost:4200 you must use http://\<docker-machine ip\>:4200, ip shows by ```docker-machine ls```
