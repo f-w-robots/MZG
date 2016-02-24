@@ -1,8 +1,27 @@
 <div class="container">
-  Timeout:
-  {{input value=model.timeoutM}}
-  {{input value=model.timeoutS}}
-  rounds:
-  {{input value=model.rounds}}
-  <button {{action "saveRecord"}}>save</button>
+  <form>
+    <h2>Game rules</h2>
+    <div class="form-group">
+      <div class="col-md-1">
+        Timeout:
+      </div>
+      <div class="col-md-1">
+        {{input value=model.timeoutM class="form-control"}}
+      </div>
+      <div class="col-md-1">
+        {{input value=model.timeoutS class="form-control"}}
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-1">
+        rounds:
+      </div>
+      <div class="col-md-1">
+        {{input value=model.rounds class="form-control"}}
+      </div>
+    </div>
+
+    <div class="btn btn-default" {{action "saveRecord"}}>save</div>
+  </form>
+
 </div>
