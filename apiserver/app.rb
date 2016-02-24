@@ -5,12 +5,15 @@ require 'sinatra'
 require 'sinatra/cross_origin'
 require 'mongo'
 
-require './models/device'
-require './models/algorithm'
-require './models/interface'
+Dir["./models/*.rb"].each {|file| require file }
 
 configure do
   enable :cross_origin
+
+  set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
+
+  set :port, ENV['API_SERVER_PORT']
+  set :bind, '0.0.0.0'
 end
 
 helpers do
@@ -44,7 +47,10 @@ end
   Device,
   Algorithm,
   Interface,
+  Game,
 ].each do |model|
+  model.init settings.db
+
   get "/api/v1/#{model.pluralize}" do
     @records = model.all
     @attributes = model.attributes
@@ -84,11 +90,3 @@ end
   end
 
 end
-
-set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
-set :port, ENV['API_SERVER_PORT']
-set :bind, '0.0.0.0'
-
-Device.init settings.db
-Algorithm.init settings.db
-Interface.init settings.db
