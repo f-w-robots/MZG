@@ -22,21 +22,6 @@ hwserver:
   links:
     - db
   env_file: .env
-web2:
-  build: ./web2
-  command: ember server
-  ports:
-    - "4200:4200"
-  volumes:
-    - ./web2/app:/app/app
-    - ./web2/public:/app/public
-    - ./web2/tests:/app/tests
-    - ./web2/config:/app/config
-  links:
-    - db
-    - apiserver
-    - control
-  env_file: .env
 apiserver:
   build: apiserver/.
   command: ruby app.rb
@@ -46,4 +31,20 @@ apiserver:
     - ./apiserver:/app
   links:
     - db
+  env_file: .env
+web:
+  build: ./web
+  command: ember server
+  ports:
+    - "4200:4200"
+  volumes:
+    - ./web/app:/app/app
+    - ./web/public:/app/public
+    - ./web/tests:/app/tests
+    - ./web/config:/app/config
+  links:
+    - db
+    - apiserver
+    - control
+    - hwserver
   env_file: .env

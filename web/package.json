@@ -1,7 +1,7 @@
 {
-  "name": "web2",
+  "name": "web",
   "version": "0.0.0",
-  "description": "Small description for web2 goes here",
+  "description": "Web interface for mzg",
   "private": true,
   "directories": {
     "doc": "doc",
