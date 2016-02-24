@@ -21,6 +21,7 @@ Router.map(function() {
     this.route('edit', { path: '/edit/:algorithm_id' });
   });
   this.route('settings');
+  this.route('admin');
 });
 
 export default Router;
