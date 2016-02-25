@@ -78,6 +78,7 @@ end
 post '/group/up/:name' do |name|
   response.headers['Access-Control-Allow-Origin'] = '*'
   record = settings.db[:games].find(name: name).first
+  # create class from db
   group = Group.new(settings.hwsockets)
   if !settings.groups[name]
     settings.groups[name] = group
@@ -105,8 +106,9 @@ get '/control/:hwid' do |hwid|
     end
     ws.onmessage do |msg|
       hwsocket = settings.manual_hwsockets[hwid]
-      return if !hwsocket
-      hwsocket.on_message(msg)
+      if hwsocket
+        hwsocket.on_message(msg)
+      end
     end
     ws.onclose do
       settings.swsockets.delete(hwid)

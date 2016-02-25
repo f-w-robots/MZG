@@ -15,9 +15,12 @@ class ManualBackend
     init_protocol(msg)
     if(@waiting)
       if(msg == 'wait')
+        send_direct('executed')
         @wait = true
       elsif(msg == 'crash')
-        send_direct('crash')
+        send_direct(msg)
+      elsif(msg == 'win')
+        send_direct(msg)
       end
     else
       swsocket = get_swsocket
@@ -33,7 +36,6 @@ class ManualBackend
     if @waiting
       if @wait
         @wait = false
-        send_direct('executed')
         return true
       else
         return false

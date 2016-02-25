@@ -27,6 +27,10 @@
   .commandList .ready {
     background: blue;
   }
+
+  .commandList .win {
+    background: #90C3D4;
+  }
 </style>
 
 <script type="text/javascript">
@@ -48,6 +52,8 @@
       var className = 'ready';
       if(message == 'crash')
         className = 'error';
+      if(message == 'win')
+        className = 'win';
       command.removeClass('wait').addClass(className)
     }
 

@@ -67,10 +67,6 @@ class DeviceWebSocketForGroup
   def on_message msg
     hwid = @socket.instance_variable_get(:@hwid)
     @group.on_message hwid, msg
-    # commands = @group.options[:commands]
-    # hwid = @socket.instance_variable_get(:@hwid)
-    # commands[hwid] ||= []
-    # commands[hwid] << msg
   end
 
   def direct_on_message msg
