@@ -53,9 +53,9 @@ class DeviceWebSocket
 end
 
 class DeviceWebSocketForGroup
-  def initialize socket, groups, group_name
+  def initialize socket, group, group_name
     @socket = socket
-    @groups = groups
+    @group = group
     @group_name = group_name
   end
 
@@ -65,10 +65,12 @@ class DeviceWebSocketForGroup
   end
 
   def on_message msg
-    commands = @groups[@group_name].options[:commands]
     hwid = @socket.instance_variable_get(:@hwid)
-    commands[hwid] ||= []
-    commands[hwid] << msg
+    @group.on_message hwid, msg
+    # commands = @group.options[:commands]
+    # hwid = @socket.instance_variable_get(:@hwid)
+    # commands[hwid] ||= []
+    # commands[hwid] << msg
   end
 
   def direct_on_message msg

@@ -31,29 +31,38 @@ get '/group/info/:name' do |name|
 end
 
 class Group
-  def initialize options, hwsockets
-    @options = options
+  def initialize hwsockets
     @hwsockets = hwsockets
+
+    @options = {}
+    @options[:commands] = {}
+    @options[:info] = {}
   end
 
   def start
     @thread = Thread.new do
       theend = Time.now + 15
+      @accept = true
       loop do
-        sleep 0.1
+        sleep 0.001
         @options[:info][:timout] = theend - Time.now
         if theend < Time.now
-          puts "MSGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
-          puts @options[:commands]
+          @accept = false
           @options[:commands].keys.each do |key|
             @options[:commands][key].each do |command|
               @hwsockets[key].direct_on_message command
             end
           end
-          puts "-"*30
           destroy
         end
       end
+    end
+  end
+
+  def on_message hwid, msg
+    if @accept
+      @options[:commands][hwid] ||= []
+      @options[:commands][hwid] << msg
     end
   end
 
@@ -69,7 +78,7 @@ end
 post '/group/up/:name' do |name|
   response.headers['Access-Control-Allow-Origin'] = '*'
   record = settings.db[:games].find(name: name).first
-  group = Group.new({record: record, commands: {}, info: {}}, settings.hwsockets)
+  group = Group.new(settings.hwsockets)
   if !settings.groups[name]
     settings.groups[name] = group
   else
@@ -105,14 +114,17 @@ get '/control/:hwid' do |hwid|
   end
 end
 
+def attach_to_group socket, group_name
+  record = settings.db[:games].find(name: group_name).first
+  group = settings.groups[group_name]
+  return nil if !group
+  return DeviceWebSocketForGroup.new socket, group, group_name
+end
+
 get '/:hwid' do |hwid|
   return '' if !request.websocket?
   record = settings.db[:devices].find(hwid: hwid).first
   return '' if !record
-
-  if !record['group'].nil? && !record['group'].empty?
-    group = settings.db[:games].find(name: record['group']).first
-  end
 
   if record['manual']
     backend = ManualBackend.new hwid, settings.swsockets
@@ -127,9 +139,13 @@ get '/:hwid' do |hwid|
   end
 
   socket = DeviceWebSocket.new hwid, backend, settings.manual_hwsockets
-  if group
-    socket = DeviceWebSocketForGroup.new socket, settings.groups, group['name']
+
+  if !record['group'].nil? && !record['group'].empty?
+    socket = attach_to_group(socket, record['group'])
   end
+
+  return if !socket
+
   response = socket.start request
 
   if record['manual']
