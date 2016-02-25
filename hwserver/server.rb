@@ -14,6 +14,7 @@ require 'mongo'
 require_relative 'algorithm_backend'
 require_relative 'device_websocket'
 require_relative 'manual_backend'
+require_relative 'group_backend'
 
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
@@ -72,6 +73,12 @@ class Group
 
   def options
     @options
+  end
+
+  def message_from_device hwid, msg
+    @options[:info][:score] ||= {}
+    @options[:info][:score][hwid] ||= 0
+    @options[:info][:score][hwid] += 1
   end
 end
 
@@ -138,6 +145,12 @@ get '/:hwid' do |hwid|
       return ''
     end
     backend = AlgorithmBackend.new algorithm['algorithm']
+  end
+
+  if !record['group'].nil? && !record['group'].empty?
+    group_name = record['group']
+    group = settings.groups[group_name]
+    backend = GroupBackend.new backend, group
   end
 
   socket = DeviceWebSocket.new hwid, backend, settings.manual_hwsockets
