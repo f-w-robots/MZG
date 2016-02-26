@@ -20,8 +20,13 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: '/edit/:algorithm_id' });
   });
+
   this.route('settings');
-  this.route('admin');
+
+  this.route('admin', function() {
+    this.route('new');
+    this.route('edit', { path: '/edit/:group_id' });
+  });
 });
 
 export default Router;
