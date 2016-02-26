@@ -5,11 +5,11 @@ export default Ember.Route.extend({
 
   model() {
     var self = this;
-    return this.store.findAll('game').then(function(games) {
+    return this.store.findAll('group').then(function(games) {
       if(games.get('firstObject')) {
         return games.get('firstObject');
       } else {
-        return self.store.createRecord('game', {timeoutM: 1, timeoutS: 30, rounds: 5});
+        return self.store.createRecord('group', {timeoutM: 1, timeoutS: 30, rounds: 5});
       }
     });
   },

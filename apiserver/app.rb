@@ -5,8 +5,6 @@ require 'sinatra'
 require 'sinatra/cross_origin'
 require 'mongo'
 
-Dir["./models/*.rb"].each {|file| require file }
-
 configure do
   enable :cross_origin
 
@@ -43,12 +41,14 @@ options "/api/*" do
   200
 end
 
-[
-  Device,
-  Algorithm,
-  Interface,
-  Game,
-].each do |model|
+
+Dir["./models/*.rb"].each do |file, a|
+  require file
+  model_name = file.gsub('./models/','').gsub('.rb', '').capitalize
+  next if ['Model'].include?(model_name)
+  # debugger
+
+  model = Kernel.const_get(model_name)
   model.init settings.db
 
   get "/api/v1/#{model.pluralize}" do

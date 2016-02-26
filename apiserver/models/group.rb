@@ -1,6 +1,6 @@
 require_relative 'model'
 
-class Game < Model
+class Group < Model
   def self.init db
     @db = db
     @table = :games
@@ -8,15 +8,13 @@ class Game < Model
 
   def self.attributes
     [
-      :rounds,
-      :'timeout-m',
-      :'timeout-s',
+      :options,
       :code,
       :name,
     ]
   end
 
   def self.pluralize
-    'games'
+    'groups'
   end
 end
