@@ -7,9 +7,10 @@ export default Ember.Route.extend({
     var self = this;
     return this.store.findAll('group').then(function(games) {
       if(games.get('firstObject')) {
+        $.xxx = games.get('firstObject');
         return games.get('firstObject');
       } else {
-        return self.store.createRecord('group', {timeoutM: 1, timeoutS: 30, rounds: 5});
+        return self.store.createRecord('group', {options: {timeoutM: 1, timeoutS: 30, rounds: 5}});
       }
     });
   },

@@ -46,7 +46,6 @@ Dir["./models/*.rb"].each do |file, a|
   require file
   model_name = file.gsub('./models/','').gsub('.rb', '').capitalize
   next if ['Model'].include?(model_name)
-  # debugger
 
   model = Kernel.const_get(model_name)
   model.init settings.db

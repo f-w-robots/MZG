@@ -2,31 +2,23 @@
   <div class="btn btn-default" {{action "startGame"}}>start</div>
   <form>
     <h2>Game rules</h2>
-    <div class="form-group">
-      <div class="col-md-1">
-        Name:
+    <div class="row">
+      <div class="form-group col-md-3">
+        Name: {{input value=model.name class="form-control"}}
       </div>
-      <div class="col-md-1">
-        {{input value=model.name class="form-control"}}
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-md-1">
-        Timeout:
-      </div>
-      <div class="col-md-1">
-        {{input value=model.timeoutM class="form-control"}}
-      </div>
-      <div class="col-md-1">
-        {{input value=model.timeoutS class="form-control"}}
+      <div class="form-group col-md-3">
+        <br>
+        <div class="btn btn-default" {{action "saveRecord"}}>Save</div>
       </div>
     </div>
-    <div class="form-group">
-      <div class="col-md-1">
-        rounds:
+    <div class="row">
+      <div class="form-group col-md-3">
+        Rounds: {{input value=model.options.rounds class="form-control"}}
       </div>
-      <div class="col-md-1">
-        {{input value=model.rounds class="form-control"}}
+    </div>
+    <div class="row">
+      <div class="form-group col-md-4">
+        Timeout: {{input value=model.options.timeoutM class="form-control"}}m {{input value=model.options.timeoutS class="form-control"}}s
       </div>
     </div>
 
