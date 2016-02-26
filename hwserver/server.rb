@@ -44,6 +44,8 @@ class Group
     @options[:info] = {}
 
     @messages = {}
+
+    @crashed = {}
   end
 
   def start
@@ -57,11 +59,16 @@ class Group
           if theend < Time.now
             allow_accept(false)
             @options[:commands].keys.each do |key|
+              if @crashed[key]
+                @crashed[key] = false
+                @hwsockets[key].direct_on_message 'Srestore'
+              end
               @options[:commands][key].each do |command|
                 @hwsockets[key].direct_on_message command
                 @messages[key] ||= 0
                 @messages[key] += 1
               end
+              @options[:commands][key] = []
             end
 
             # Wait responses
@@ -81,6 +88,8 @@ class Group
               finish
               destroy
             end
+
+            break
           end
         end
       end
@@ -124,6 +133,7 @@ class Group
     if @messages[hwid]
       if msg == 'crash' || msg == 'win'
         @messages[hwid] = 0
+        @crashed[hwid] = true
       else
         @messages[hwid] -= 1
       end

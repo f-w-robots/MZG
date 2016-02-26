@@ -18,6 +18,7 @@ class ManualBackend
         send_direct('executed')
         @wait = true
       elsif(msg == 'crash')
+        @wait = true
         send_direct(msg)
       elsif(msg == 'win')
         send_direct(msg)
