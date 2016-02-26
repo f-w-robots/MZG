@@ -3,7 +3,7 @@ require_relative 'model'
 class Group < Model
   def self.init db
     @db = db
-    @table = :games
+    @table = :groups
   end
 
   def self.attributes

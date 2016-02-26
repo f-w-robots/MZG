@@ -8,6 +8,11 @@ export default Ember.Controller.extend({
 
     startGame: function() {
       Ember.$.post(location.protocol + '//' + location.hostname + ':' + '2500' + '/group/up/g')
-    }
+    },
+
+    deleteRecord: function(record) {
+      record.deleteRecord();
+      record.save();
+    },
   }
 });

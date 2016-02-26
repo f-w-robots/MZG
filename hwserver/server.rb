@@ -32,36 +32,73 @@ get '/group/info/:name' do |name|
 end
 
 class Group
-  def initialize hwsockets
+  def initialize hwsockets, record
     @hwsockets = hwsockets
+    @record = record
+
+    @rounds = record[:options][:rounds].to_i
+    @timeout = record[:options][:timeoutM].to_i * 60 + record[:options][:timeoutS].to_i
 
     @options = {}
     @options[:commands] = {}
     @options[:info] = {}
+
+    @messages = {}
   end
 
   def start
     @thread = Thread.new do
-      theend = Time.now + 15
-      @accept = true
-      loop do
-        sleep 0.001
-        @options[:info][:timout] = theend - Time.now
-        if theend < Time.now
-          @accept = false
-          @options[:commands].keys.each do |key|
-            @options[:commands][key].each do |command|
-              @hwsockets[key].direct_on_message command
+      for round in 1..@rounds
+        theend = Time.now + @timeout
+        allow_accept
+        loop do
+          sleep 0.001
+          @options[:info][:timout] = theend - Time.now
+          if theend < Time.now
+            allow_accept(false)
+            @options[:commands].keys.each do |key|
+              @options[:commands][key].each do |command|
+                @hwsockets[key].direct_on_message command
+                @messages[key] ||= 0
+                @messages[key] += 1
+              end
+            end
+
+            # Wait responses
+            while true
+              puts @messages
+              count = 0
+              @messages.each do |k, v|
+                count += v
+              end
+              break if count <= 0
+              sleep 1
+            end
+
+            allow_accept
+
+            if round >= @rounds
+              finish
+              destroy
             end
           end
-          destroy
         end
       end
     end
   end
 
+  def allow_accept yes = true
+    @options[:info][:accept] = yes
+  end
+
+  def accept?
+    @options[:info][:accept]
+  end
+
   def on_message hwid, msg
-    if @accept
+    puts 'income ' + hwid
+    if accept?
+      puts 'accept ' + hwid
       @options[:commands][hwid] ||= []
       @options[:commands][hwid] << msg
     end
@@ -79,14 +116,38 @@ class Group
     @options[:info][:score] ||= {}
     @options[:info][:score][hwid] ||= 0
     @options[:info][:score][hwid] += 1
+    clear_stack hwid, msg
+  end
+
+  private
+  def clear_stack hwid, msg
+    if @messages[hwid]
+      if msg == 'crash' || msg == 'win'
+        @messages[hwid] = 0
+      else
+        @messages[hwid] -= 1
+      end
+    end
+  end
+
+  def finish
+    max = -1
+    @options[:info][:score].each do |k,v|
+      if v > max
+        @options[:info][:winner] = k
+        max = v
+      end
+    end
   end
 end
 
 post '/group/up/:name' do |name|
   response.headers['Access-Control-Allow-Origin'] = '*'
-  record = settings.db[:games].find(name: name).first
+  record = settings.db[:groups].find(name: name).first
   # create class from db
-  group = Group.new(settings.hwsockets)
+  group = settings.groups[name]
+  group.destroy if group
+  group = Group.new(settings.hwsockets, record)
   if !settings.groups[name]
     settings.groups[name] = group
   else
