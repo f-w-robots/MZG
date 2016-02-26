@@ -4,7 +4,7 @@
     @record = record
 
     @rounds = record[:options][:rounds].to_i
-    @timeout = record[:options][:timeoutM].to_i * 60 + record[:options][:timeoutS].to_i
+    @timeout = record[:options][:timeout].to_i
 
     @options = {}
     @options[:commands] = {}
@@ -109,6 +109,7 @@
 
   def finish
     max = -1
+    return if !@options[:info][:score]
     @options[:info][:score].each do |k,v|
       if v > max
         @options[:info][:winner] = k
