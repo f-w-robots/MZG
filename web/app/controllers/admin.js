@@ -6,8 +6,8 @@ export default Ember.Controller.extend({
       this.get('model').save();
     },
 
-    startGame: function() {
-      Ember.$.post(location.protocol + '//' + location.hostname + ':' + '2500' + '/group/up/g')
+    runGroup: function() {
+      Ember.$.post(location.protocol + '//' + location.hostname + ':' + '2500' + '/group/up/' + this.get('model.name'))
     },
 
     deleteRecord: function(record) {
