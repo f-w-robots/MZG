@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'mongo'
+require 'byebug'
 
 get '/:id' do |id|
   record = settings.db[:devices].find({hwid: id}).first
@@ -8,8 +9,8 @@ get '/:id' do |id|
     .find(:'interface-id' => record['interface-id']).first['interface']
 
   @iframe = interface
-  if(@iframe.start_with?('file:'))
-    @iframe = open(@iframe.gsub('file:','').strip).read
+  if(@iframe.start_with?('#file:'))
+    @iframe = open(@iframe.gsub('#file:','').strip).read
   end
   @deviceId = id
   erb :iframe
