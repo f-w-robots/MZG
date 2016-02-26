@@ -33,8 +33,12 @@ end
 
 def run_group record
   class_name = "Group#{record['id'].to_s}"
+  code = record[:code]
+  if code.start_with?('#file:')
+    code = open(code.gsub('#file:','').strip).read
+  end
   eval "class #{class_name}
-    #{record[:code]}
+    #{code}
   end"
   Kernel.const_get(class_name).new(settings.hwsockets, record)
 end
