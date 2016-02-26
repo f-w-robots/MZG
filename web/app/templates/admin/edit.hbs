@@ -13,14 +13,15 @@
     </div>
     <div class="row">
       <div class="form-group col-md-3">
-        Rounds: {{input value=model.options.rounds class="form-control"}}
+        Fields: {{input value=model.fields class="form-control"}}
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-md-4">
-        Timeout: {{input value=model.options.timeoutM class="form-control"}}m {{input value=model.options.timeoutS class="form-control"}}s
-      </div>
+      {{#each fields as |field|}}
+        {{option-field model=model field=field}}
+      {{/each}}
     </div>
+
 
     {{#textarea value=model.code cols="80" rows="20" class="form-control"}}{{/textarea}}
 

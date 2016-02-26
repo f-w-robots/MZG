@@ -11,6 +11,7 @@ class Group < Model
       :options,
       :code,
       :name,
+      :fields,
     ]
   end
 
