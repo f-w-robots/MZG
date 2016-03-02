@@ -94,9 +94,16 @@ def attach_to_group socket, group_name
 end
 
 get '/:hwid' do |hwid|
+  puts "***** request from device #{hwid}"
   return '' if !request.websocket?
   record = settings.db[:devices].find(hwid: hwid).first
   return '' if !record
+
+  puts "accept request from device #{hwid}"
+  if settings.hwsockets[hwid]
+    puts "close old connection #{hwid}"
+    settings.hwsockets[hwid].close
+  end
 
   if record['manual']
     backend = ManualBackend.new hwid, settings.swsockets
@@ -139,3 +146,5 @@ set :groups, {}
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :port, ENV['HWSERVER_PORT']
 set :bind, '0.0.0.0'
+
+Mongo::Logger.logger.level = ::Logger::FATAL

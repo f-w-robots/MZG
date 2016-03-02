@@ -80,6 +80,9 @@
     end
   end
 
+  def on_close hwid
+  end
+
   def destroy
     @thread.terminate
   end

@@ -24,7 +24,7 @@
 
     socket.onmessage = function(event) {
       messageStack.push(event.data);
-      $(".inputLog").append(event.data + "<br>");
+      $(".inputLog").prepend(event.data + "<br>");
     };
 
     socket.onerror = function(error) {

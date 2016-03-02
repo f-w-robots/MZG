@@ -48,8 +48,12 @@ class DeviceWebSocket
 
   def destroy
     @thread.terminate
+    @ws.close_websocket
     @sockets.delete @hwid
   end
+
+  alias :close :destroy
+
 end
 
 class DeviceWebSocketForGroup
