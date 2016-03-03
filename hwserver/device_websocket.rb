@@ -31,7 +31,7 @@ class DeviceWebSocket
         @backend.on_open(ws)
       end
       ws.onmessage do |msg|
-        puts "message #{msg} from #{@hwid}"
+        # puts "message #{msg} from #{@hwid}"
         @backend.on_message msg
       end
       ws.onclose do
