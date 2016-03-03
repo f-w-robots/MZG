@@ -113,7 +113,11 @@ get '/:hwid' do |hwid|
       puts "Device hasn't algorithm"
       return ''
     end
-    backend = AlgorithmBackend.new algorithm['algorithm']
+    algorithm = algorithm['algorithm']
+    if algorithm.start_with?('#file:')
+      algorithm = open(algorithm.gsub('#file:','').strip).read
+    end
+    backend = AlgorithmBackend.new algorithm
   end
 
   if !record['group'].nil? && !record['group'].empty?
