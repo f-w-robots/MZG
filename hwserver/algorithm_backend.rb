@@ -5,7 +5,9 @@ class AlgorithmBackend
   end
 
   def on_open socket
-    eval "#{@algorithm}"
+    @thread = Thread.new do
+      eval "#{@algorithm}"
+    end
   end
 
   def on_message msg
@@ -13,6 +15,7 @@ class AlgorithmBackend
   end
 
   def on_close
+    @thread.terminate
   end
 
   def getSendMessagePermission!

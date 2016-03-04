@@ -30,10 +30,12 @@ class DeviceWebSocket
         puts "connected with id: #{@hwid}"
         @backend.on_open(ws)
       end
+
       ws.onmessage do |msg|
         # puts "message #{msg} from #{@hwid}"
         @backend.on_message msg
       end
+
       ws.onclose do
         puts "disconnected with id: #{@hwid}"
         destroy
@@ -48,7 +50,7 @@ class DeviceWebSocket
 
   def destroy
     @thread.terminate
-    @ws.close_websocket
+    @ws.close_connection
     @sockets.delete @hwid
   end
 
