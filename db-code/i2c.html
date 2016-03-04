@@ -1,0 +1,11 @@
+Package:<input id="package" name="package" value="0"><br>
+<button id="send">Send</button><br>
+input log:
+<div class="inputLog">
+</div>
+
+<script type="text/javascript">
+    $("#send").click(function() {
+      socket.send($('#package').val());
+    });
+</script>
