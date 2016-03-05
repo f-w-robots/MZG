@@ -1,3 +1,9 @@
+<button id="start">start</button><br>
+<button id="left">left</button><br>
+<button id="right">right</button><br>
+<button id="stop">stop</button><br>
+
+
 Package:<input id="package" name="package" value="0"><br>
 <button id="send">Send</button><br>
 input log:
@@ -7,5 +13,17 @@ input log:
 <script type="text/javascript">
     $("#send").click(function() {
       socket.send($('#package').val());
+    });
+    $("#start").click(function() {
+      socket.send('18!1"0#0$1');
+    });
+    $("#stop").click(function() {
+      socket.send('18!0"0#0$0');
+    });
+    $("#left").click(function() {
+      socket.send('18!0"1#0$1');
+    });
+    $("#right").click(function() {
+      socket.send('18!1"0#1$0');
     });
 </script>
