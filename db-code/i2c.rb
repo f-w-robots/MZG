@@ -1,78 +1,62 @@
-puts "Start script"
-send_time = Time.now
-socket.send('04INIT18!1"0#0$1')
-msg = false
-sens = nil
+@answer = []
+# 'r', 'l', 'rr', 'll', 'c', 'f'
+def sensorRaw s
+  if s == 'rr'
+    sensorsValues[4]
+  elsif s == 'll'
+    sensorsValues[0]
+  elsif s == 'r'
+    sensorsValues[3]
+  elsif s == 'l'
+    sensorsValues[1]
+  elsif s == 'c'
+    sensorsValues[2]
+  elsif s == 'f'
+    sensorsValues[5]
+  end
+end
 
-hwtime = -1
-delay = -1
+def sensor s
+  sensorRaw(s) >= 4
+end
 
-right = false
-right2 = false
+def stop
+  @answer.push '18!0"0#0$0'
+end
 
-stepx = false
+def start
+  @answer.push '18!1"0#0$1'
+end
 
+def right
+  @answer.push '18!1"0#1$0'
+end
 
-xflag1 = false
-xflag2 = false
+def left
+  @answer.push '18!0"1#0$1'
+end
+
+puts "Start script with #{@hwid}"
+
+socket.send('04INIT')
+socket.send('18!1"0#0$1')
 
 loop do
   while msg_empty?
     sleep 0.000001
   end
 
-  if msg
-    hwtime = shift_msg.to_i/1000.0
+  sensorsValues = shift_msg
+
+  # if sensor('rr') && sensor('ll')
+  #   stop
+  # end
+  start
+
+  if @answer.size != 1
+    raise("end loop, @answers count #{@answer.size}")
   else
-    sens = shift_msg
-    # puts "MSG #{shift_msg}"
-    delay = Time.now - send_time
-    msg = true
-    next
-  end
-
-  if msg
-    # puts "Total: #{delay*1000}ms"
-    # puts "ON HARDWARE: #{hwtime}ms"
-    msg = false
-    send_time = Time.now
-
-    puts "#{sens[0]}    #{sens[4]}"
-    if right
-      socket.send('18!1"0#1$0');
-      if right2
-        if sens[0].to_i <= 2
-          flag1 = true
-        end
-        if sens[4].to_i <= 2
-          flag2 = true
-        end
-        if flag1 && flag2
-          right = false;
-          stepx = true
-          right2 = false
-          puts "X"*20
-          socket.send('18!0"0#0$0')
-        end
-      else
-        if sens[0].to_i >= 4 && sens[4].to_i >= 4
-          right2 = true
-          puts 'RRR' * 100
-        end
-      end
-    else
-      puts "F"*10
-      if sens[0].to_i <= 2 && sens[4].to_i <= 2 && !stepx
-        socket.send('18!0"0#0$0')
-        right = true
-      else
-        socket.send('18!1"0#0$1')
-      end
-      if stepx
-        if sens[0].to_i >= 4 && sens[4].to_i >= 4
-          stepx = false
-        end
-      end
-    end
+    puts sensorsValues
+    socket.send(@answer.shift)
   end
 end
