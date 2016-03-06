@@ -1,4 +1,3 @@
-@answer = []
 # 'r', 'l', 'rr', 'll', 'c', 'f'
 def sensorRaw s
   (if s == 'rr'
@@ -36,17 +35,50 @@ def left
   @answer.push '18!0"1#0$1'
 end
 
-puts "Start script with #{@hwid}"
+def current_step
+  @steps[@steapNumebr]
+end
 
+def next_step
+  @steapNumebr += 1
+end
+
+def move_forward
+  if sensor('rr') && sensor('ll')
+    stop
+    next_step
+  else
+    start
+  end
+end
+
+def move_right
+  if @r1
+    if sensor('rr') && sensor('ll')
+      stop
+      next_step
+    else
+      right
+    end
+  else
+    if !sensor('rr') && !sensor('ll')
+      @r1 = true
+    end
+    right
+  end
+end
+
+def move_stop
+  stop
+end
+
+
+puts "Start script with #{@hwid}"
 socket.send('04INIT')
 socket.send('18!0"0#0$0')
 
-@steps = ['f', 'r']
-
-def current_step
-  @steaps[@steapNumebr]
-end
-
+@answer = []
+@steps = ['forward', 'right', 'stop']
 @steapNumebr = 0
 
 loop do
@@ -60,19 +92,12 @@ loop do
   puts '-'*10
   @sensorsValues = a
 
-  if current_step == 'f'
-    if sensor('rr') && sensor('ll')
-      stop
-      @steapNumebr ++
-    else
-      start
-    end
-  end
+  puts current_step
+  send(:"move_#{current_step}")
 
   if @answer.size != 1
     raise("end loop, @answers count #{@answer.size}")
   else
-    # puts @sensorsValues
     socket.send(@answer.shift)
   end
 end
