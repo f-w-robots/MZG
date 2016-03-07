@@ -12,6 +12,10 @@ class Sensors
     end
   end
 
+  def value s
+    sensorRaw(s) <= OneZeroDeliver
+  end
+
   # 'r', 'l', 'rr', 'll', 'c', 'f'
   def sensorRaw s
     (if s == 'rr'
@@ -27,10 +31,6 @@ class Sensors
     elsif s == 'f'
       @values[5]
     end).to_i
-  end
-
-  def value s
-    sensorRaw(s) <= OneZeroDeliver
   end
 end
 
@@ -66,15 +66,9 @@ class Answer
   end
 end
 
-def wait_message
-  while msg_empty?
-    sleep 0.000001
-  end
-end
-
-@next_step_after_skip = false
-
 class Mover
+  TURN_SENSORS = {'right' => 'rr', 'left' => 'll'}
+
   def initialize sensor, answer, commands
     @sensor = sensor
     @answer = answer
@@ -92,26 +86,27 @@ class Mover
       @skip_timeout = nil if @skip_timeout == 0
     else
       puts command
-      send(:"move_#{command}")
+      send(command)
     end
   end
 
+  private
   def skip_timeout delay, action
     @skip_timeout = delay
     @skip_timeout_action = action
   end
 
-  def move_forward
-    if @forward_mode1
-      if (!sensor.value('rr') && !sensor('ll'))
+  def forward
+    if @forward_mode_1
+      if (!sensor('rr') && !sensor('ll'))
         @commands.next
       end
       @answer.start
+      return
     end
     if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l'))
-      @forward_mode1 = true
+      @forward_mode_1 = true
       @answer.start
-      @commands.next
       return
     end
     if sensor('r')
@@ -125,19 +120,39 @@ class Mover
     @answer.start
   end
 
-  def move_left
-    move_turn 'left'
+  def left
+    turn 'left'
   end
 
-  def move_right
-    move_turn 'right'
+  def right
+    turn 'right'
   end
 
-  def move_stop
+  def turn direction
+    if @turn_mode_2
+      if sensor(TURN_SENSORS[direction])
+
+        @commands.next
+      end
+      @answer.send(direction)
+    elsif @turn_mode_1
+      if !sensor(TURN_SENSORS[direction])
+        @turn_mode_2 = true
+      end
+      @answer.send(direction)
+    else
+      @answer.send(direction)
+      if sensor(TURN_SENSORS[direction])
+        @turn_mode_1 = true
+      end
+    end
+  end
+
+  def stop
     @answer.stop
   end
 
-  def move_search
+  def search
     if @search_mode_1a
       if sensor('f') && !sensor('l') && !sensor('r')
         @commands.next
@@ -163,55 +178,32 @@ class Mover
     end
     @answer.start
   end
-
-  private
-  def move_turn direction
-    if @r1
-      if sensor('rr')
-        @r1a = true
-      end
-      if sensor('ll')
-        @r1b = true
-      end
-      if @r1a && @r1b
-        # skip_timeout 20, ->{ @answer.send(direction) }
-        @commands.next
-      end
-      @answer.send(direction)
-    else
-      if !sensor('rr') && !sensor('ll')
-        @r1 = true
-      end
-      @answer.send(direction)
-    end
-  end
 end
 
 class Commands
-  def initialize
-    @steps = ['forward', 'right', 'stop']
-    @stepNumebr = 0
+  def initialize list
+    @list = list
+    @i = 0
   end
 
   def next
-    @stepNumebr += 1
+    @i += 1
   end
 
   def current
-    @steps[@stepNumebr]
+    @list[@i]
   end
 end
 
-def stop!
-  @steps = ['stop']
-  @steapNumebr = 0
-  @exit = true
-  puts 'STOP___'*10
+def wait_message
+  while msg_empty?
+    sleep 0.000001
+  end
 end
 
 @answer = Answer.new
 @sensors = Sensors.new
-@commands = Commands.new
+@commands = Commands.new ['forward', 'left', 'stop']
 @mover = Mover.new @sensors, @answer, @commands
 
 puts "Start script with #{@hwid}"
@@ -226,8 +218,4 @@ loop do
   @mover.move @commands.current
 
   socket.send(@answer.get)
-
-  if @exit
-    break
-  end
 end
