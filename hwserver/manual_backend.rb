@@ -24,8 +24,7 @@ class ManualBackend
         send_direct(msg)
       end
     else
-      swsocket = get_swsocket
-      swsocket.send(msg) if swsocket
+      send_direct(msg)
     end
   end
 

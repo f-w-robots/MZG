@@ -93,6 +93,41 @@ def attach_to_group socket, group_name
   return DeviceWebSocketForGroup.new socket, group, group_name
 end
 
+class ProxyBackend
+  def initialize backend, processor
+    @backend = backend
+    # @processor = processor.new self
+  end
+
+  def on_open socket
+    @backend.on_open socket
+  end
+
+  def on_message msg
+    @backend.on_message msg
+  end
+
+  def on_close
+    @backend.on_close
+  end
+
+  def getSendMessagePermission!
+    @backend.getSendMessagePermission!
+  end
+
+  def send_direct msg
+    @backend.send_direct msg
+  end
+end
+
+def get_proxy_class record
+  hwid = record['hwid']
+  algorithm_record = settings.db[:algorithms].find(:'algorithm-id' => record['proxy-id']).first
+  return nil if !algorithm_record
+  algorithm = algorithm_record['algorithm']
+  eval algorithm
+end
+
 get '/:hwid' do |hwid|
   puts "***** request from device #{hwid}"
   return '' if !request.websocket?
@@ -106,7 +141,11 @@ get '/:hwid' do |hwid|
   end
 
   if record['manual']
-    backend = ManualBackend.new hwid, settings.swsockets
+    if record['use-proxy']
+      backend = ProxyBackend.new(ManualBackend.new(hwid, settings.swsockets), nil)
+    else
+      backend = ManualBackend.new hwid, settings.swsockets
+    end
   else
     algorithm = settings.db[:algorithms].find(:'algorithm-id' => record['algorithm-id']).first
     if !algorithm
