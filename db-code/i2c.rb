@@ -85,6 +85,22 @@ class Mover
     @sensor.value value
   end
 
+  def move command
+    if(@skip_timeout)
+      @skip_timeout -= 1
+      @skip_timeout_action.call
+      @skip_timeout = nil if @skip_timeout == 0
+    else
+      puts command
+      send(:"move_#{command}")
+    end
+  end
+
+  def skip_timeout delay, action
+    @skip_timeout = delay
+    @skip_timeout_action = action
+  end
+
   def move_forward
     if @forward_mode1
       if (!sensor.value('rr') && !sensor('ll'))
@@ -131,7 +147,7 @@ class Mover
     end
     if @search_mode_1
       if sensor('c')
-        skip_timeout 20, ->{start}
+        skip_timeout 20, ->{ @answer.start}
         @answer.start
         @search_mode_1a = true
       else
@@ -158,12 +174,10 @@ class Mover
         @r1b = true
       end
       if @r1a && @r1b
-        skip_timeout 120, ->{send(direction)}
-        @answer.left
+        # skip_timeout 20, ->{ @answer.send(direction) }
         @commands.next
-      else
-        @answer.send(direction)
       end
+      @answer.send(direction)
     else
       if !sensor('rr') && !sensor('ll')
         @r1 = true
@@ -188,11 +202,6 @@ class Commands
   end
 end
 
-def skip_timeout delay, action
-  @skip_timeout = delay
-  @skip_timeout_action = action
-end
-
 def stop!
   @steps = ['stop']
   @steapNumebr = 0
@@ -214,14 +223,7 @@ loop do
 
   @sensors.update shift_msg, true
 
-  if(@skip_timeout)
-    @skip_timeout -= 1
-    @skip_timeout_action.call
-    @skip_timeout = nil if @skip_timeout == 0
-  else
-    puts @commands.current
-    @mover.send(:"move_#{@commands.current}")
-  end
+  @mover.move @commands.current
 
   socket.send(@answer.get)
 
