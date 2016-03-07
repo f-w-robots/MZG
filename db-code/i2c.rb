@@ -110,7 +110,6 @@ class Mover
       return
     end
     if (!sensor('rr') && !sensor('ll')) && @step_mode != 1
-      puts 'MODE0   '*30
       @step_mode = 1
     end
     if sensor('r')
@@ -176,7 +175,6 @@ class Mover
     end
     if sensor('f')
       @answer.start
-      puts 'SSSxxx' * 100
       @step_mode = 1
       return
     end
