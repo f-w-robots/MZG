@@ -156,29 +156,33 @@ class Mover
   end
 
   def search
+    if !@turn_to
+      if sensor('ll')
+        @turn_to = :right
+      end
+      if sensor('rr')
+        @turn_to = :left
+      end
+    end
     if @step_mode == 2
       if sensor('f') && !sensor('l') && !sensor('r')
         finish_command
       end
-      @answer.left
+      @answer.send(@turn_to || :left)
       return
     end
     if @step_mode == 1
       if sensor('c')
         skip_timeout 20, ->{ @answer.start}
-        @answer.start
         @step_mode = 2
-      else
-        @answer.start
       end
-      return
-    end
-    if sensor('f')
+      @answer.start
+    elsif sensor('f')
       @answer.start
       @step_mode = 1
-      return
+    else
+      @answer.start
     end
-    @answer.start
   end
 
   def finish_command
@@ -210,7 +214,7 @@ end
 
 @answer = Answer.new
 @sensors = Sensors.new
-@commands = Commands.new ['forward', 'right', 'forward', 'left', 'stop']
+@commands = Commands.new ['search', 'forward', 'stop']
 @mover = Mover.new @sensors, @answer, @commands
 
 puts "Start script with #{@hwid}"
