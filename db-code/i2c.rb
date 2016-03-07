@@ -97,21 +97,21 @@ class Mover
   end
 
   def forward
-    if @forward_mode_1
+    if @step_mode == 2
       if (!sensor('rr') && !sensor('ll'))
         finish_command
       end
       @answer.start
       return
     end
-    if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l')) && @forward_mode_0
-      @forward_mode_1 = true
+    if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l')) && @step_mode == 1
+      @step_mode = 2
       @answer.start
       return
     end
-    if (!sensor('rr') && !sensor('ll')) && !@forward_mode_0
+    if (!sensor('rr') && !sensor('ll')) && @step_mode != 1
       puts 'MODE0   '*30
-      @forward_mode_0 = true
+      @step_mode = 1
     end
     if sensor('r')
       @answer.right
@@ -133,21 +133,21 @@ class Mover
   end
 
   def turn direction
-    if @turn_mode_2
+    if @step_mode == 2
       if sensor(TURN_SENSORS[direction])
 
         finish_command
       end
       @answer.send(direction)
-    elsif @turn_mode_1
+    elsif @step_mode == 1
       if !sensor(TURN_SENSORS[direction])
-        @turn_mode_2 = true
+        @step_mode = 2
       end
       @answer.send(direction)
     else
       @answer.send(direction)
       if sensor(TURN_SENSORS[direction])
-        @turn_mode_1 = true
+        @step_mode = 1
       end
     end
   end
@@ -157,18 +157,18 @@ class Mover
   end
 
   def search
-    if @search_mode_1a
+    if @step_mode == 2
       if sensor('f') && !sensor('l') && !sensor('r')
         finish_command
       end
       @answer.left
       return
     end
-    if @search_mode_1
+    if @step_mode == 1
       if sensor('c')
         skip_timeout 20, ->{ @answer.start}
         @answer.start
-        @search_mode_1a = true
+        @step_mode = 2
       else
         @answer.start
       end
@@ -177,17 +177,14 @@ class Mover
     if sensor('f')
       @answer.start
       puts 'SSSxxx' * 100
-      @search_mode_1 = true
+      @step_mode = 1
       return
     end
     @answer.start
   end
 
   def finish_command
-    @forward_mode_1 = nil
-    @forward_mode_0 = nil
-    @turn_mode_1 = nil
-    @turn_mode_2 = nil
+    @step_mode = nil
     @commands.next
   end
 end
