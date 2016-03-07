@@ -99,22 +99,26 @@ class Mover
   def forward
     if @forward_mode_1
       if (!sensor('rr') && !sensor('ll'))
-        @commands.next
+        finish_command
       end
       @answer.start
       return
     end
-    if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l'))
+    if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l')) && @forward_mode_0
       @forward_mode_1 = true
       @answer.start
       return
     end
+    if (!sensor('rr') && !sensor('ll')) && !@forward_mode_0
+      puts 'MODE0   '*30
+      @forward_mode_0 = true
+    end
     if sensor('r')
-      @answer.start
+      @answer.right
       return
     end
     if sensor('l')
-      @answer.start
+      @answer.left
       return
     end
     @answer.start
@@ -132,7 +136,7 @@ class Mover
     if @turn_mode_2
       if sensor(TURN_SENSORS[direction])
 
-        @commands.next
+        finish_command
       end
       @answer.send(direction)
     elsif @turn_mode_1
@@ -155,7 +159,7 @@ class Mover
   def search
     if @search_mode_1a
       if sensor('f') && !sensor('l') && !sensor('r')
-        @commands.next
+        finish_command
       end
       @answer.left
       return
@@ -177,6 +181,14 @@ class Mover
       return
     end
     @answer.start
+  end
+
+  def finish_command
+    @forward_mode_1 = nil
+    @forward_mode_0 = nil
+    @turn_mode_1 = nil
+    @turn_mode_2 = nil
+    @commands.next
   end
 end
 
@@ -203,7 +215,7 @@ end
 
 @answer = Answer.new
 @sensors = Sensors.new
-@commands = Commands.new ['forward', 'left', 'stop']
+@commands = Commands.new ['forward', 'right', 'forward', 'left', 'stop']
 @mover = Mover.new @sensors, @answer, @commands
 
 puts "Start script with #{@hwid}"
