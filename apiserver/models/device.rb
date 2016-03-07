@@ -14,6 +14,8 @@ class Device < Model
       :'interface-id',
       :icon,
       :group,
+      :'use-proxy',
+      :'proxy-id',
     ]
   end
 

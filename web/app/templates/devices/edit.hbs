@@ -17,7 +17,6 @@
         </label>
       </div>
     </div>
-    <br>
     <div class="row">
       <div class="col-md-3">
         {{#if model.manual}}
@@ -32,6 +31,21 @@
     <br>
     {{image-input imageWidth=100 file=model.icon}}
     <br>
+    <div class="row">
+      <div class="checkbox form-group">
+        <label>
+          {{input type="checkbox" checked=model.useProxy}} Proxy
+        </label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        {{#if model.useProxy}}
+          Algorithm:
+          {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.proxyId}}
+        {{/if}}
+      </div>
+    </div>
     <div class="row">
       <div class="form-group col-md-3">
         <div class="btn btn-default" {{action "saveRecord"}}>Save</div>

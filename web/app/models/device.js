@@ -7,4 +7,6 @@ export default DS.Model.extend({
   algorithmId: DS.attr('string'),
   interfaceId: DS.attr('string'),
   icon: DS.attr(),
+  useProxy: DS.attr('boolean'),
+  proxyId: DS.attr('string'),
 });
