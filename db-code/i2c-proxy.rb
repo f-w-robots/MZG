@@ -86,7 +86,7 @@
         @skip_timeout_action.call
         @skip_timeout = nil if @skip_timeout == 0
       else
-        puts command
+        puts "command, step_mode: #{@step_mode}"
         send(command)
       end
     end
@@ -101,8 +101,9 @@
       if @step_mode == 2
         if (!sensor('rr') && !sensor('ll'))
           finish_command
+        else
+          @answer.start
         end
-        @answer.start
         return
       end
       if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l')) && @step_mode == 1
@@ -135,10 +136,10 @@
     def turn direction
       if @step_mode == 2
         if sensor(TURN_SENSORS[direction])
-
           finish_command
+        else
+          @answer.send(direction)
         end
-        @answer.send(direction)
       elsif @step_mode == 1
         if !sensor(TURN_SENSORS[direction])
           @step_mode = 2
@@ -188,6 +189,7 @@
 
     def finish_command
       @step_mode = nil
+      @answer.stop
       @commands.finish
     end
   end
@@ -201,29 +203,29 @@
       @mover = Mover.new @sensors, @answer, self
 
       @device.out_msg_left('04INIT')
+      @device.out_msg_left('18!0"0#0$0')
 
       @messages = []
+
     end
 
-    def stop_command!
-      @device.out_msg_left('18!0"0#0$0')
-    end
+    # def stop_command!
+    #   @device.out_msg_left('18!0"0#0$0')
+    # end
 
     def finish
-      @finish = true
+      @command = nil
+    end
+
+    def finish?
+      !@command
     end
 
     def command cmd
       @command = cmd
 
-      stop_command!
-
       @thread = Thread.new do
         loop do
-          if @finish
-            stop_command!
-            break
-          end
           wait_message
 
           @sensors.update shift_msg, true
@@ -231,6 +233,10 @@
           @mover.move current_command
 
           @device.out_msg_left(@answer.get)
+
+          if finish?
+            break
+          end
         end
       end
     end

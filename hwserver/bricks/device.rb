@@ -18,7 +18,6 @@ class Device < Brick
       end
 
       ws.onmessage do |msg|
-        puts "message #{msg} from #{@hwid}"
         out_msg_right(msg)
       end
 

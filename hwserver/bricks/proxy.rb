@@ -13,7 +13,9 @@ class Proxy < Brick
   end
 
   def in_msg_right msg, hwid
-    @driver.command msg
+    if @driver.finish?
+      @driver.command msg
+    end
   end
 
   def callback_left callback, hwid
