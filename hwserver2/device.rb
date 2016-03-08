@@ -10,28 +10,44 @@ class Device
     end
   end
 
+  def hwid
+    @hwid
+  end
+
   def start request
     request.websocket do |ws|
       @ws = ws
 
       ws.onopen do
         puts "connected with id: #{@hwid}"
-        @backend.on_open(ws)
+        on_open
       end
 
       ws.onmessage do |msg|
         puts "message #{msg} from #{@hwid}"
-        @backend.on_message(msg)
+        message_from_device(msg)
       end
 
       ws.onclose do
         puts "disconnected with id: #{@hwid}"
-        @backend.on_close
+        on_close
       end
     end
   end
 
-  def message msg
+  def on_open
+    @backend.on_open(@ws)
+  end
+
+  def message_from_device msg
+    @backend.on_message(msg)
+  end
+
+  def on_close
+    @backend.on_close
+  end
+
+  def message_to_device msg
     @ws.send(msg)
   end
 

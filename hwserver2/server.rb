@@ -11,18 +11,44 @@ require 'sinatra'
 require 'sinatra-websocket'
 require 'mongo'
 
-module DB end
+require_relative 'db/db.rb'
 require_relative 'db/device.rb'
+require_relative 'db/group.rb'
 
 require_relative 'backends/algorithm.rb'
 require_relative 'backends/control.rb'
 
 require_relative 'device.rb'
+require_relative 'device_for_group.rb'
 require_relative 'control.rb'
 
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
-  {keys: settings.devices.keys}.to_json
+  {keys: settings.devices.map{|k,v|v.manual? ? k : nil}.reject{|v|!v}}.to_json
+end
+
+get '/group/info/:name' do |name|
+  response.headers['Access-Control-Allow-Origin'] = '*'
+  group = settings.groups[name]
+  if !group
+    status 404
+  else
+    group.options[:info].to_s
+  end
+end
+
+post '/group/up/:name' do |name|
+  response.headers['Access-Control-Allow-Origin'] = '*'
+  group_db = DB::Group.new name, settings.db
+
+  group = group_db.class_const.new group_db
+
+  if settings.groups[name]
+    settings.groups[name].destroy
+  end
+  settings.groups[name] = group
+
+  group.start
 end
 
 get '/control/:hwid' do |hwid|
@@ -34,15 +60,22 @@ get '/control/:hwid' do |hwid|
 end
 
 get '/:hwid' do |hwid|
+  return if !request.websocket?
   puts "Connection from #{hwid}"
 
   if settings.devices[hwid]
     settings.devices[hwid].close
   end
 
-  db = DB::Device.new(hwid, settings.db)
+  device_record = DB::Device.new(hwid, settings.db)
 
-  device = Device.new hwid, db
+  if device_record.group?
+    group = settings.groups[device_record.group]
+    return 'runned group not found' if !group
+    device = DeviceForGroup.new hwid, device_record, group
+  else
+    device = Device.new hwid, device_record
+  end
   response = device.start request
 
   settings.devices[hwid] = device

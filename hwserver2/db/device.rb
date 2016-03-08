@@ -1,37 +1,29 @@
-class DB::Device
+class DB::Device < DB
   def initialize hwid, db
     @db = db
     @hwid = hwid
-    @record = @db[:devices].find(hwid: hwid).first
+    @record = db[:devices].find(hwid: hwid).first
   end
 
   def algorithm
-    algorithm_record = @db[:algorithms].find(:'algorithm-id' => @record['algorithm-id']).first
-    if algorithm_record
-      algorithm = algorithm_record['algorithm']
-      if algorithm.start_with?('#file:')
-        algorithm = open(algorithm.gsub('#file:','').strip).read
-      end
-      algorithm
-    else
-      nil
-    end
+    record = @db[:algorithms].find(:'algorithm-id' => @record['algorithm-id']).first
+    content(record, 'algorithm') if record
   end
 
   def interface
-    algorithm_record = @db[:interfaces].find(:'interface-id' => @record['interface-id']).first
-    if algorithm_record
-      algorithm = algorithm_record['interface']
-      if algorithm.start_with?('#file:')
-        algorithm = open(algorithm.gsub('#file:','').strip).read
-      end
-      algorithm
-    else
-      nil
-    end
+    record = @db[:interfaces].find(:'interface-id' => @record['interface-id']).first
+    content(record, 'interface') if record
   end
 
   def manual?
     @record['manual']
+  end
+
+  def group
+    @record['group']
+  end
+
+  def group?
+    !(@record['group'].empty? || @record['group'] == nil)
   end
 end

@@ -1,10 +1,7 @@
 # class Group
-  def initialize hwsockets, record
-    @hwsockets = hwsockets
-    @record = record
-
-    @rounds = record[:options][:rounds].to_i
-    @timeout = record[:options][:timeout].to_i
+  def initialize record
+    @rounds = record.options[:rounds].to_i
+    @timeout = record.options[:timeout].to_i
 
     @options = {}
     @options[:commands] = {}
@@ -13,6 +10,12 @@
     @messages = {}
 
     @crashed = {}
+
+    @devices = {}
+  end
+
+  def name
+    record.name
   end
 
   def start
@@ -28,10 +31,10 @@
             @options[:commands].keys.each do |key|
               if @crashed[key]
                 @crashed[key] = false
-                @hwsockets[key].direct_on_message 'Srestore'
+                @devices[key].message_to_device 'Srestore'
               end
               @options[:commands][key].each do |command|
-                @hwsockets[key].direct_on_message command
+                @devices[key].message_to_device command
                 @messages[key] ||= 0
                 @messages[key] += 1
               end
@@ -63,6 +66,10 @@
     end
   end
 
+  def add device
+    @devices[device.hwid] = device
+  end
+
   def allow_accept yes = true
     @options[:info][:accept] = yes
   end
@@ -71,10 +78,8 @@
     @options[:info][:accept]
   end
 
-  def on_message hwid, msg
-    puts 'income ' + hwid
+  def message_from_backend hwid, msg
     if accept?
-      puts 'accept ' + hwid
       @options[:commands][hwid] ||= []
       @options[:commands][hwid] << msg
     end
@@ -96,6 +101,7 @@
     @options[:info][:score][hwid] ||= 0
     @options[:info][:score][hwid] += 1
     clear_stack hwid, msg
+    @devices[hwid].backend.on_message(msg)
   end
 
   private
