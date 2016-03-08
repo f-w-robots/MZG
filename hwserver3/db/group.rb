@@ -4,8 +4,7 @@ class DB::Group < DB
 
     class_name = "Group#{@record['_id'].to_s}"
     code = content(@record, 'code')
-
-    Object.const_set(class_name, Class.new { eval code })
+    Object.const_set(class_name, Class.new(::Group) { eval code })
 
     @const = Kernel.const_get(class_name)
   end

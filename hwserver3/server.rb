@@ -12,6 +12,7 @@ require 'sinatra-websocket'
 require 'mongo'
 
 require_relative 'bricks/bricks.rb'
+require_relative 'bricks/group.rb'
 require_relative 'bricks/brick.rb'
 require_relative 'bricks/control.rb'
 require_relative 'bricks/algorithm.rb'

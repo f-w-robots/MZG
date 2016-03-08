@@ -1,19 +1,14 @@
 # class Group
   def initialize record
+    super
     @rounds = record.options[:rounds].to_i
     @timeout = record.options[:timeout].to_i
 
-    @options = {}
     @options[:commands] = {}
     @options[:info] = {}
 
     @messages = {}
-
     @crashed = {}
-
-    @devices = {}
-
-    @interfaces = {}
   end
 
   def start
@@ -64,14 +59,6 @@
     end
   end
 
-  def callback_left callback, hwid
-    @devices[hwid] = callback
-  end
-
-  def callback_right callback, hwid
-    @interfaces[hwid] = callback
-  end
-
   def in_msg_left msg, hwid
     @options[:info][:score] ||= {}
     @options[:info][:score][hwid] ||= 0
@@ -85,22 +72,6 @@
       @options[:commands][hwid] ||= []
       @options[:commands][hwid] << msg
     end
-  end
-
-  def out_msg_left msg, hwid
-    @devices[hwid].in_msg_right(msg, hwid)
-  end
-
-  def out_msg_right msg, hwid
-    @interfaces[hwid].in_msg_left(msg, hwid)
-  end
-
-  def destroy
-    @thread.terminate
-  end
-
-  def options
-    @options
   end
 
   private
