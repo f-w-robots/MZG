@@ -36,14 +36,6 @@ class Device < Brick
     @ws.close_connection
   end
 
-  def manual?
-    @manual
-  end
-
-  def manual
-    @manual
-  end
-
   private
   def out_msg_right msg
     @callback_right.in_msg_left(msg, @hwid)

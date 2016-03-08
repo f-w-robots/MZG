@@ -41,7 +41,7 @@
 
     $('#commit').click(function(){
       $('.commandList div.wait').each(function(i,e){
-        commands = "S" + $(e).html();
+        commands = "" + $(e).html();
         console.log(commands);
         socket.send(commands);
       });

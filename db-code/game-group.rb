@@ -24,7 +24,7 @@
             @options[:commands].keys.each do |key|
               if @crashed[key]
                 @crashed[key] = false
-                out_msg_left 'Srestore', key
+                out_msg_left 'restore', key
               end
               @options[:commands][key].each do |command|
                 out_msg_left command, key
