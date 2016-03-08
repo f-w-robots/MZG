@@ -1,8 +1,7 @@
-class Device
-  def initialize hwid, record
+class Device < Brick
+  def initialize hwid, manual
     @hwid = hwid
-    @manual = record.manual?
-
+    @manual = manual
   end
 
   def hwid
@@ -20,7 +19,7 @@ class Device
 
       ws.onmessage do |msg|
         puts "message #{msg} from #{@hwid}"
-        message_from_device(msg)
+        out_msg(msg)
       end
 
       ws.onclose do
@@ -30,23 +29,11 @@ class Device
     end
   end
 
-  def on_open
-    @backend.on_open(@ws)
-  end
-
-  def message_from_device msg
-    @backend.on_message(msg)
-  end
-
-  def on_close
-    @backend.on_close
-  end
-
-  def message_to_device msg
+  def in_msg msg, hwid
     @ws.send(msg)
   end
 
-  def close
+  def destroy
     @ws.close_connection
   end
 
@@ -54,11 +41,20 @@ class Device
     @manual
   end
 
-  def backend
-    @backend
+  def manual
+    @manual
   end
 
-  def backend= backend
-    @backend = backend
+  private
+  def out_msg msg
+    @callback.in_msg(msg, @hwid)
+  end
+
+  def on_open
+
+  end
+
+  def on_close
+
   end
 end

@@ -14,7 +14,7 @@ control:
   env_file: .env
 hwserver:
   build: .
-  command: ruby hwserver2/server.rb
+  command: ruby hwserver3/server.rb
   ports:
     - "2500:2500"
   volumes:

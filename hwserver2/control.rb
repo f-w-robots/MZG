@@ -11,7 +11,7 @@ class Control
       end
 
       ws.onmessage do |msg|
-        @device.message msg
+        @device.message_to_device msg
       end
 
       ws.onclose do
