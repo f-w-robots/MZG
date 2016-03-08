@@ -7,12 +7,11 @@ class Algorithm < Brick
 
   def start request
     @thread = Thread.new do
-      puts 'empty0'
       eval @algorithm
     end
   end
 
-  def in_msg msg, hwid
+  def in_msg_left msg, hwid
     @unread_messages.push msg
   end
 
@@ -21,8 +20,8 @@ class Algorithm < Brick
   end
 
   private
-  def out_msg msg
-    @callback.in_msg(msg)
+  def out_msg_left msg
+    @callback_left.in_msg_right(msg, @hwid)
   end
 
   def on_open

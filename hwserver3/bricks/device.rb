@@ -19,7 +19,7 @@ class Device < Brick
 
       ws.onmessage do |msg|
         puts "message #{msg} from #{@hwid}"
-        out_msg(msg)
+        out_msg_right(msg)
       end
 
       ws.onclose do
@@ -29,7 +29,7 @@ class Device < Brick
     end
   end
 
-  def in_msg msg, hwid
+  def in_msg_right msg, hwid
     @ws.send(msg)
   end
 
@@ -46,8 +46,8 @@ class Device < Brick
   end
 
   private
-  def out_msg msg
-    @callback.in_msg(msg, @hwid)
+  def out_msg_right msg
+    @callback_right.in_msg_left(msg, @hwid)
   end
 
   def on_open

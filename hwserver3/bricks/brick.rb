@@ -7,16 +7,28 @@ class Brick
     raise('abstract')
   end
 
-  def callback callback, hwid
-    @callback = callback
+  def callback_right callback, hwid
+    @callback_right = callback
   end
 
-  def in_msg msg, hwid
+  def callback_left callback, hwid
+    @callback_left = callback
+  end
+
+  def in_msg_left msg, hwid
+    raise('abstract')
+  end
+
+  def in_msg_right msg, hwid
     raise('abstract')
   end
 
   private
-  def out_msg msg
+  def out_msg_right msg
+    raise('abstract')
+  end
+
+  def out_msg_left msg
     raise('abstract')
   end
 

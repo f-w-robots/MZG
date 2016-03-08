@@ -22,9 +22,13 @@ class Bricks
   end
 
   def connect
-    for i in 1..@list.length - 1
-      @list[i-1].callback @list[i], @hwid
-      @list[i].callback @list[i-1], @hwid
+    for i in 0..@list.length - 1
+      if i-1 >= 0
+        @list[i].callback_left(@list[i-1], @hwid)
+      end
+      if i+1 < @list.length
+        @list[i].callback_right(@list[i+1], @hwid)
+      end
     end
   end
 
