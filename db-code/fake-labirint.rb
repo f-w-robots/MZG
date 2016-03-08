@@ -1,7 +1,8 @@
 loop do
   while msg_empty?
-    sleep(0.1)
+    sleep(0.01)
   end
+
   msg = shift_msg
   result = if msg[3] == '2'
     'ls'
@@ -20,5 +21,5 @@ loop do
       'b'
     end
   end
-  socket.send(result)
+  out_msg_left(result)
 end

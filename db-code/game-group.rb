@@ -12,10 +12,8 @@
     @crashed = {}
 
     @devices = {}
-  end
 
-  def name
-    record.name
+    @interfaces = {}
   end
 
   def start
@@ -31,10 +29,10 @@
             @options[:commands].keys.each do |key|
               if @crashed[key]
                 @crashed[key] = false
-                @devices[key].message_to_device 'Srestore'
+                out_msg_left 'Srestore', key
               end
               @options[:commands][key].each do |command|
-                @devices[key].message_to_device command
+                out_msg_left command, key
                 @messages[key] ||= 0
                 @messages[key] += 1
               end
@@ -49,7 +47,7 @@
                 count += v
               end
               break if count <= 0
-              sleep 1
+              sleep 0.1
             end
 
             allow_accept
@@ -66,26 +64,35 @@
     end
   end
 
-  def add device
-    @devices[device.hwid] = device
+  def callback_left callback, hwid
+    @devices[hwid] = callback
   end
 
-  def allow_accept yes = true
-    @options[:info][:accept] = yes
+  def callback_right callback, hwid
+    @interfaces[hwid] = callback
   end
 
-  def accept?
-    @options[:info][:accept]
+  def in_msg_left msg, hwid
+    @options[:info][:score] ||= {}
+    @options[:info][:score][hwid] ||= 0
+    @options[:info][:score][hwid] += 1
+    clear_stack hwid, msg
+    out_msg_right(msg, hwid)
   end
 
-  def message_from_backend hwid, msg
+  def in_msg_right msg, hwid
     if accept?
       @options[:commands][hwid] ||= []
       @options[:commands][hwid] << msg
     end
   end
 
-  def on_close hwid
+  def out_msg_left msg, hwid
+    @devices[hwid].in_msg_right(msg, hwid)
+  end
+
+  def out_msg_right msg, hwid
+    @interfaces[hwid].in_msg_left(msg, hwid)
   end
 
   def destroy
@@ -96,15 +103,15 @@
     @options
   end
 
-  def message_from_device hwid, msg
-    @options[:info][:score] ||= {}
-    @options[:info][:score][hwid] ||= 0
-    @options[:info][:score][hwid] += 1
-    clear_stack hwid, msg
-    @devices[hwid].backend.on_message(msg)
+  private
+  def allow_accept yes = true
+    @options[:info][:accept] = yes
   end
 
-  private
+  def accept?
+    @options[:info][:accept]
+  end
+
   def clear_stack hwid, msg
     if @messages[hwid]
       if msg == 'crash' || msg == 'win'
