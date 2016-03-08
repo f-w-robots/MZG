@@ -25,7 +25,7 @@ class Proxy < Brick
   end
 
   def destroy
-    @thread.terminate
+
   end
 
   def out_msg_left msg
