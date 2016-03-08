@@ -1,4 +1,4 @@
-class Group
+class Group < Brick
   def initialize record
     @options = {}
 

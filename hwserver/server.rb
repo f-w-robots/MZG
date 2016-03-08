@@ -12,8 +12,9 @@ require 'sinatra-websocket'
 require 'mongo'
 
 require_relative 'bricks/bricks.rb'
-require_relative 'bricks/group.rb'
 require_relative 'bricks/brick.rb'
+require_relative 'bricks/group.rb'
+require_relative 'bricks/proxy.rb'
 require_relative 'bricks/control.rb'
 require_relative 'bricks/algorithm.rb'
 require_relative 'bricks/device.rb'
@@ -81,7 +82,9 @@ get '/:hwid' do |hwid|
   end
 
   if device_record.proxy?
-    device = DeviceProxy.new device, device_record
+    proxy_driver = device_record.proxy_driver
+    proxy = Proxy.new(hwid, proxy_driver)
+    bricks.push proxy
   end
 
   if device_record.manual?
@@ -97,7 +100,11 @@ get '/:hwid' do |hwid|
 
   settings.devices[hwid] = bricks
 
-  device.start request
+  response = device.start request
+
+  proxy.start if proxy
+
+  response
 end
 
 set :devices, {}

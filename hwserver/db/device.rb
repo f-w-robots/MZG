@@ -30,4 +30,14 @@ class DB::Device < DB
   def proxy?
     @record['use-proxy']
   end
+
+  def proxy_driver
+    record = @db[:algorithms].find(:'algorithm-id' => @record['proxy-id']).first
+    code = content(record, 'algorithm') if record
+
+    # TODO
+    mod = Module.new
+     mod.module_eval code
+    mod
+  end
 end
