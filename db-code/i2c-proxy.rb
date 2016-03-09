@@ -215,6 +215,7 @@
 
     def finish
       @command = nil
+      @device.out_msg_right 'finish'
     end
 
     def finish?

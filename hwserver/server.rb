@@ -75,16 +75,17 @@ get '/:hwid' do |hwid|
   device = Device.new hwid, device_record.manual?
   bricks.push device
 
-  if device_record.group?
-    group = settings.groups[device_record.group]
-    return 'runned group not found' if !group
-    bricks.push group
-  end
-
   if device_record.proxy?
     proxy_driver = device_record.proxy_driver
     proxy = Proxy.new(hwid, proxy_driver)
     bricks.push proxy
+  end
+
+  if device_record.group?
+    group = settings.groups[device_record.group]
+    status 404
+    return 'runned group not found' if !group
+    bricks.push group
   end
 
   if device_record.manual?
