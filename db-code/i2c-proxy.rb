@@ -169,8 +169,9 @@
       if @step_mode == 2
         if sensor('f') && !sensor('l') && !sensor('r')
           finish_command
+        else
+          @answer.send(@turn_to || :left)
         end
-        @answer.send(@turn_to || :left)
         return
       end
       if @step_mode == 1
