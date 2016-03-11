@@ -2,9 +2,15 @@
 <button id="left">left</button><br>
 <button id="right">right</button><br>
 <button id="stop">stop</button><br>
+<br>
+<button id="cUp">calibrateUp</button><br>
+<button id="cDown">calibrateDown</button><br>
+<br>
+SensorCount:<input id="sendSCfield" name="sendSCfield" value="5"><br>
+<button id="sendSC">Send</button><br>
+<br>
 
-
-Package:<input id="package" name="package" value="0"><br>
+Package:<input id="package" name="package" value="04INIT"><br>
 <button id="send">Send</button><br>
 input log:
 <div class="inputLog">
@@ -13,6 +19,9 @@ input log:
 <script type="text/javascript">
     $("#send").click(function() {
       socket.send($('#package').val());
+    });
+    $("#sendSC").click(function() {
+      socket.send('12&' + $('#sendSCfield').val());
     });
     $("#start").click(function() {
       socket.send('18!1"0#0$1');
@@ -25,5 +34,11 @@ input log:
     });
     $("#right").click(function() {
       socket.send('18!1"0#1$0');
+    });
+    $("#cDown").click(function() {
+      socket.send('12%1');
+    });
+    $("#cUp").click(function() {
+      socket.send('12%2');
     });
 </script>

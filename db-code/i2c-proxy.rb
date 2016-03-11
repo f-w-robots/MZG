@@ -2,7 +2,7 @@
 #
 # module LineFollower
   class Sensors
-    OneZeroDeliver = 2
+    OneZeroDeliver = 4
 
     def update values, print = false
       @values = values
@@ -114,11 +114,11 @@
       if (!sensor('rr') && !sensor('ll')) && @step_mode != 1
         @step_mode = 1
       end
-      if sensor('r')
+      if sensor('r') && !(sensor('r') && sensor('l'))
         @answer.right
         return
       end
-      if sensor('l')
+      if sensor('l') && !(sensor('r') && sensor('l'))
         @answer.left
         return
       end
