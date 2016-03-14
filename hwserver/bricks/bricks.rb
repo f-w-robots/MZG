@@ -9,7 +9,7 @@ class Bricks
   end
 
   def push_interface brick
-    return if @group.interface?
+    return if group_interface?
     @list.push brick
     @manual = brick
   end
@@ -19,7 +19,11 @@ class Bricks
   end
 
   def manual?
-    (@group.interface? || !!@manual)
+    (group_interface? || !!@manual)
+  end
+
+  def group_interface?
+    @group && @group.interface?
   end
 
   def interface

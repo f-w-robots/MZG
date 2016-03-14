@@ -13,6 +13,9 @@ class Algorithm < Brick
 
   def in_msg_left msg, hwid
     @unread_messages.push msg
+    if (defined? self.on_message)
+      self.on_message(msg)
+    end
   end
 
   def destroy

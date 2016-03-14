@@ -2,6 +2,19 @@ class Proxy < Brick
   def initialize hwid, driver
     @hwid = hwid
     @driver_class = driver::Main
+
+    @messeges = []
+
+    @thread = Thread.new do
+      loop do
+        while @messeges.empty? || !@driver.finish?
+          sleep 0.001
+        end
+        if @driver.finish?
+          @driver.command @messeges.shift
+        end
+      end
+    end
   end
 
   def start
@@ -13,9 +26,8 @@ class Proxy < Brick
   end
 
   def in_msg_right msg, hwid
-    if @driver.finish?
-      @driver.command msg
-    end
+    @messeges.push msg
+    out_msg_right 'accepted'
   end
 
   def callback_left callback, hwid

@@ -28,7 +28,6 @@
       end
 
       ws.onmessage do |msg|
-        puts 'XXXXXXXXXXXXXXXXXX'
       end
 
       ws.onclose do

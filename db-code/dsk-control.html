@@ -21,7 +21,7 @@
     background: green;
   }
 
-  .commandList .error {
+  .commandList .crash {
     background: red;
   }
 
@@ -31,6 +31,9 @@
 
   .commandList .win {
     background: #90C3D4;
+  }
+  .commandList .accepted {
+    background: #FFE928;
   }
 </style>
 
@@ -47,18 +50,17 @@
     });
 
     function downCommand(message) {
-      var command = $('.commandList div.wait').first()
-      var className = 'ready';
-      if(message == 'crash')
-        className = 'error';
-      if(message == 'win')
-        className = 'win';
-      command.removeClass('wait').addClass(className)
+      console.log(message);
+      var command;
+      if(message == 'accepted')
+        command = $('.commandList div.wait').first()
+      if(message == 'ready')
+        command = $('.commandList div.accepted').first()
+      command.removeClass().addClass(message)
     }
 
     setInterval(function() {
       if(messageStack.length > 0) {
-        console.log(messageStack.join());
         downCommand(messageStack.shift());
       }
     }, 10);
