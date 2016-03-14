@@ -49,3 +49,16 @@ web:
     - control
     - hwserver
   env_file: .env
+game:
+  build: ./game
+  command: ember server
+  ports:
+    - "4340:4340"
+  volumes:
+    - ./game/app:/app/app
+    - ./game/public:/app/public
+    - ./game/tests:/app/tests
+    - ./game/config:/app/config
+  links:
+    - hwserver
+  env_file: .env
