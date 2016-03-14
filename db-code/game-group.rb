@@ -12,6 +12,28 @@
     @finished = {}
 
     @responses = {}
+
+    @interface_sockets = []
+  end
+
+  def interface?
+    true
+  end
+
+  def start_interface request
+    request.websocket do |ws|
+      @interface_sockets.push(ws)
+
+      ws.onopen do
+      end
+
+      ws.onmessage do |msg|
+        puts 'XXXXXXXXXXXXXXXXXX'
+      end
+
+      ws.onclose do
+      end
+    end
   end
 
   def start

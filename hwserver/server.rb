@@ -38,6 +38,12 @@ get '/group/info/:name' do |name|
   end
 end
 
+get '/group/communicate/:name' do |name|
+  group = settings.groups[name]
+  return if !group
+  group.start_interface request
+end
+
 post '/group/up/:name' do |name|
   response.headers['Access-Control-Allow-Origin'] = '*'
   group_db = DB::Group.new name, settings.db
@@ -85,12 +91,14 @@ get '/:hwid' do |hwid|
     group = settings.groups[device_record.group]
     status 404
     return 'runned group not found' if !group
-    bricks.push group
+    bricks.push_group group
   end
 
   if device_record.manual?
-    backend = Control.new hwid
-    bricks.push_interface backend
+    if !bricks.manual?
+      backend = Control.new hwid
+      bricks.push_interface backend
+    end
   else
     backend = Algorithm.new hwid, device_record.algorithm
     backend.start request

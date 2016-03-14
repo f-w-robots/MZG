@@ -9,12 +9,17 @@ class Bricks
   end
 
   def push_interface brick
+    return if @group.interface?
     @list.push brick
     @manual = brick
   end
 
+  def push_group group
+    @group = group
+  end
+
   def manual?
-    !!@manual
+    (@group.interface? || !!@manual)
   end
 
   def interface

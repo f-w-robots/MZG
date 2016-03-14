@@ -24,6 +24,9 @@ class Group < Brick
 
   def destroy
     @thread.terminate
+    @interface_sockets.each do |ws|
+      ws.close_connection
+    end
   end
 
   def options
