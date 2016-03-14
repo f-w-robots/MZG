@@ -154,7 +154,7 @@
     end
 
     def stop
-      @answer.stop
+      finish_command
     end
 
     def search

@@ -4,6 +4,10 @@ class Proxy < Brick
     @driver_class = driver::Main
 
     @messeges = []
+  end
+
+  def start
+    @driver = @driver_class.new self
 
     @thread = Thread.new do
       loop do
@@ -15,10 +19,6 @@ class Proxy < Brick
         end
       end
     end
-  end
-
-  def start
-    @driver = @driver_class.new self
   end
 
   def in_msg_left msg, hwid
