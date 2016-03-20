@@ -1,4 +1,8 @@
 {{yield}}
-Timeout: {{timeout}}
-<br>
-Current round: {{round}}/{{rounds_total}}
+{{#unless finish}}
+  Timeout: {{timeout}}s
+  <br>
+  Current round: {{round}}/{{rounds_total}}
+{{else}}
+  Game Finish!
+{{/unless}}

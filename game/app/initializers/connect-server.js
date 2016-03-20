@@ -8,10 +8,10 @@ var Socket = Ember.Object.extend({
     };
 
     socket.onmessage = function (event) {
-      console.log('onmsg');
       var data = JSON.parse(event.data);
       var prefix = Object.keys(data)[0];
       data = data[prefix];
+      self.latestMessages[prefix] = data[prefix];
       if(!self.onMessageListeners[prefix])
         return;
       $.each(self.onMessageListeners['info'], function(i, func) {
@@ -30,6 +30,7 @@ var Socket = Ember.Object.extend({
 
   init() {
     this.onMessageListeners = {}
+    this.latestMessages = {}
     this.openSocket();
   },
 
@@ -37,6 +38,8 @@ var Socket = Ember.Object.extend({
     if(!this.onMessageListeners[prefix])
       this.onMessageListeners[prefix] = [];
     this.onMessageListeners[prefix].push({func: func, context: context});
+    if(this.latestMessages[prefix])
+      func.apply(context, [self.latestMessages[prefix]])
   }
 });
 
