@@ -6,6 +6,7 @@
 
     @options[:commands] = {}
     @options[:info] = {}
+    @options[:info][:rounds_total] = @rounds
 
     @messages = {}
     @crashed = {}
@@ -25,6 +26,12 @@
       @interface_sockets.push(ws)
 
       ws.onopen do
+        Thread.new do
+          loop do
+            ws.send({info: @options[:info]}.to_json)
+            sleep(1);
+          end
+        end
       end
 
       ws.onmessage do |msg|
@@ -38,11 +45,12 @@
   def start
     @thread = Thread.new do
       for round in 1..@rounds
+        @options[:info][:round] = round
         theend = Time.now + @timeout
         allow_accept
         loop do
           sleep 0.001
-          @options[:info][:timout] = theend - Time.now
+          @options[:info][:timeout] = theend - Time.now
           if theend < Time.now
             start_round(round)
 
