@@ -1,8 +1,9 @@
-{{yield}}
+<div class="alert {{statusClass}}" role="alert">{{status}}</div>
+
 {{#unless finish}}
   Timeout: {{timeout}}s
-  <br>
-  Current round: {{round}}/{{rounds_total}}
-{{else}}
-  Game Finish!
+  {{#unless prepare}}
+    <br>
+    Current round: {{round}}/{{rounds_total}}
+  {{/unless}}
 {{/unless}}

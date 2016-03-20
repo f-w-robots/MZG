@@ -3,10 +3,12 @@
     super
     @rounds = record.options[:rounds].to_i
     @timeout = record.options[:timeout].to_i
+    @prepare_timeout = record.options[:prepare_timeout].to_i
 
     @options[:commands] = {}
     @options[:info] = {}
     @options[:info][:rounds_total] = @rounds
+    @options[:info][:prepare] = true
     @options[:devices] = []
 
     @messages = {}
@@ -37,6 +39,14 @@
 
   def start
     @thread = Thread.new do
+      while @options[:info][:prepare]
+        @options[:info][:timeout] = @prepare_timeout
+        sleep(1)
+        @prepare_timeout -= 1
+        if @prepare_timeout <= 0
+          @options[:info][:prepare] = false
+        end
+      end
       for round in 1..@rounds
         @options[:info][:round] = round
         theend = Time.now + @timeout
