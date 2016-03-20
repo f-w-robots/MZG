@@ -22,7 +22,7 @@ class GroupInterface
 
   def send_message prefix, data
     @interface_sockets.each do |socket|
-      socket.send({prefix: data}.to_json)
+      socket.send({prefix => data}.to_json)
     end
   end
 

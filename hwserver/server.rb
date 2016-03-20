@@ -27,7 +27,7 @@ require_relative 'group_interface.rb'
 
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
-  {keys: settings.devices.map{|k,v|v.manual? ? k : nil}.reject{|v|!v}}.to_json
+  {keys: settings.devices.map{|k,v|v.manual? && !v.group_interface? ? k : nil}.reject{|v|!v}}.to_json
 end
 
 get '/group/info/:name' do |name|
@@ -62,7 +62,7 @@ end
 
 get '/control/:hwid' do |hwid|
   device = settings.devices[hwid]
-  return '' if !device || !device.manual?
+  return '' if !device || !device.manual? || device.group_interface?
 
   response = device.interface.start(request)
   response

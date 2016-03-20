@@ -5,16 +5,19 @@ var Socket = Ember.Object.extend({
     socket = new WebSocket("ws://" + location.hostname + ":2500/group/communicate/game");
 
     socket.onopen = function (event) {
+
     };
 
     socket.onmessage = function (event) {
+      // console.log(event.data);
+      // console.log(self.onMessageListeners);
       var data = JSON.parse(event.data);
       var prefix = Object.keys(data)[0];
       data = data[prefix];
       self.latestMessages[prefix] = data[prefix];
       if(!self.onMessageListeners[prefix])
         return;
-      $.each(self.onMessageListeners['info'], function(i, func) {
+      $.each(self.onMessageListeners[prefix], function(i, func) {
         func['func'].apply(func['context'], [data]);
       })
     };

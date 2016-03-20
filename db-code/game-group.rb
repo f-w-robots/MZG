@@ -17,6 +17,8 @@
 
     @interface = GroupInterface.new lambda { |ws|
       Thread.new do
+        ws.send({devices: @devices.keys}.to_json)
+
         loop do
           ws.send({info: @options[:info]}.to_json)
           sleep(1);
