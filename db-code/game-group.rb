@@ -7,6 +7,7 @@
     @options[:commands] = {}
     @options[:info] = {}
     @options[:info][:rounds_total] = @rounds
+    @options[:devices] = []
 
     @messages = {}
     @crashed = {}
@@ -14,7 +15,14 @@
 
     @responses = {}
 
-    @interface_sockets = []
+    @interface = GroupInterface.new lambda { |ws|
+      Thread.new do
+        loop do
+          ws.send({info: @options[:info]}.to_json)
+          sleep(1);
+        end
+      end
+    }
   end
 
   def interface?
@@ -22,24 +30,7 @@
   end
 
   def start_interface request
-    request.websocket do |ws|
-      @interface_sockets.push(ws)
-
-      ws.onopen do
-        Thread.new do
-          loop do
-            ws.send({info: @options[:info]}.to_json)
-            sleep(1);
-          end
-        end
-      end
-
-      ws.onmessage do |msg|
-      end
-
-      ws.onclose do
-      end
-    end
+    @interface.start_interface request
   end
 
   def start
@@ -153,6 +144,11 @@
     end
   end
 
+  def callback_left callback, hwid
+    @devices[hwid] = callback
+    @interface.send_message('devices', @devices.keys)
+  end
+
   private
   def allow_accept yes = true
     @options[:info][:accept] = yes
@@ -174,6 +170,7 @@
   end
 
   def finish
+    @options[:info][:finish] = true
     max = -1
     return if !@options[:info][:score]
     @options[:info][:score].each do |k,v|

@@ -16,6 +16,7 @@ class Bricks
 
   def push_group group
     @group = group
+    push @group
   end
 
   def manual?

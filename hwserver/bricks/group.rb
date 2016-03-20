@@ -24,8 +24,8 @@ class Group < Brick
 
   def destroy
     @thread.terminate
-    @interface_sockets.each do |ws|
-      ws.close_connection
+    if interface?
+      @interface.destroy
     end
   end
 

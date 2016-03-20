@@ -23,6 +23,8 @@ require_relative 'db/db.rb'
 require_relative 'db/device.rb'
 require_relative 'db/group.rb'
 
+require_relative 'group_interface.rb'
+
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
   {keys: settings.devices.map{|k,v|v.manual? ? k : nil}.reject{|v|!v}}.to_json
@@ -89,8 +91,10 @@ get '/:hwid' do |hwid|
 
   if device_record.group?
     group = settings.groups[device_record.group]
-    status 404
-    return 'runned group not found' if !group
+    if !group
+      status 404
+      return 'runned group not found'
+    end
     bricks.push_group group
   end
 

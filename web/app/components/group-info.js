@@ -11,12 +11,12 @@ export default Ember.Component.extend({
   didInsertElement: function() {
     var self = this;
 
-    setInterval(function() {
+    // setInterval(function() {
       Ember.$.get(self.currentHost('2500') + '/group/info/game', function(data) {
         self.set('info', data);
       }).fail(function() {
         self.set('info', 'group not runned');
       });
-    }, 1000);
+    // }, 1000);
   },
 });
