@@ -2,12 +2,11 @@
 #
 # module LineFollower
   class Sensors
-    OneZeroDeliver = 4
+    OneZeroDeliver = 5
 
     def update values, print = false
       @values = values
       if print
-        puts "  #{@values[5]}  "
         puts @values[0..4]
         puts '-'*10
       end
@@ -29,8 +28,6 @@
         @values[1]
       elsif s == 'c'
         @values[2]
-      elsif s == 'f'
-        @values[5]
       end).to_i
     end
   end
@@ -51,11 +48,11 @@
     end
 
     def right
-      @answer.push '18!1"0#1$0'
+      @answer.push '18!0"1#0$1'
     end
 
     def left
-      @answer.push '18!0"1#0$1'
+      @answer.push '18!1"0#1$0'
     end
 
     def get
@@ -98,21 +95,23 @@
     end
 
     def forward
-      if @step_mode == 2
+      if !@step_mode
         if (!sensor('rr') && !sensor('ll'))
-          finish_command
+          @step_mode = 2
         else
-          @answer.start
+          @step_mode = 1
         end
-        return
       end
-      if (sensor('rr') && sensor('ll')) || (sensor('r') && sensor('l')) && @step_mode == 1
-        @step_mode = 2
-        @answer.start
-        return
+      if @step_mode == 2
+        if (sensor('rr') && sensor('ll'))
+          finish_command
+          return
+        end
       end
-      if (!sensor('rr') && !sensor('ll')) && @step_mode != 1
-        @step_mode = 1
+      if @step_mode == 1
+        if (!sensor('rr') && !sensor('ll'))
+          @step_mode = 2
+        end
       end
       if sensor('r') && !(sensor('r') && sensor('l'))
         @answer.right
@@ -134,23 +133,35 @@
     end
 
     def turn direction
-      if @step_mode == 2
-        if sensor(TURN_SENSORS[direction])
+      if @step_mode == 3
+        if !sensor(TURN_SENSORS[direction])
           finish_command
         else
           @answer.send(direction)
         end
-      elsif @step_mode == 1
+        return
+      end
+      if @step_mode == 2
+        if sensor(TURN_SENSORS[direction])
+          @step_mode = 3
+        end
+          @answer.send(direction)
+        return
+      end
+      if @step_mode == 1
         if !sensor(TURN_SENSORS[direction])
           @step_mode = 2
         end
         @answer.send(direction)
-      else
-        @answer.send(direction)
+        return
+      end
+
         if sensor(TURN_SENSORS[direction])
           @step_mode = 1
+
         end
-      end
+        @answer.send(direction)
+      # end
     end
 
     def stop
