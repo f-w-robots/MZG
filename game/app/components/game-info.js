@@ -49,6 +49,7 @@ export default Ember.Component.extend({
   },
 
   updateStatus: function(status) {
+    console.log(this.get('controller'));
     this.set('status', status);
     this.set('statusClass', this.get('statusHash')[status]['class']);
     this.set('statusText',  this.get('statusHash')[status]['text']);

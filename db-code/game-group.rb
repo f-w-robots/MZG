@@ -19,6 +19,9 @@
 
     @interface = GroupInterface.new lambda { |ws|
       Thread.new do
+        # TODO
+        sleep(1)
+
         ws.send({devices: @devices.keys}.to_json)
 
         loop do

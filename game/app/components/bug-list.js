@@ -11,7 +11,7 @@ export default Ember.Component.extend({
 
   actions: {
     select: function(device) {
-      this.set('controller.device', device);
+      this.set('device', device);
     },
   }
 
