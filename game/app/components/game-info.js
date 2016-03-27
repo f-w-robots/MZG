@@ -21,13 +21,24 @@ export default Ember.Component.extend({
     'device': {
       'class': 'alert-warning',
       'text': 'Wait to start the game',
+    },
+    'error': {
+      'class': 'alert-danger',
+      'text': 'Error',
     }
   },
 
   onInit: function() {
     Ember.Socket.addOnMessage('info', this.updateInfo, this)
     this.set('status', 'connecting');
+
+    Ember.Socket.addOnError(this.onError, this);
+    Ember.Socket.addOnClose(this.onError, this);
   }.on('init'),
+
+  onError: function() {
+    this.set('status', 'error');
+  },
 
   updateInfo: function(data) {
     this.checkStatus(data);

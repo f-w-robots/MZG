@@ -1,6 +1,7 @@
 class GroupInterface
-  def initialize on_open
+  def initialize on_open, on_message
     @on_open = on_open
+    @on_message = on_message
     @interface_sockets = []
   end
 
@@ -13,6 +14,7 @@ class GroupInterface
       end
 
       ws.onmessage do |msg|
+        @on_message.call(ws, JSON.parse(msg))
       end
 
       ws.onclose do

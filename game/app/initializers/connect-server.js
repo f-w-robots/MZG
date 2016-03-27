@@ -4,6 +4,8 @@ var Socket = Ember.Object.extend({
     var self = this;
     var interval = setInterval(function() {
       if(socket && socket.readyState == socket.OPEN) {
+        self.set('socket', socket)
+
         clearInterval(interval);
 
         socket.onopen = function (event) {
@@ -23,11 +25,15 @@ var Socket = Ember.Object.extend({
         };
 
         socket.onerror = function (event) {
-
+          $.each(self.onErrorCallbacks, function(i, func) {
+            func['func'].apply(func['context']);
+          });
         };
 
         socket.onclose = function (event) {
-
+          $.each(self.onCloseCallbacks, function(i, func) {
+            func['func'].apply(func['context']);
+          });
         };
 
         return
@@ -38,8 +44,10 @@ var Socket = Ember.Object.extend({
   },
 
   init() {
-    this.onMessageListeners = {}
-    this.latestMessages = {}
+    this.onMessageListeners = {};
+    this.latestMessages = {};
+    this.onErrorCallbacks = [];
+    this.onCloseCallbacks = [];
     this.openSocket();
   },
 
@@ -49,7 +57,20 @@ var Socket = Ember.Object.extend({
     this.onMessageListeners[prefix].push({func: func, context: context});
     if(this.latestMessages[prefix])
       func.apply(context, [self.latestMessages[prefix]])
-  }
+  },
+
+  addOnClose(func, context) {
+    this.onErrorCallbacks.push({func: func, context: context})
+  },
+
+  addOnError(func, context) {
+    this.onCloseCallbacks.push({func: func, context: context})
+  },
+
+  reserveBug: function(device) {
+    console.log(JSON.stringify({device: device}));
+    this.get('socket').send(JSON.stringify({device: device}))
+  },
 });
 
 export function initialize() {

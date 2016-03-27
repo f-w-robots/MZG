@@ -17,19 +17,33 @@
 
     @responses = {}
 
+    @devices_locked = []
+
     @interface = GroupInterface.new lambda { |ws|
       Thread.new do
         # TODO
         sleep(1)
 
-        ws.send({devices: @devices.keys}.to_json)
+        ws.send(avaliable_devices.to_json)
 
         loop do
           ws.send({info: @options[:info]}.to_json)
           sleep(1);
         end
       end
+    }, lambda { |ws, msg|
+      if msg["device"]
+        @devices_locked.push msg["device"]
+        ws.send(avaliable_devices.to_json)
+      end
+      if avaliable_devices[:devices].size < 1
+        @prepare_timeout = 0
+      end
     }
+  end
+
+  def avaliable_devices
+    {devices: (@devices.keys - @devices_locked)}
   end
 
   def interface?
