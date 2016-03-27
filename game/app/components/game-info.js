@@ -18,11 +18,15 @@ export default Ember.Component.extend({
       'class': 'alert-info',
       'text': 'Please, select devices',
     },
+    'device': {
+      'class': 'alert-warning',
+      'text': 'Wait to start the game',
+    }
   },
 
   onInit: function() {
     Ember.Socket.addOnMessage('info', this.updateInfo, this)
-    this.updateStatus('connecting');
+    this.set('status', 'connecting');
   }.on('init'),
 
   updateInfo: function(data) {
@@ -39,21 +43,27 @@ export default Ember.Component.extend({
   },
 
   checkStatus: function(data) {
-    if(data['prepare'])
-      this.updateStatus('prepare');
-    else
+    if(data['prepare']) {
+      if(!this.get('device'))
+        this.set('status', 'prepare');
+    } else {
       if(data['finish'])
-        this.updateStatus('finish');
+        this.set('status', 'finish');
       else
-        this.updateStatus('play');
+        this.set('status', 'play');
+      }
   },
 
-  updateStatus: function(status) {
-    console.log(this.get('controller'));
-    this.set('status', status);
+  onStatusChange: function() {
+    var status = this.get('status');
     this.set('statusClass', this.get('statusHash')[status]['class']);
     this.set('statusText',  this.get('statusHash')[status]['text']);
-  },
+  }.observes('status'),
+
+  onDeviceChange: function() {
+    if(this.get('device'))
+      this.set('status', 'device')
+  }.observes('device'),
 
   displayStats: function(){
     var status = this.get('status');

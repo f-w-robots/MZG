@@ -1,7 +1,8 @@
 <div class="container">
-  {{game-info}}
-  {{bug-list device=device}}
-  {{#if device}}
+  {{game-info device=device}}
+  {{#unless device}}
+    {{bug-list device=device}}
+  {{else}}
     {{control-bug device=device}}
-  {{/if}}
+  {{/unless}}
 </div>
