@@ -1,6 +1,25 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  statusHash: {
+    'connecting': {
+      'class': 'alert-info',
+      'text': 'Connection to Game server',
+    },
+    'finish': {
+      'class': 'alert-success',
+      'text': 'Game Finish!',
+    },
+    'play': {
+      'class': 'alert-warning',
+      'text': 'Play',
+    },
+    'prepare': {
+      'class': 'alert-info',
+      'text': 'Please, select devices',
+    },
+  },
+
   onInit: function() {
     Ember.Socket.addOnMessage('info', this.updateInfo, this)
     this.updateStatus('connecting');
@@ -30,21 +49,13 @@ export default Ember.Component.extend({
   },
 
   updateStatus: function(status) {
-    if(status == 'connecting') {
-      this.set('statusClass', 'alert-info');
-      this.set('status', 'Connection');
-    }
-    if(status == 'finish') {
-      this.set('statusClass', 'alert-success');
-      this.set('status', 'Game Finish!')
-    }
-    if(status == 'play') {
-      this.set('statusClass', 'alert-warning');
-      this.set('status', 'Play')
-    }
-    if(status == 'prepare') {
-      this.set('statusClass', 'alert-info');
-      this.set('status', 'Please, select devices')
-    }
+    this.set('status', status);
+    this.set('statusClass', this.get('statusHash')[status]['class']);
+    this.set('statusText',  this.get('statusHash')[status]['text']);
   },
+
+  displayStats: function(){
+    var status = this.get('status');
+    return !(status == 'connecting' || status == 'finish');
+  }.property('status'),
 });

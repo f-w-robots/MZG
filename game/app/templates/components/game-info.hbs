@@ -1,9 +1,9 @@
-<div class="alert {{statusClass}}" role="alert">{{status}}</div>
+<div class="alert {{statusClass}}" role="alert">{{statusText}}</div>
 
-{{#unless finish}}
+{{#if displayStats}}
   Timeout: {{timeout}}s
   {{#unless prepare}}
     <br>
     Current round: {{round}}/{{rounds_total}}
   {{/unless}}
-{{/unless}}
+{{/if}}
