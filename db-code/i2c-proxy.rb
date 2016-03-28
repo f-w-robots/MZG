@@ -95,23 +95,17 @@
     end
 
     def forward
-      if !@step_mode
-        if (!sensor('rr') && !sensor('ll'))
-          @step_mode = 2
-        else
-          @step_mode = 1
-        end
-      end
       if @step_mode == 2
         if (sensor('rr') && sensor('ll'))
           finish_command
           return
         end
-      end
-      if @step_mode == 1
-        if (!sensor('rr') && !sensor('ll'))
+      elsif @step_mode == 1
+        if !(sensor('rr') && sensor('ll'))
           @step_mode = 2
         end
+      elsif (sensor('rr') && sensor('ll'))
+        @step_mode = 1
       end
       if sensor('r') && !(sensor('r') && sensor('l'))
         @answer.right
@@ -169,34 +163,23 @@
     end
 
     def search
-      if !@turn_to
-        if sensor('ll')
-          @turn_to = :right
-        end
-        if sensor('rr')
-          @turn_to = :left
-        end
-      end
-      if @step_mode == 2
-        if sensor('f') && !sensor('l') && !sensor('r')
+      if @step_mode && @step_mode[:step] == 1
+        if !sensor('l') && @step_mode[:turn] == :left
+          finish_command
+        elsif !sensor('r') && @step_mode[:turn] == :right
           finish_command
         else
-          @answer.send(@turn_to || :left)
+          @answer.send(@step_mode[:turn])
         end
         return
-      end
-      if @step_mode == 1
-        if sensor('c')
-          skip_timeout 20, ->{ @answer.start}
-          @step_mode = 2
+      elsif sensor('c')
+        if sensor('l')
+          @step_mode = {step: 1, turn: :left}
+        else
+          @step_mode = {step: 1, turn: :right}
         end
-        @answer.start
-      elsif sensor('f')
-        @answer.start
-        @step_mode = 1
-      else
-        @answer.start
       end
+      @answer.start
     end
 
     def finish_command
