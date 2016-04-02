@@ -8,7 +8,6 @@
       @values = values
       if print
         puts @values[0..4]
-        puts '-'*10
       end
     end
 
@@ -29,6 +28,18 @@
       elsif s == 'c'
         @values[2]
       end).to_i
+
+      # (if s == 'rr'
+      #   @values[0]
+      # elsif s == 'll'
+      #   @values[4]
+      # elsif s == 'r'
+      #   @values[1]
+      # elsif s == 'l'
+      #   @values[3]
+      # elsif s == 'c'
+      #   @values[2]
+      # end).to_i
     end
   end
 
@@ -40,19 +51,33 @@
     end
 
     def stop
+      puts '*** stop'
       @answer.push '18!0"0#0$0'
     end
 
     def start
-      @answer.push '18!1"0#0$1'
+      puts '*** start'
+      @answer.push '18!0"1#1$0'
     end
 
     def right
+      puts '*** right'
       @answer.push '18!0"1#0$1'
     end
 
     def left
+      puts '*** left'
       @answer.push '18!1"0#1$0'
+    end
+
+    def right_wheel
+      puts '*** right_wheel'
+      @answer.push '18!0"0#1$0'
+    end
+
+    def left_wheel
+      puts '*** left_wheel'
+      @answer.push '18!0"1#0$0'
     end
 
     def get
@@ -78,34 +103,69 @@
     end
 
     def move command
-      if(@skip_timeout)
-        @skip_timeout -= 1
-        @skip_timeout_action.call
-        @skip_timeout = nil if @skip_timeout == 0
-      else
-        puts "command, step_mode: #{@step_mode}"
-        send(command)
-      end
+      puts "#{command}, step_mode: #{@step_mode}"
+      send(command)
+      puts '-'*12
     end
 
     private
-    def skip_timeout delay, action
-      @skip_timeout = delay
-      @skip_timeout_action = action
-    end
-
     def forward
-      if @step_mode == 2
-        if (sensor('rr') && sensor('ll'))
-          finish_command
+      if !@time
+        @time = Time.now
+        @answer.start
+        return
+      end
+      if Time.now.to_f-@time.to_f < 1
+        @answer.start
+        return
+      end
+
+      # if @step_mode && @step_mode[:step] == 2
+      #   if sensor(@step_mode[:sensor])
+      #     finish_command
+      #     return
+      #   end
+      # elsif @step_mode && @step_mode[:step] == 1
+      #   if !sensor(@step_mode[:sensor])
+      #     @step_mode[:step] = 2
+      #   end
+      # elsif (sensor('rr') || sensor('ll'))
+      if !@step_mode
+        if (sensor('rr') || sensor('ll'))
+          @step_mode = {step: -1}
+        else
+          @step_mode = {step: 0}
+        end
+      end
+
+      if @step_mode && @step_mode[:step] == -1
+        if !sensor('rr') && !sensor('ll')
+          @step_mode[:step] = 0
+        end
+        @answer.start
+        return
+      end
+
+      if @step_mode && @step_mode[:step] == 2
+        finish_command
+        return
+      elsif @step_mode && @step_mode[:step] == 1
+        if @step_mode[:sensor] == 'rr'
+          if sensor('ll')
+            @step_mode[:step] = 2
+          end
+          @answer.left_wheel
           return
         end
-      elsif @step_mode == 1
-        if !(sensor('rr') && sensor('ll'))
-          @step_mode = 2
+        if @step_mode[:sensor] == 'll'
+          if sensor('rr')
+            @step_mode[:step] = 2
+          end
+          @answer.right_wheel
+          return
         end
-      elsif (sensor('rr') && sensor('ll'))
-        @step_mode = 1
+      elsif (sensor('rr') || sensor('ll'))
+        @step_mode = {step: 1, sensor: (sensor('ll') ? 'll' : 'rr')}
       end
       if sensor('r') && !(sensor('r') && sensor('l'))
         @answer.right
@@ -186,6 +246,8 @@
       @step_mode = nil
       @answer.stop
       @commands.finish
+
+      puts "FINISH #{'-'*100}"
     end
   end
 
