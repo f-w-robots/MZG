@@ -1,7 +1,13 @@
-<button {{action 'command' "forward"}}>forward</button>
-<button {{action 'command' "left"}}>left</button>
-<button {{action 'command' "right"}}>right</button>
+<div class="commit-block">
+  <div class="btn btn-default" {{action 'command' "forward"}}>forward</div>
+  <div class="btn btn-default" {{action 'command' "left"}}>left</div>
+  <div class="btn btn-default" {{action 'command' "right"}}>right</div>
+  <div class="btn btn-success" {{action 'commit'}}>commit</div>
+</div>
 <br>
 {{#each commandList as |cmd|}}
-  {{cmd}}
+  <div class="command btn-warning col-md-1">
+    {{cmd}}
+  </div>
+  <br>
 {{/each}}

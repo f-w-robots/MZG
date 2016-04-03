@@ -19,6 +19,10 @@
 
     @devices_locked = []
 
+    @clients = {}
+
+    @commands = {}
+
     @interface = GroupInterface.new lambda { |ws|
       Thread.new do
         # TODO
@@ -31,13 +35,28 @@
           sleep(1);
         end
       end
+
+      @clients[ws] = {}
     }, lambda { |ws, msg|
       if msg["device"]
+        return if @clients[ws][:device]
         @devices_locked.push msg["device"]
         ws.send(avaliable_devices.to_json)
+
+        @clients[ws][:device] = msg["device"]
+
+        if avaliable_devices[:devices].size < 1
+          @prepare_timeout = 0
+        end
       end
-      if avaliable_devices[:devices].size < 1
-        @prepare_timeout = 0
+
+      if msg["commit"]
+        if !@clients[ws][:device] || @commands[@clients[ws][:device]]
+          return
+        end
+
+        @commands[@clients[ws][:device]] = msg["commit"]
+        ws.send({commit: :lock}.to_json)
       end
     }
   end
@@ -83,9 +102,8 @@
 
   def start_round round
     allow_accept(false)
-    @options[:commands].keys.each do |hwid|
-      commands = @options[:commands][hwid]
-      @options[:commands][hwid] = []
+    @commands.each do |hwid, commands|
+      @commands.delete hwid
       if @crashed[hwid]
         commands.unshift('restore')
         @crashed[hwid] = false
@@ -163,13 +181,30 @@
     @responses[hwid].push msg
 
     clear_stack hwid, msg
-    out_msg_right(msg, hwid)
+    out_msg_right({response: msg}, hwid)
   end
 
   def in_msg_right msg, hwid
     if accept?
       @options[:commands][hwid] ||= []
       @options[:commands][hwid] << msg
+    end
+  end
+
+  def out_msg_right msg, hwid
+    _clients = {}
+    @clients.each do |ws, hash|
+      _clients[hash[:device]] = ws
+    end
+    if _clients[hwid]
+      _clients[hwid].send(msg.to_json)
+    end
+  end
+
+  def out_msg_right_all msg
+    _clients = {}
+    @clients.each do |ws, hash|
+      ws.send(msg.to_json)
     end
   end
 
@@ -181,6 +216,9 @@
   private
   def allow_accept yes = true
     @options[:info][:accept] = yes
+    if yes
+      out_msg_right_all({commit: :unlock})
+    end
   end
 
   def accept?

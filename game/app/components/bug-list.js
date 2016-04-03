@@ -11,7 +11,6 @@ export default Ember.Component.extend({
 
   actions: {
     select: function(device) {
-      console.log(device);
       this.set('device', device);
       Ember.Socket.reserveBug(device)
     },

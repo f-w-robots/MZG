@@ -14,6 +14,7 @@ var Socket = Ember.Object.extend({
 
         socket.onmessage = function (event) {
           var data = JSON.parse(event.data);
+          console.log(data);
           var prefix = Object.keys(data)[0];
           data = data[prefix];
           self.latestMessages[prefix] = data[prefix];
@@ -68,8 +69,11 @@ var Socket = Ember.Object.extend({
   },
 
   reserveBug: function(device) {
-    console.log(JSON.stringify({device: device}));
     this.get('socket').send(JSON.stringify({device: device}))
+  },
+
+  commit: function(commandList) {
+    this.get('socket').send(JSON.stringify({commit: commandList}))
   },
 });
 
