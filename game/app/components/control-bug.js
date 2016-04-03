@@ -9,19 +9,20 @@ export default Ember.Component.extend({
   }.on('init'),
 
   updateCommand: function(response) {
-    console.log(this.$('.command').first());
-    if(response == 'wait')
+    if(response === 'wait') {
       this.$('.command.btn-warning').first().removeClass('btn-warning').addClass('btn-success');
-    if(response == 'crash')
+    }
+    if(response === 'crash') {
       this.$('.command.btn-warning').first().removeClass('btn-warning').addClass('btn-danger');
+    }
   },
 
   commitLock: function(commit) {
-    console.log(commit);
-    if(commit == 'lock')
+    if(commit === 'lock') {
       this.$('.commit-block').css({"background-color": "black"});
-    else
+    } else {
       this.$('.commit-block').css({"background-color": "white"});
+    }
   },
 
   actions: {

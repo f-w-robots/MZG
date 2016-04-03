@@ -29,7 +29,7 @@ export default Ember.Component.extend({
   },
 
   onInit: function() {
-    Ember.Socket.addOnMessage('info', this.updateInfo, this)
+    Ember.Socket.addOnMessage('info', this.updateInfo, this);
     this.set('status', 'connecting');
 
     Ember.Socket.addOnError(this.onError, this);
@@ -44,8 +44,9 @@ export default Ember.Component.extend({
     this.checkStatus(data);
 
     data['timeout'] = Math.round(data['timeout']);
-    if(!data['timeout'] < 0)
+    if(data['timeout'] < 0) {
       data['timeout'] = 0;
+    }
     this.set('timeout', data['timeout']);
     this.set('round', data['round']);
     this.set('rounds_total', data['rounds_total']);
@@ -55,14 +56,16 @@ export default Ember.Component.extend({
 
   checkStatus: function(data) {
     if(data['prepare']) {
-      if(!this.get('device'))
+      if(!this.get('device')) {
         this.set('status', 'prepare');
+      }
     } else {
-      if(data['finish'])
+      if(data['finish']) {
         this.set('status', 'finish');
-      else
+      } else {
         this.set('status', 'play');
       }
+    }
   },
 
   onStatusChange: function() {
@@ -72,12 +75,13 @@ export default Ember.Component.extend({
   }.observes('status'),
 
   onDeviceChange: function() {
-    if(this.get('device'))
-      this.set('status', 'device')
+    if(this.get('device')) {
+      this.set('status', 'device');
+    }
   }.observes('device'),
 
   displayStats: function(){
     var status = this.get('status');
-    return !(status == 'connecting' || status == 'finish');
+    return !(status === 'connecting' || status === 'finish');
   }.property('status'),
 });

@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   onInit: function() {
-    Ember.Socket.addOnMessage('devices', this.updateInfo, this)
+    Ember.Socket.addOnMessage('devices', this.updateInfo, this);
   }.on('init'),
 
   updateInfo: function(data) {
@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   actions: {
     select: function(device) {
       this.set('device', device);
-      Ember.Socket.reserveBug(device)
+      Ember.Socket.reserveBug(device);
     },
   }
 
