@@ -1,9 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  onInit: function() {
-    this.set('commandList', []);
+  allowCommit: true,
+  commandList: [],
 
+  onInit: function() {
     Ember.Socket.addOnMessage('response', this.updateCommand, this);
     Ember.Socket.addOnMessage('commit', this.commitLock, this);
   }.on('init'),
@@ -19,16 +20,27 @@ export default Ember.Component.extend({
 
   commitLock: function(commit) {
     if(commit === 'lock') {
-      this.$('.commit-block').css({"background-color": "black"});
+      this.set('allowCommit', false);
     } else {
-      this.$('.commit-block').css({"background-color": "white"});
+      this.set('allowCommit', true);
+      this.set('commandList', []);
     }
   },
 
+  allowCommitObserver: function() {
+    if(this.get('allowCommit')) {
+      this.$('.commit-block').css({"background-color": "white"});
+    } else {
+      this.$('.commit-block').css({"background-color": "black"});
+    }
+  }.observes('allowCommit'),
+
   actions: {
     command: function(cmd) {
-      this.get('commandList').push(cmd);
-      this.set('commandList', this.get('commandList').slice());
+      if(this.get('allowCommit')) {
+        this.get('commandList').push(cmd);
+        this.set('commandList', this.get('commandList').slice());
+      }
     },
 
     commit: function() {

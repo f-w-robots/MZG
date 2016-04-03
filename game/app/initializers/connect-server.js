@@ -8,7 +8,7 @@ var Socket = Ember.Object.extend({
     this.set('socket', socket);
 
     socket.onopen = function (event) {
-      self.set('wasOpen');
+      self.set('wasOpen', true);
     };
 
     socket.onmessage = function (event) {
