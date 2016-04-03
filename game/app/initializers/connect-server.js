@@ -1,46 +1,58 @@
 var Socket = Ember.Object.extend({
+  wasOpen: false,
+
   openSocket() {
-    var socket;
+    var self = this;
+
+    var socket = new WebSocket("ws://" + location.hostname + ":2500/group/communicate/game");
+    this.set('socket', socket);
+
+    socket.onopen = function (event) {
+      self.set('wasOpen');
+    };
+
+    socket.onmessage = function (event) {
+      var data = JSON.parse(event.data);
+      var prefix = Object.keys(data)[0];
+      data = data[prefix];
+      self.latestMessages[prefix] = data[prefix];
+      if(!self.onMessageListeners[prefix]) {
+        return;
+      }
+      $.each(self.onMessageListeners[prefix], function(i, func) {
+        func['func'].apply(func['context'], [data]);
+      });
+    };
+
+    socket.onerror = function (event) {
+      if(!self.get('wasOpen')) {
+        return;
+      }
+      $.each(self.onErrorCallbacks, function(i, func) {
+        func['func'].apply(func['context']);
+      });
+    };
+
+    socket.onclose = function (event) {
+      if(!self.get('wasOpen')) {
+        return;
+      }
+      $.each(self.onCloseCallbacks, function(i, func) {
+        func['func'].apply(func['context']);
+      });
+    };
+  },
+
+  tryOpenSocket() {
+    this.openSocket();
+
     var self = this;
     var interval = setInterval(function() {
-      if(socket && socket.readyState === socket.OPEN) {
-        self.set('socket', socket);
-
+      if(self.get('wasOpen')) {
         clearInterval(interval);
-
-        socket.onopen = function (event) {
-
-        };
-
-        socket.onmessage = function (event) {
-          var data = JSON.parse(event.data);
-          var prefix = Object.keys(data)[0];
-          data = data[prefix];
-          self.latestMessages[prefix] = data[prefix];
-          if(!self.onMessageListeners[prefix]) {
-            return;
-          }
-          $.each(self.onMessageListeners[prefix], function(i, func) {
-            func['func'].apply(func['context'], [data]);
-          });
-        };
-
-        socket.onerror = function (event) {
-          $.each(self.onErrorCallbacks, function(i, func) {
-            func['func'].apply(func['context']);
-          });
-        };
-
-        socket.onclose = function (event) {
-          $.each(self.onCloseCallbacks, function(i, func) {
-            func['func'].apply(func['context']);
-          });
-        };
-
         return;
-      } else {
-        socket = new WebSocket("ws://" + location.hostname + ":2500/group/communicate/game");
       }
+      self.openSocket();
     }, 1000);
   },
 
@@ -49,7 +61,7 @@ var Socket = Ember.Object.extend({
     this.latestMessages = {};
     this.onErrorCallbacks = [];
     this.onCloseCallbacks = [];
-    this.openSocket();
+    this.tryOpenSocket();
   },
 
   addOnMessage(prefix, func, context) {

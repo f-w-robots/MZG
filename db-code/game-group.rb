@@ -24,19 +24,16 @@
     @commands = {}
 
     @interface = GroupInterface.new lambda { |ws|
+      ws.send(avaliable_devices.to_json)
+
+      @clients[ws] = {}
+
       Thread.new do
-        # TODO
-        sleep(1)
-
-        ws.send(avaliable_devices.to_json)
-
         loop do
           ws.send({info: @options[:info]}.to_json)
           sleep(1);
         end
       end
-
-      @clients[ws] = {}
     }, lambda { |ws, msg|
       if msg["device"]
         return if @clients[ws][:device]
