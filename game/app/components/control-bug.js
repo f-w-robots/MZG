@@ -29,9 +29,9 @@ export default Ember.Component.extend({
 
   allowCommitObserver: function() {
     if(this.get('allowCommit')) {
-      this.$('.commit-block').css({"background-color": "white"});
+      this.$('.commit-block .btn-danger').removeClass('btn-danger').addClass('btn-success');
     } else {
-      this.$('.commit-block').css({"background-color": "black"});
+      this.$('.commit-block .btn-success').removeClass('btn-success').addClass('btn-danger');
     }
   }.observes('allowCommit'),
 
