@@ -3,12 +3,16 @@
 # module LineFollower
   class Sensors
     OneZeroDeliver = 5
+    MaxHistory = 30
+
+    def initialize
+      @history = []
+    end
 
     def update values, print = false
-      @values = values
-      if print
-        puts @values[0..4]
-      end
+      puts values[0..4] if print
+      @history.unshift(values)
+      @history = @history[0..(MaxHistory-1)]
     end
 
     def value s
@@ -17,29 +21,25 @@
 
     # 'r', 'l', 'rr', 'll', 'c', 'f'
     def sensorRaw s
-      (if s == 'rr'
-        @values[4]
+      if s == 'rr'
+        medium(4)
       elsif s == 'll'
-        @values[0]
+        medium(0)
       elsif s == 'r'
-        @values[3]
+        medium(3)
       elsif s == 'l'
-        @values[1]
+        medium(1)
       elsif s == 'c'
-        @values[2]
-      end).to_i
+        medium(2)
+      end
+    end
 
-      # (if s == 'rr'
-      #   @values[0]
-      # elsif s == 'll'
-      #   @values[4]
-      # elsif s == 'r'
-      #   @values[1]
-      # elsif s == 'l'
-      #   @values[3]
-      # elsif s == 'c'
-      #   @values[2]
-      # end).to_i
+    def medium sensor_number
+      result = 0
+      @history.each do |row|
+        result += row[sensor_number].to_i
+      end
+      (result / @history.size).round
     end
   end
 
@@ -62,22 +62,22 @@
 
     def right
       puts '*** right'
-      @answer.push '18!0"1#0$1'
+      @answer.push '18!1"0#1$0'
     end
 
     def left
       puts '*** left'
-      @answer.push '18!1"0#1$0'
+      @answer.push '18!0"1#0$1'
     end
 
     def right_wheel
       puts '*** right_wheel'
-      @answer.push '18!0"0#1$0'
+      @answer.push '18!1"0#0$0'
     end
 
     def left_wheel
       puts '*** left_wheel'
-      @answer.push '18!0"1#0$0'
+      @answer.push '18!0"0#1$0'
     end
 
     def get

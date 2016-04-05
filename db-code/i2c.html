@@ -1,10 +1,11 @@
 <button id="start">start</button><br>
 <button id="left">left</button><br>
 <button id="right">right</button><br>
+<button id="back">back</button><br>
 <button id="stop">stop</button><br>
 <br>
-<button id="cUp">calibrateUp</button><br>
-<button id="cDown">calibrateDown</button><br>
+<button id="cUp">calibrate White(Upper)</button><br>
+<button id="cDown">calibrate Black(Lower)</button><br>
 <br>
 SensorCount:<input id="sendSCfield" name="sendSCfield" value="5"><br>
 <button id="sendSC">Send</button><br>
@@ -24,6 +25,9 @@ input log:
       socket.send('12&' + $('#sendSCfield').val());
     });
     $("#start").click(function() {
+      socket.send('18!0"1#1$0');
+    });
+    $("#back").click(function() {
       socket.send('18!1"0#0$1');
     });
     $("#stop").click(function() {
