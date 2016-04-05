@@ -3,16 +3,19 @@
 # module LineFollower
   class Sensors
     OneZeroDeliver = 5
-    MaxHistory = 30
+    MaxHistory = 10
 
     def initialize
       @history = []
     end
 
     def update values, print = false
-      puts values[0..4] if print
       @history.unshift(values)
       @history = @history[0..(MaxHistory-1)]
+      if print
+        puts "last: #{values[0..4]}"
+        puts "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
+      end
     end
 
     def value s
@@ -72,7 +75,7 @@
 
     def right_wheel
       puts '*** right_wheel'
-      @answer.push '18!1"0#0$0'
+      @answer.push '18!0"1#0$0'
     end
 
     def left_wheel
@@ -247,7 +250,9 @@
       @answer.stop
       @commands.finish
 
-      puts "FINISH #{'-'*100}"
+      puts "FINISH #{'-'*150}"
+      puts "#{'#'*160}"
+      puts "#{'#'*160}"
     end
   end
 
