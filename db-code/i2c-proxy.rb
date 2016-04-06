@@ -19,10 +19,19 @@
     end
 
     def value s
+      if s == 'l' || s == 'r'
+        if sensorRaw(s) <= OneZeroDeliver && sensorRaw(s) > OneZeroDeliver - 2
+          if (sensorRaw(s == 'l' ? 'r' : 'l' ) - sensorRaw(s)).abs > 3
+            return true
+          else
+            return false
+          end
+        end
+      end
       sensorRaw(s) <= OneZeroDeliver
     end
 
-    # 'r', 'l', 'rr', 'll', 'c', 'f'
+    private
     def sensorRaw s
       if s == 'rr'
         medium(4)
@@ -114,7 +123,7 @@
 
     private
     def allow_time
-      if !@time
+      if !@time[:start]
         true
       else
         Time.now.to_f - @time[:start].to_f > @time[:delta]
@@ -122,54 +131,67 @@
     end
 
     def forward
+      if @time && @time[:delay] && @time[:start]
+        @time[:start] += (Time.now.to_f - @time[:delay])
+        @time.delete :delay
+      end
       if !@step_mode
         if (sensor('rr') || sensor('ll'))
           @step_mode = {step: -1}
-          # TODO - may be remove, now used for poor positioning at the crossroads
           @time = {start: Time.now, delta: 2}
         else
+          @time = {}
           @step_mode = {step: 0}
         end
       end
 
-      if @step_mode && @step_mode[:step] == -1
+      case @step_mode[:step]
+      when -1
         if !sensor('rr') && !sensor('ll')
           @step_mode[:step] = 0
         end
+        if sensor('r') && !(sensor('r') && sensor('l'))
+          @answer.right
+          @time[:delay] = Time.now.to_f
+          return
+        end
+        if sensor('l') && !(sensor('r') && sensor('l'))
+          @answer.left
+          @time[:delay] = Time.now.to_f
+          return
+        end
         @answer.start
-        return
-      end
-
-      if @step_mode && @step_mode[:step] == 2
-        finish_command
-        return
-      elsif @step_mode && @step_mode[:step] == 1
-        if @step_mode[:sensor] == 'rr'
+      when 0
+        if (sensor('rr') || sensor('ll')) && allow_time
+          @step_mode = {step: 1, sensor: (sensor('ll') ? 'll' : 'rr')}
+        end
+        if sensor('r') && !(sensor('r') && sensor('l'))
+          @answer.right
+          @time[:delay] = Time.now.to_f
+          return
+        end
+        if sensor('l') && !(sensor('r') && sensor('l'))
+          @answer.left
+          @time[:delay] = Time.now.to_f
+          return
+        end
+        @answer.start
+      when 1
+        case @step_mode[:sensor]
+        when 'rr'
           if sensor('ll')
-            @step_mode[:step] = 2
+            finish_command
+          else
+            @answer.left_wheel
           end
-          @answer.left_wheel
-          return
-        end
-        if @step_mode[:sensor] == 'll'
+        when 'll'
           if sensor('rr')
-            @step_mode[:step] = 2
+            finish_command
+          else
+            @answer.right_wheel
           end
-          @answer.right_wheel
-          return
         end
-      elsif (sensor('rr') || sensor('ll')) && allow_time
-        @step_mode = {step: 1, sensor: (sensor('ll') ? 'll' : 'rr')}
       end
-      if sensor('r') && !(sensor('r') && sensor('l'))
-        @answer.right
-        return
-      end
-      if sensor('l') && !(sensor('r') && sensor('l'))
-        @answer.left
-        return
-      end
-      @answer.start
     end
 
     def left
