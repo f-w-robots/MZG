@@ -1,4 +1,6 @@
-commands = ['forward', 'left']
+commands = 'frfrfrfrflflflfl'
+hash = {'f' => "forward", 'r' => 'right', 'l' => 'left'}
+
 current_command = 0
 
 out_msg_left('stop')
@@ -14,8 +16,10 @@ loop do
     next
   end
 
-  puts commands[current_command]
-  out_msg_left(commands[current_command])
+  command = hash[commands[current_command]]
+
+  puts command
+  out_msg_left(command)
 
   current_command += 1
   if current_command == commands.size
