@@ -106,36 +106,27 @@
     end
 
     def move command
+      puts "allow_time: #{allow_time}" if @time
       puts "#{command}, step_mode: #{@step_mode}"
       send(command)
       puts '-'*12
     end
 
     private
-    def forward
+    def allow_time
       if !@time
-        @time = Time.now
-        @answer.start
-        return
+        true
+      else
+        Time.now.to_f - @time[:start].to_f > @time[:delta]
       end
-      if Time.now.to_f-@time.to_f < 1
-        @answer.start
-        return
-      end
+    end
 
-      # if @step_mode && @step_mode[:step] == 2
-      #   if sensor(@step_mode[:sensor])
-      #     finish_command
-      #     return
-      #   end
-      # elsif @step_mode && @step_mode[:step] == 1
-      #   if !sensor(@step_mode[:sensor])
-      #     @step_mode[:step] = 2
-      #   end
-      # elsif (sensor('rr') || sensor('ll'))
+    def forward
       if !@step_mode
         if (sensor('rr') || sensor('ll'))
           @step_mode = {step: -1}
+          # TODO - may be remove, now used for poor positioning at the crossroads
+          @time = {start: Time.now, delta: 2}
         else
           @step_mode = {step: 0}
         end
@@ -167,7 +158,7 @@
           @answer.right_wheel
           return
         end
-      elsif (sensor('rr') || sensor('ll'))
+      elsif (sensor('rr') || sensor('ll')) && allow_time
         @step_mode = {step: 1, sensor: (sensor('ll') ? 'll' : 'rr')}
       end
       if sensor('r') && !(sensor('r') && sensor('l'))
@@ -190,35 +181,31 @@
     end
 
     def turn direction
-      if @step_mode == 3
+      if !@step_mode
+        if sensor(TURN_SENSORS[direction])
+          @step_mode = -1
+        else
+          @step_mode = 0
+        end
+      end
+      case @step_mode
+      when 1
         if !sensor(TURN_SENSORS[direction])
           finish_command
         else
           @answer.send(direction)
         end
-        return
-      end
-      if @step_mode == 2
-        if sensor(TURN_SENSORS[direction])
-          @step_mode = 3
-        end
-          @answer.send(direction)
-        return
-      end
-      if @step_mode == 1
-        if !sensor(TURN_SENSORS[direction])
-          @step_mode = 2
-        end
-        @answer.send(direction)
-        return
-      end
-
+      when 0
         if sensor(TURN_SENSORS[direction])
           @step_mode = 1
-
         end
         @answer.send(direction)
-      # end
+      when -1
+        if !sensor(TURN_SENSORS[direction])
+          @step_mode = 0
+        end
+        @answer.send(direction)
+      end
     end
 
     def stop
@@ -247,6 +234,7 @@
 
     def finish_command
       @step_mode = nil
+      @time = nil
       @answer.stop
       @commands.finish
 
