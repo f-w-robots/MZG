@@ -2,7 +2,7 @@
 #
 # module LineFollower
   class Sensors
-    OneZeroDeliver = 5
+    OneZeroDeliver = 4
     MaxHistory = 10
 
     def initialize
@@ -28,6 +28,7 @@
           end
         end
       end
+
       sensorRaw(s) <= OneZeroDeliver
     end
 
@@ -138,9 +139,9 @@
       if !@step_mode
         if (sensor('rr') || sensor('ll'))
           @step_mode = {step: -1}
-          @time = {start: Time.now, delta: 2}
+          @time = {start: Time.now, delta: 1}
         else
-          @time = {}
+          @time = {start: Time.now, delta: 1}
           @step_mode = {step: 0}
         end
       end
@@ -203,30 +204,23 @@
     end
 
     def turn direction
-      if !@step_mode
-        if sensor(TURN_SENSORS[direction])
-          @step_mode = -1
-        else
+      case @step_mode
+      when nil
+        if !sensor(TURN_SENSORS[direction])
           @step_mode = 0
         end
-      end
-      case @step_mode
+        @answer.send(direction)
+      when 0
+        if sensor(TURN_SENSORS[direction])
+          @step_mode = 1
+        end
+        @answer.send(direction)
       when 1
         if !sensor(TURN_SENSORS[direction])
           finish_command
         else
           @answer.send(direction)
         end
-      when 0
-        if sensor(TURN_SENSORS[direction])
-          @step_mode = 1
-        end
-        @answer.send(direction)
-      when -1
-        if !sensor(TURN_SENSORS[direction])
-          @step_mode = 0
-        end
-        @answer.send(direction)
       end
     end
 
