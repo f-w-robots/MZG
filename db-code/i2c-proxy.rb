@@ -21,7 +21,7 @@
     def value s
       if s == 'l' || s == 'r'
         if sensorRaw(s) <= OneZeroDeliver && sensorRaw(s) > OneZeroDeliver - 2
-          if (sensorRaw(s == 'l' ? 'r' : 'l' ) - sensorRaw(s)).abs > 3
+          if (sensorRaw(s == 'l' ? 'r' : 'l' ) - sensorRaw(s)) < -3
             return true
           else
             return false
@@ -229,23 +229,29 @@
     end
 
     def search
-      if @step_mode && @step_mode[:step] == 1
-        if !sensor('l') && @step_mode[:turn] == :left
+      if !@step_mode
+        @step_mode = {}
+      end
+
+      case @step_mode[:step]
+      when nil
+        if sensor('c')
+          if sensor('l')
+            @step_mode = {step: 1, turn: :left}
+          else
+            @step_mode = {step: 1, turn: :right}
+          end
+        end
+        @answer.start
+      when 1
+        if @step_mode[:turn] == :left && !sensor('l')
           finish_command
-        elsif !sensor('r') && @step_mode[:turn] == :right
+        elsif @step_mode[:turn] == :right && !sensor('r')
           finish_command
         else
           @answer.send(@step_mode[:turn])
         end
-        return
-      elsif sensor('c')
-        if sensor('l')
-          @step_mode = {step: 1, turn: :left}
-        else
-          @step_mode = {step: 1, turn: :right}
-        end
       end
-      @answer.start
     end
 
     def finish_command
