@@ -1,4 +1,8 @@
+# eight
 commands = 'frfrfrfrflflflfl'
+# circle
+# commands = 'fflfflfflffl'
+
 hash = {'f' => "forward", 'r' => 'right', 'l' => 'left'}
 
 current_command = 0
