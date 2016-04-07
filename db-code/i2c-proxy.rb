@@ -19,9 +19,10 @@
     end
 
     def value s
-      if s == 'l' || s == 'r'
-        if sensorRaw(s) <= OneZeroDeliver && sensorRaw(s) > OneZeroDeliver - 2
-          if (sensorRaw(s == 'l' ? 'r' : 'l' ) - sensorRaw(s)) < -3
+      if (s == 'l' || s == 'r') && sensorRaw(s) <= OneZeroDeliver
+        rev_sensor = sensorRaw(s == 'l' ? 'r' : 'l' )
+        if sensorRaw(s) >= OneZeroDeliver - 2 && rev_sensor > OneZeroDeliver
+          if (rev_sensor - sensorRaw(s)) > 2
             return true
           else
             return false
@@ -148,6 +149,7 @@
 
       case @step_mode[:step]
       when -1
+        puts "r: #{sensor('r')} l: #{sensor('l')}"
         if !sensor('rr') && !sensor('ll')
           @step_mode[:step] = 0
         end
@@ -163,6 +165,7 @@
         end
         @answer.start
       when 0
+        puts "r: #{sensor('r')} l: #{sensor('l')}"
         if (sensor('rr') || sensor('ll')) && allow_time
           @step_mode = {step: 1, sensor: (sensor('ll') ? 'll' : 'rr')}
         end
@@ -327,7 +330,7 @@
     def wait_message
       while msg_empty?
         sleep 0.000001
-        if @request_time && @request_time.to_f < Time.now.to_f - 2
+        if @request_time && @request_time.to_f < Time.now.to_f - 0.5
           puts @messages.inspect
           puts "ABORT!!!!!!"
           @device.out_msg_left('18!0"0#0$0')
@@ -341,7 +344,9 @@
     end
 
     def shift_msg
-      @messages.shift
+      msg = @messages.shift
+      @messages.clear
+      msg
     end
   end
 # end
