@@ -14,10 +14,9 @@ class Device < Brick
     Thread.new do
       loop do
         sleep 0.001
-        puts @send_to_device_time
         if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - ABORT_TIMEOUT)
           puts "ABORT!, retrive"
-          @ws.send(@latest_message)
+          send_to_device(@latest_message)
         end
       end
     end
