@@ -29,6 +29,7 @@ class Device < Brick
   end
 
   def in_msg_right msg, hwid
+    puts "MSG to device: #{msg}"
     @ws.send(msg)
   end
 
@@ -38,6 +39,7 @@ class Device < Brick
 
   private
   def out_msg_right msg
+    puts "MSG from device: #{msg}"
     @callback_right.in_msg_left(msg, @hwid)
   end
 

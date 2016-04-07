@@ -306,6 +306,7 @@
           @mover.move current_command
 
           @device.out_msg_left(@answer.get)
+          @request_time = Time.now
 
           if finish?
             break
@@ -326,6 +327,12 @@
     def wait_message
       while msg_empty?
         sleep 0.000001
+        if @request_time && @request_time.to_f < Time.now.to_f - 2
+          puts @messages.inspect
+          puts "ABORT!!!!!!"
+          @device.out_msg_left('18!0"0#0$0')
+          @request_time = Time.now
+        end
       end
     end
 
