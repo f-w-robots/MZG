@@ -79,6 +79,7 @@
         end
       end
       for round in 1..@rounds
+        @options[:info][:moving] = false
         @options[:info][:round] = round
         theend = Time.now + @timeout
         allow_accept
@@ -96,6 +97,7 @@
   end
 
   def start_moving round
+    @options[:info][:moving] = true
     allow_accept(false)
     @commands.each do |hwid, commands|
       @commands.delete hwid

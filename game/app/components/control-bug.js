@@ -10,10 +10,15 @@ export default Ember.Component.extend({
   }.on('init'),
 
   updateCommand: function(response) {
-    if(response === 'wait' || response === 'ready') {
+    if(response === 'ready') {
+      if(this.get('skip_one_ready_command')) {
+        this.set('skip_one_ready_command', false);
+        return;
+      }
       this.$('.command.btn-warning').first().removeClass('btn-warning').addClass('btn-success');
     }
     if(response === 'crash') {
+      this.set('skip_one_ready_command', true);
       this.$('.command.btn-warning').first().removeClass('btn-warning').addClass('btn-danger');
     }
   },

@@ -52,6 +52,7 @@ export default Ember.Component.extend({
     this.set('rounds_total', data['rounds_total']);
     this.set('finish', data['finish']);
     this.set('prepare', data['prepare']);
+    this.set('moving', data['moving']);
   },
 
   checkStatus: function(data) {

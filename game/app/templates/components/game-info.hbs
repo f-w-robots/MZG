@@ -1,7 +1,9 @@
 <div class="alert {{statusClass}}" role="alert">{{statusText}}</div>
 
 {{#if displayStats}}
-  Timeout: {{timeout}}s
+  {{#unless moving}}
+    Timeout: {{timeout}}s
+  {{/unless}}
   {{#unless prepare}}
     <br>
     Current round: {{round}}/{{rounds_total}}
