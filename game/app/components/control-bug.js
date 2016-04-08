@@ -10,7 +10,7 @@ export default Ember.Component.extend({
   }.on('init'),
 
   updateCommand: function(response) {
-    if(response === 'wait') {
+    if(response === 'wait' || response === 'ready') {
       this.$('.command.btn-warning').first().removeClass('btn-warning').addClass('btn-success');
     }
     if(response === 'crash') {
