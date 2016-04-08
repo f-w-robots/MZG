@@ -86,7 +86,7 @@
         loop do
           sleep 0.01
           @options[:info][:timeout] = theend - Time.now
-          if theend < Time.now
+          if theend < Time.now || @commands.keys.size == @devices_locked.size
             start_moving(round)
             break
           end
