@@ -1,6 +1,4 @@
 class Device < Brick
-  ABORT_TIMEOUT = 0.5
-
   def initialize hwid, manual
     @hwid = hwid
     @manual = manual
@@ -11,16 +9,6 @@ class Device < Brick
   end
 
   def start request
-    Thread.new do
-      loop do
-        sleep 0.001
-        if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - ABORT_TIMEOUT)
-          puts "ABORT!, retrive"
-          send_to_device(@latest_message)
-        end
-      end
-    end
-
     request.websocket do |ws|
       @ws = ws
 
@@ -41,7 +29,22 @@ class Device < Brick
     end
   end
 
+  def start_abort_control abort_timeout
+    Thread.new do
+      loop do
+        sleep 0.001
+        if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
+          puts "ABORT!, retrive"
+          send_to_device(@latest_message)
+        end
+      end
+    end
+  end
+
   def in_msg_right msg, hwid
+    if msg.start_with?('MAX_TIMEOUT:')
+      start_abort_control(msg.sub('MAX_TIMEOUT:').to_f)
+    end
     send_to_device msg
   end
 

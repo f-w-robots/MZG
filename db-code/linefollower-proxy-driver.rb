@@ -277,6 +277,8 @@
       @sensors = Sensors.new
       @mover = Mover.new @sensors, @answer, self
 
+      @device.out_msg_left('MAX_TIMEOUT:0.5')
+
       @device.out_msg_left('04INIT')
       @device.out_msg_left('18!0"0#0$0')
 
