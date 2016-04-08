@@ -44,7 +44,7 @@ class Bricks
 
   def destroy
     @list.each do |brick|
-      brick.destroy
+      brick.destroy unless brick.is_a? Group
     end
   end
 end
