@@ -15,8 +15,6 @@
     @crashed = {}
     @finished = {}
 
-    @responses = {}
-
     @devices_locked = []
 
     @clients = {}
@@ -84,12 +82,12 @@
         @options[:info][:round] = round
         theend = Time.now + @timeout
         allow_accept
+
         loop do
-          sleep 0.001
+          sleep 0.01
           @options[:info][:timeout] = theend - Time.now
           if theend < Time.now
-            start_round(round)
-
+            start_moving(round)
             break
           end
         end
@@ -97,7 +95,7 @@
     end
   end
 
-  def start_round round
+  def start_moving round
     allow_accept(false)
     @commands.each do |hwid, commands|
       @commands.delete hwid
@@ -106,8 +104,6 @@
         @crashed[hwid] = false
       end
       @finished[hwid] = false
-      @responses[hwid] = []
-      @responses[hwid].push 'first'
       send_commands commands, hwid
     end
 
@@ -117,19 +113,17 @@
       puts @finished
 
       @finished.keys.each do |hwid|
-        if !@finished[hwid]
+        if @messages[hwid] > 0
           all_finish = false
         end
       end
-      puts all_finish
+
       if all_finish
         break
       end
 
       sleep 0.5
     end
-
-    allow_accept
 
     if round >= @rounds
       finish
@@ -138,31 +132,10 @@
   end
 
   def send_commands commands, hwid
-    thread = Thread.new do
-      commands.each do |command|
-        loop do
-          sleep 0.1
-          if @responses[hwid].size > 0
-            if @responses[hwid].shift == 'crash'
-              @finished[hwid] = true
-              thread.terminate
-            end
-            break
-          end
-        end
-        out_msg_left command, hwid
-        @messages[hwid] ||= 0
-        @messages[hwid] += 1
-      end
-
-      loop do
-        sleep 0.1
-        if @responses[hwid].size > 0
-          break
-        end
-
-        @finished[hwid] = true
-      end
+    commands.each do |command|
+      out_msg_left command, hwid
+      @messages[hwid] ||= 0
+      @messages[hwid] += 1
     end
   end
 
@@ -174,8 +147,6 @@
     @options[:info][:waits] ||= {}
     @options[:info][:waits][hwid] ||= 0
     @options[:info][:waits][hwid] += 1
-
-    @responses[hwid].push msg
 
     clear_stack hwid, msg
     out_msg_right({response: msg}, hwid)
@@ -227,7 +198,7 @@
       if msg == 'crash' || msg == 'win'
         @messages[hwid] = 0
         @crashed[hwid] = true
-      else
+      elsif msg == 'ready'
         @messages[hwid] -= 1
       end
     end
