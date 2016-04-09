@@ -37,7 +37,6 @@
       @history = @history[0..0]
     end
 
-    private
     def sensorRaw s
       if s == 'rr'
         medium(4)
@@ -126,7 +125,7 @@
 
     def move command
       if !sensor('c')
-        finish_command(:search, false)
+        finish_command :search
       end
 
       cmd = command
@@ -251,19 +250,24 @@
 
     def search
       if !@step_mode
+        @answer.start
+        @step_mode = {step: -1}
+        return
+      end
+
+      if @step_mode[:step] == -1
         @sensor.clear_history
-        @step_mode = {step: 0}
+        @step_mode[:step] = 0
       end
 
       if @step_mode[:step] == 2
+        @answer.send(@step_mode[:turn])
         if @step_mode[:turn] == :left && !sensor('l')
           finish_command(:forward)
-          return
         elsif @step_mode[:turn] == :right && !sensor('r')
           finish_command(:forward)
-          return
         end
-        @answer.send(@step_mode[:turn])
+        return
       end
 
       if @step_mode[:step] == 1
@@ -276,31 +280,31 @@
       end
 
       if @step_mode[:step] == 0 && (sensor('l') || sensor('r'))
-        @step_mode[:turn] = :right
-        if sensor('r')
+        if @sensor.sensorRaw('l') > @sensor.sensorRaw('r')
           @step_mode[:turn] = :left
+        else
+          @step_mode[:turn] = :right
         end
+
         @step_mode[:step] = 1
         @answer.start
       end
-
       if @step_mode[:step] == 0
+
         @answer.start
       end
     end
 
-    def finish_command override_command = nil, a = true
+    def finish_command override_command = nil
       @step_mode = nil
       @time = nil
-      if a
-        @answer.stop
-      end
 
       if override_command
         @override_command = override_command
         return
       end
       @override_command = nil
+      @answer.stop
       @commands.finish
 
       puts "FINISH #{'-'*150}"
