@@ -54,8 +54,9 @@
       var command;
       if(message == 'accepted')
         command = $('.commandList div.wait').first()
-      if(message == 'ready')
+      if(message == 'ready' || message == 'crash')
         command = $('.commandList div.accepted').first()
+
       command.removeClass().addClass(message)
     }
 

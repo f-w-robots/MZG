@@ -77,6 +77,11 @@
       @answer.push '18!0"1#1$0'
     end
 
+    def back
+      puts '*** back'
+      @answer.push '18!1"0#0$1'
+    end
+
     def right
       puts '*** right'
       @answer.push '18!1"0#1$0'
@@ -128,6 +133,12 @@
         finish_command :search
       end
 
+      if @sensor.sensorRaw('r') + @sensor.sensorRaw('c') + @sensor.sensorRaw('l') +
+         @sensor.sensorRaw('rr') + @sensor.sensorRaw('ll') < 3
+        puts "@"*500
+        finish_command :crash
+      end
+
       cmd = command
       if @override_command
         cmd = @override_command
@@ -147,6 +158,10 @@
       else
         Time.now.to_f - @time[:start].to_f > @time[:delta]
       end
+    end
+
+    def crash
+      finish_command(nil, true)
     end
 
     def forward
@@ -250,7 +265,7 @@
 
     def search
       if !@step_mode
-        @answer.start
+        @answer.back
         @step_mode = {step: -1}
         return
       end
@@ -275,7 +290,7 @@
           @step_mode[:step] = 2
           @answer.send(@step_mode[:turn])
         else
-          @answer.start
+          @answer.back
         end
       end
 
@@ -287,15 +302,15 @@
         end
 
         @step_mode[:step] = 1
-        @answer.start
+        @answer.back
       end
       if @step_mode[:step] == 0
 
-        @answer.start
+        @answer.back
       end
     end
 
-    def finish_command override_command = nil
+    def finish_command override_command = nil, crash = false
       @step_mode = nil
       @time = nil
 
@@ -305,7 +320,7 @@
       end
       @override_command = nil
       @answer.stop
-      @commands.finish
+      @commands.finish(crash)
 
       puts "FINISH #{'-'*150}"
       puts "#{'#'*160}"
@@ -334,9 +349,13 @@
     #   @device.out_msg_left('18!0"0#0$0')
     # end
 
-    def finish
+    def finish crash = false
       @command = nil
-      @device.out_msg_right 'ready'
+      if crash
+        @device.out_msg_right 'crash'
+      else
+        @device.out_msg_right 'ready'
+      end
     end
 
     def finish?
