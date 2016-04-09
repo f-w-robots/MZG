@@ -33,6 +33,10 @@
       sensorRaw(s) <= OneZeroDeliver
     end
 
+    def clear_history
+      @history = @history[0..0]
+    end
+
     private
     def sensorRaw s
       if s == 'rr'
@@ -94,6 +98,10 @@
       @answer.push '18!0"0#1$0'
     end
 
+    def xxx
+      @answer
+    end
+
     def get
       if @answer.size != 1
         raise("end loop, @answers count #{@answer.size}")
@@ -117,9 +125,19 @@
     end
 
     def move command
+      if !sensor('c')
+        finish_command(:search, false)
+      end
+
+      cmd = command
+      if @override_command
+        cmd = @override_command
+      end
       puts "allow_time: #{allow_time}" if @time
-      puts "#{command}, step_mode: #{@step_mode}"
-      send(command)
+      puts "#{cmd}, step_mode: #{@step_mode}"
+
+
+      send(cmd)
       puts '-'*12
     end
 
@@ -233,34 +251,56 @@
 
     def search
       if !@step_mode
-        @step_mode = {}
+        @sensor.clear_history
+        @step_mode = {step: 0}
       end
 
-      case @step_mode[:step]
-      when nil
-        if sensor('c')
-          if sensor('l')
-            @step_mode = {step: 1, turn: :left}
-          else
-            @step_mode = {step: 1, turn: :right}
-          end
-        end
-        @answer.start
-      when 1
+      if @step_mode[:step] == 2
         if @step_mode[:turn] == :left && !sensor('l')
-          finish_command
+          finish_command(:forward)
+          return
         elsif @step_mode[:turn] == :right && !sensor('r')
-          finish_command
-        else
-          @answer.send(@step_mode[:turn])
+          finish_command(:forward)
+          return
         end
+        @answer.send(@step_mode[:turn])
+      end
+
+      if @step_mode[:step] == 1
+        if sensor('c')
+          @step_mode[:step] = 2
+          @answer.send(@step_mode[:turn])
+        else
+          @answer.start
+        end
+      end
+
+      if @step_mode[:step] == 0 && (sensor('l') || sensor('r'))
+        @step_mode[:turn] = :right
+        if sensor('r')
+          @step_mode[:turn] = :left
+        end
+        @step_mode[:step] = 1
+        @answer.start
+      end
+
+      if @step_mode[:step] == 0
+        @answer.start
       end
     end
 
-    def finish_command
+    def finish_command override_command = nil, a = true
       @step_mode = nil
       @time = nil
-      @answer.stop
+      if a
+        @answer.stop
+      end
+
+      if override_command
+        @override_command = override_command
+        return
+      end
+      @override_command = nil
       @commands.finish
 
       puts "FINISH #{'-'*150}"
@@ -277,7 +317,7 @@
       @sensors = Sensors.new
       @mover = Mover.new @sensors, @answer, self
 
-      @device.out_msg_left('MAX_TIMEOUT:0.5')
+      @device.out_msg_left('MAX_TIMEOUT:0.8')
 
       @device.out_msg_left('04INIT')
       @device.out_msg_left('18!0"0#0$0')

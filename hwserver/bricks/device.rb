@@ -30,16 +30,16 @@ class Device < Brick
   end
 
   def start_abort_control abort_timeout
-    # Thread.new do
-    #   loop do
-    #     sleep 0.001
-    #     if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
-    #       puts "ABORT!, retrive"
-    #       @send_to_device_time = Time.now
-    #       send_to_device(@latest_message)
-    #     end
-    #   end
-    # end
+    Thread.new do
+      loop do
+        sleep 0.001
+        if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
+          puts "ABORT!, retrive"
+          @send_to_device_time = Time.now
+          send_to_device(@latest_message)
+        end
+      end
+    end
   end
 
   def in_msg_right msg, hwid
