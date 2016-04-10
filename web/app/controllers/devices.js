@@ -1,16 +1,16 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
-  setModels() {
+import saveModelControllerMixin from '../mixins/save-model-controller';
+
+export default Ember.Controller.extend(saveModelControllerMixin, {
+  setup() {
     this.set('algorithms', this.store.findAll('algorithm'));
     this.set('interfaces', this.store.findAll('interface'));
+
+    this.set('saveStatus', null);
   },
 
   actions: {
-    saveRecord() {
-      this.get('model').save();
-    },
-
     selectAlgorithm(algorithm) {
       this.get('model').set('algorithmId', algorithm);
     },

@@ -1,9 +1,5 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
-  actions: {
-    saveRecord: function() {
-      this.get('model').save();
-    },
-  }
-});
+import saveModelControllerMixin from '../mixins/save-model-controller';
+
+export default Ember.Controller.extend(saveModelControllerMixin, {});
