@@ -1,7 +1,8 @@
 class Bricks
-  def initialize hwid
+  def initialize hwid, manager
     @hwid = hwid
     @list = []
+    @manager = manager
   end
 
   def push brick
@@ -46,5 +47,7 @@ class Bricks
     @list.each do |brick|
       brick.destroy unless brick.is_a? Group
     end
+
+    @manager.device_destroy @hwid
   end
 end

@@ -25,9 +25,61 @@ require_relative 'db/group.rb'
 
 require_relative 'group_interface.rb'
 
+class DeviceManager
+  def initialize
+    @devices = {}
+    @web_sockets = {}
+  end
+
+  def open_socket request
+    request.websocket do |ws|
+      @web_sockets[ws] = true
+
+      ws.onopen do
+        ws.send(manual_device_list)
+      end
+
+      ws.onmessage do |msg|
+        ws.send(manual_device_list)
+      end
+
+      ws.onclose do
+        ws.send({keys: []}.to_json)
+      end
+    end
+  end
+
+  def update_device
+    @web_sockets.keys.each do |key|
+      key.send(manual_device_list)
+    end
+  end
+
+  def device_destroy hwid
+    @devices.delete hwid
+    update_device
+  end
+
+  def device hwid
+    @devices[hwid]
+  end
+
+  def device_add hwid, device
+    @devices[hwid] = device
+    update_device
+  end
+
+  private
+  def manual_device_list
+    {keys: @devices.map{|k,v|v.manual? && !v.group_interface? ? k : nil}.reject{|v|!v}}.to_json
+  end
+end
+
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
-  {keys: settings.devices.map{|k,v|v.manual? && !v.group_interface? ? k : nil}.reject{|v|!v}}.to_json
+  return if !request.websocket?
+
+  settings.device_manager.open_socket request
 end
 
 get '/group/info/:name' do |name|
@@ -61,7 +113,7 @@ post '/group/up/:name' do |name|
 end
 
 get '/control/:hwid' do |hwid|
-  device = settings.devices[hwid]
+  device = device_manager.device(hwid)
   return '' if !device || !device.manual? || device.group_interface?
 
   response = device.interface.start(request)
@@ -72,15 +124,15 @@ get '/:hwid' do |hwid|
   return if !request.websocket?
   puts "Connection from #{hwid}"
 
-  bricks = Bricks.new hwid
+  bricks = Bricks.new hwid, settings.device_manager
 
-  if settings.devices[hwid]
-    settings.devices[hwid].destroy
+  if settings.device_manager.device(hwid)
+    settings.device_manager.device(hwid).destroy
   end
 
   device_record = DB::Device.new(hwid, settings.db)
 
-  device = Device.new hwid, device_record.manual?
+  device = Device.new hwid, bricks
   bricks.push device
 
   if device_record.proxy?
@@ -111,7 +163,11 @@ get '/:hwid' do |hwid|
 
   bricks.connect
 
-  settings.devices[hwid] = bricks
+  settings.device_manager.device_add(hwid, bricks)
+
+  if device_record.manual?
+    settings.device_manager.update_device
+  end
 
   response = device.start request
 
@@ -126,5 +182,7 @@ set :groups, {}
 set :db, Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
 set :port, ENV['HWSERVER_PORT']
 set :bind, '0.0.0.0'
+
+set :device_manager, DeviceManager.new
 
 Mongo::Logger.logger.level = ::Logger::FATAL

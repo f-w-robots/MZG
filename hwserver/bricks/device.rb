@@ -1,7 +1,7 @@
 class Device < Brick
-  def initialize hwid, manual
+  def initialize hwid, bricks
     @hwid = hwid
-    @manual = manual
+    @bricks = bricks
   end
 
   def hwid
@@ -72,6 +72,6 @@ class Device < Brick
   end
 
   def on_close
-
+    @bricks.destroy
   end
 end
