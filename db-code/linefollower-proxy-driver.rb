@@ -102,15 +102,11 @@
       @answer.push '18!0"0#1$0'
     end
 
-    def xxx
-      @answer
-    end
-
     def get
       if @answer.size != 1
         raise("end loop, @answers count #{@answer.size}")
       else
-        @answer.shift
+        "#{@answer.shift}~"
       end
     end
   end
@@ -339,7 +335,7 @@
       @device.out_msg_left('MAX_TIMEOUT:0.8')
 
       @device.out_msg_left('04INIT')
-      @device.out_msg_left('18!0"0#0$0')
+      @device.out_msg_left('18!0"0#0$0~')
 
       @messages = []
 
