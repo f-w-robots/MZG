@@ -30,7 +30,7 @@ class Device < Brick
   end
 
   def start_abort_control abort_timeout
-    Thread.new do
+    @thread = Thread.new do
       loop do
         sleep 0.001
         if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
@@ -52,6 +52,7 @@ class Device < Brick
 
   def destroy
     @ws.close_connection
+    @thread.terminate
   end
 
   def send_to_device msg
