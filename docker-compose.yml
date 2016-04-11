@@ -25,7 +25,7 @@ hwserver:
   env_file: .env
 apiserver:
   build: apiserver/.
-  command: ruby app.rb
+  command: rackup
   ports:
     - "2600:2600"
   volumes:

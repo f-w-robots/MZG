@@ -1,5 +1,6 @@
+<% records_count = @records.count %>
 {
-  "data": <%= @individual ? '' : '[' %>
+  "data": <%= (records_count == 1) ? '' : '[' %>
   <% @records.each_with_index do |record, index| %>
     {
       "type": "<%= @model.pluralize %>",
@@ -9,7 +10,7 @@
           <%= attribute(attr, record[attr], @attributes.count - 1 != index) %>
         <% end %>
       }
-    }<%= @records.count - 1 == index ? '' : ',' %>
+    }<%= (records_count - 1 == index) ? '' : ',' %>
   <% end %>
-  <%= @individual ? '' : ']' %>
+  <%= records_count == 1 ? '' : ']' %>
 }

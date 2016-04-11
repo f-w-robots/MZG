@@ -25,6 +25,3 @@ DEPENDENCIES
   puma
   sinatra (~> 1.4.7)
   sinatra-cross_origin (~> 0.3.2)
-
-BUNDLED WITH
-   1.11.2
