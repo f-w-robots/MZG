@@ -57,7 +57,8 @@
       if(message == 'ready' || message == 'crash')
         command = $('.commandList div.accepted').first()
 
-      command.removeClass().addClass(message)
+      console.log(command);
+      command.removeClass('wait').removeClass('accepted').addClass(message)
     }
 
     setInterval(function() {

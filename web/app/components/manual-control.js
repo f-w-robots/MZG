@@ -6,11 +6,11 @@ export default Ember.Component.extend({
   socket: null,
 
   currentHost: function(port) {
-    return 'ws://' + location.hostname + ':' + port;
+    return location.protocol + '//' + location.hostname + ':' + port;
   },
 
   webSocketUrl: function() {
-    return this.currentHost(2500) + "/devices/list/manual";
+    return 'ws://' + location.hostname + ":2500/devices/list/manual";
   },
 
   didInsertElement: function() {
@@ -19,7 +19,7 @@ export default Ember.Component.extend({
     socket = Ember.webSockets.socket(this.webSocketUrl())
 
     if(!socket) {
-      var socket = new WebSocket(this.currentHost(2500) + "/devices/list/manual");
+      var socket = new WebSocket(this.webSocketUrl());
       Ember.webSockets.socket(this.webSocketUrl(), socket);
 
       socket.onopen = function() {

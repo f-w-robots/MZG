@@ -64,7 +64,7 @@ post '/group/up/:name' do |name|
 end
 
 get '/control/:hwid' do |hwid|
-  device = device_manager.device(hwid)
+  device = settings.device_manager.device(hwid)
   return '' if !device || !device.manual? || device.group_interface?
 
   response = device.interface.start(request)
