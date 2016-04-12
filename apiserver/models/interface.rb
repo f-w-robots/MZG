@@ -1,9 +1,8 @@
 require_relative 'model'
 
 class Interface < Model
-  def self.init db
-    @db = db
-    @table = :interfaces
+  def self.init(db)
+    super(db)
     @idname = :id
   end
 
