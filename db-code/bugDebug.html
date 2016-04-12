@@ -1,6 +1,8 @@
 <button id="start">start</button><br>
 <button id="left">left</button><br>
+<button id="left_wheel">left wheel</button><br>
 <button id="right">right</button><br>
+<button id="right_wheel">right wheel</button><br>
 <button id="back">back</button><br>
 <button id="stop">stop</button><br>
 <br>
@@ -36,8 +38,14 @@ input log:
     $("#left").click(function() {
       socket.send('18!0"1#0$1');
     });
+    $("#left_wheel").click(function() {
+      socket.send('18!0"0#1$0');
+    });
     $("#right").click(function() {
       socket.send('18!1"0#1$0');
+    });
+    $("#right_wheel").click(function() {
+      socket.send('18!0"1#0$0');
     });
     $("#cDown").click(function() {
       socket.send('12%1');
