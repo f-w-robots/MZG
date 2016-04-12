@@ -30,7 +30,7 @@ class Device < Brick
   end
 
 
-  def start_abort_control abort_timeout, abort_message = nil
+  def start_abort_control abort_timeout, abort_message = nil, dead_times = nil
     @thread = Thread.new do
       loop do
         sleep 0.001
@@ -38,6 +38,12 @@ class Device < Brick
           puts "ABORT!, retrive"
           @send_to_device_time = Time.now
           send_to_device(abort_message || @latest_message)
+          if dead_times
+            if dead_times < 1
+              on_close
+            end
+            dead_times -= 1
+          end
         end
       end
     end
@@ -46,7 +52,7 @@ class Device < Brick
   def in_msg_right msg, hwid
     if msg.start_with?('MAX_TIMEOUT:')
       config = msg.sub('MAX_TIMEOUT:', '').split(":")
-      start_abort_control(config.first.to_f, config.last)
+      start_abort_control(config.first.to_f, config[1], config.last.to_i)
       return
     end
     send_to_device msg
