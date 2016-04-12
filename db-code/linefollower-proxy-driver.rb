@@ -332,7 +332,8 @@
       @sensors = Sensors.new
       @mover = Mover.new @sensors, @answer, self
 
-      @device.out_msg_left('MAX_TIMEOUT:1.0:18!0"0#0$0~:10')
+      @device.out_msg_left('MAX_TIMEOUT:1.0:18!0"0#0$0~')
+      @device.out_msg_left('SETUP_PING:5:3')
 
 
       @device.out_msg_left('04INIT')

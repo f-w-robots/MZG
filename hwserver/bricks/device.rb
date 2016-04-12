@@ -2,6 +2,8 @@ class Device < Brick
   def initialize hwid, bricks
     @hwid = hwid
     @bricks = bricks
+
+    @threads = {}
   end
 
   def hwid
@@ -18,8 +20,13 @@ class Device < Brick
       end
 
       ws.onmessage do |msg|
-        @send_to_device_time = nil
-        out_msg_right(msg)
+        if msg == 'PONG'
+          @wait_pong = false
+          puts "RECIVE PONG"
+        else
+          @send_to_device_time = nil
+          out_msg_right(msg)
+        end
       end
 
       ws.onclose do
@@ -29,9 +36,8 @@ class Device < Brick
     end
   end
 
-
   def start_abort_control abort_timeout, abort_message = nil, dead_times = nil
-    @thread = Thread.new do
+    @threads[:abort] = Thread.new do
       loop do
         sleep 0.001
         if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
@@ -49,10 +55,33 @@ class Device < Brick
     end
   end
 
+  def start_ping_control time, timeout
+    @threads[:ping] = Thread.new do
+      loop do
+        sleep 1
+        if !@send_ping_time || @send_ping_time < Time.now - time
+          @send_ping_time = Time.now
+          @ws.send 'PING'
+          puts "SEND PING"
+          @wait_pong = true
+        end
+        if @wait_pong && @send_ping_time && @send_ping_time < Time.now - timeout
+          puts "ABORTED by PING-PONG"
+          on_close
+        end
+      end
+    end
+  end
+
   def in_msg_right msg, hwid
     if msg.start_with?('MAX_TIMEOUT:')
       config = msg.sub('MAX_TIMEOUT:', '').split(":")
       start_abort_control(config.first.to_f, config[1], config.last.to_i)
+      return
+    end
+    if msg.start_with?('SETUP_PING:')
+      config = msg.sub('SETUP_PING:', '').split(":")
+      start_ping_control(config.first.to_f, config.last.to_f,)
       return
     end
     send_to_device msg
@@ -60,7 +89,9 @@ class Device < Brick
 
   def destroy
     @ws.close_connection
-    @thread.terminate if @thread
+    @threads.each do |key, thread|
+      thread.terminate
+    end
   end
 
   def send_to_device msg
