@@ -32,9 +32,9 @@ export default Ember.Component.extend({
   errorDM: function() {
     if(this.get('_state') == 'inDOM') {
       this.set('errorDeviceManager', true);
+      this.set('manual_devices', []);
+      this.set('algorithm_devices', []);
     }
-    this.set('manual_devices', []);
-    this.set('algorithm_devices', []);
   },
 
   openDM: function() {
