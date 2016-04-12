@@ -5,6 +5,10 @@ class Bricks
     @manager = manager
   end
 
+  def hwid
+    @hwid
+  end
+
   def push brick
     @list.push brick
   end

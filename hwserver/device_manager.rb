@@ -9,11 +9,15 @@ class DeviceManager
       @web_sockets[ws] = true
 
       ws.onopen do
-        ws.send(manual_device_list)
+
       end
 
       ws.onmessage do |msg|
-        ws.send(manual_device_list)
+        if msg == 'devices'
+          ws.send(device_list)
+        elsif msg.start_with?('kill_device:')
+          @devices[msg.sub('kill_device:', '')].destroy if @devices[msg.sub('kill_device:', '')]
+        end
       end
 
       ws.onclose do
@@ -24,7 +28,7 @@ class DeviceManager
 
   def update_device
     @web_sockets.keys.each do |key|
-      key.send(manual_device_list)
+      key.send(device_list)
     end
   end
 
@@ -43,7 +47,14 @@ class DeviceManager
   end
 
   private
-  def manual_device_list
-    {keys: @devices.map{|k,v|v.manual? && !v.group_interface? ? k : nil}.reject{|v|!v}}.to_json
+  def device_list
+    devices = @devices.map{|k,v|!v.group_interface? ? v : nil}.reject{|v|!v}
+    {
+      devices: {
+      manual:
+        devices.map{|v|v.manual? ? v.hwid : nil}.reject{|v|!v},
+      algorithm:
+        devices.map{|v|!v.manual? ? v.hwid : nil}.reject{|v|!v},
+      }}.to_json
   end
 end

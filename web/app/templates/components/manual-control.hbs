@@ -1,14 +1,29 @@
+{{#if errorDeviceManager}}
+  <div class="alert alert-danger" role="alert">Сonnection is not established!</div>
+{{/if}}
 <div class="row">
-{{#each devices as |deviceId|}}
+{{#each manual_devices as |deviceId|}}
   <div class="col-md-1 col-md-offset-1">
     <a href="#" {{action "select" deviceId}}>
       <img src="images/device.png" height="100">
       {{deviceId}}
     </a>
+    {{reset-button hwid=deviceId}}
   </div>
 {{/each}}
-{{#if (eq devices.length 0)}}
-  no avaliable devices
+{{#each algorithm_devices as |deviceId|}}
+  <div class="col-md-1 col-md-offset-1">
+    <a href="#" {{action "select" deviceId}}>
+      <img src="images/algorithm_device.png" height="100">
+      {{deviceId}}
+    </a>
+    {{reset-button hwid=deviceId}}
+  </div>
+{{/each}}
+{{#if (eq manual_devices.length 0)}}
+  {{#if (eq algorithm_devices.length 0)}}
+  no device avaliable
+  {{/if}}
 {{/if}}
 </div>
 {{#if url}}

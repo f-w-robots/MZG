@@ -4,45 +4,44 @@ export default Ember.Component.extend({
   devices: null,
   url: null,
   socket: null,
+  errorDeviceManager: false,
 
   currentHost: function(port) {
     return location.protocol + '//' + location.hostname + ':' + port;
   },
 
-  webSocketUrl: function() {
-    return 'ws://' + location.hostname + ":2500/devices/list/manual";
-  },
+  setup: function() {
+    Ember.DMSocket.addOnMessage('devices', function(data) {
+      if(this.get('_state') == 'inDOM') {
+        this.set('manual_devices', data["manual"]);
+        this.set('algorithm_devices', data["algorithm"]);
+      }
+    }, this);
+
+    Ember.DMSocket.addOnOpen(this.openDM, this);
+    Ember.DMSocket.addOnError(this.errorDM, this);
+    Ember.DMSocket.addOnClose(this.errorDM, this);
+  }.on('init'),
 
   didInsertElement: function() {
-    var self = this;
+    var socket = Ember.DMSocket.getSocket();
 
-    socket = Ember.webSockets.socket(this.webSocketUrl())
+    Ember.DMSocket.sendDirect('devices');
+  },
 
-    if(!socket) {
-      var socket = new WebSocket(this.webSocketUrl());
-      Ember.webSockets.socket(this.webSocketUrl(), socket);
-
-      socket.onopen = function() {
-
-      };
-
-      socket.onclose = function(event) {
-
-      };
-
-      socket.onerror = function(error) {
-
-      };
+  errorDM: function() {
+    if(this.get('_state') == 'inDOM') {
+      this.set('errorDeviceManager', true);
     }
+    this.set('manual_devices', []);
+    this.set('algorithm_devices', []);
+  },
 
-    socket.onmessage = function(event) {
-      if(self.get('_state') == 'inDOM') {
-        self.set('devices', Ember.$.parseJSON(event.data)["keys"]);
-      }
-    };
-
-    if(socket.readyState == 1)
-      socket.send('request');
+  openDM: function() {
+    if(this.get('_state') == 'inDOM') {
+      Ember.DMSocket.sendDirect('devices');
+      this.set('errorDeviceManager', false);
+    }
   },
 
   actions: {

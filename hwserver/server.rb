@@ -116,10 +116,6 @@ get '/:hwid' do |hwid|
 
   settings.device_manager.device_add(hwid, bricks)
 
-  if device_record.manual?
-    settings.device_manager.update_device
-  end
-
   response = device.start request
 
   proxy.start if proxy
