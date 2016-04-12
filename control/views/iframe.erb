@@ -9,6 +9,10 @@
   <script type="text/javascript">
     messageStack = [];
 
+    function clearIframe() {
+      $('.body').html('Ops!');
+    }
+
     function currentHost() {
         return 'ws://' + location.hostname + ':' + <%= ENV['HWSERVER_PORT'] %>
     }
@@ -19,7 +23,7 @@
     };
 
     socket.onclose = function(event) {
-      alert("socket closed");
+      clearIframe();
     };
 
     socket.onmessage = function(event) {
@@ -28,11 +32,12 @@
     };
 
     socket.onerror = function(error) {
-      alert("Error " + error.message);
+      clearIframe();
     };
   </script>
-
-  <%= @iframe %>
+  <div class="body">
+    <%= @iframe %>
+  </div>
 
 </body>
 </html>
