@@ -113,6 +113,7 @@
 
   class Mover
     TURN_SENSORS = {'right' => 'rr', 'left' => 'll'}
+    SEARCH_DIRECTION = :back
 
     def initialize sensor, answer, commands
       @sensor = sensor
@@ -125,7 +126,7 @@
     end
 
     def move command
-      if !sensor('c')
+      if !sensor('c') && command.to_sym != :lead
         finish_command :search
       end
 
@@ -226,6 +227,18 @@
       end
     end
 
+    def lead
+      if sensor('r') && !(sensor('r') && sensor('l'))
+        @answer.right
+        return
+      end
+      if sensor('l') && !(sensor('r') && sensor('l'))
+        @answer.left
+        return
+      end
+      @answer.start
+    end
+
     def left
       turn 'left'
     end
@@ -261,7 +274,7 @@
 
     def search
       if !@step_mode
-        @answer.back
+        @answer.send(SEARCH_DIRECTION)
         @step_mode = {step: -1}
         return
       end
@@ -286,7 +299,7 @@
           @step_mode[:step] = 2
           @answer.send(@step_mode[:turn])
         else
-          @answer.back
+          @answer.send(SEARCH_DIRECTION)
         end
       end
 
@@ -298,11 +311,10 @@
         end
 
         @step_mode[:step] = 1
-        @answer.back
+        @answer.send(SEARCH_DIRECTION)
       end
       if @step_mode[:step] == 0
-
-        @answer.back
+        @answer.send(SEARCH_DIRECTION)
       end
     end
 
