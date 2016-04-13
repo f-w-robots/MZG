@@ -47,12 +47,9 @@ export default Ember.Component.extend({
     if(data['timeout'] < 0) {
       data['timeout'] = 0;
     }
-    this.set('timeout', data['timeout']);
-    this.set('round', data['round']);
-    this.set('rounds_total', data['rounds_total']);
-    this.set('finish', data['finish']);
-    this.set('prepare', data['prepare']);
-    this.set('moving', data['moving']);
+    for(var key in data) {
+      this.set(key, data[key]);
+    }
   },
 
   checkStatus: function(data) {
