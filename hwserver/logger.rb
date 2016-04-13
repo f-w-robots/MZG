@@ -1,14 +1,12 @@
 class Logger
-  DIR = 'logs'
-  def initialize
-
+  def initialize(filename)
+    @filename = filename
   end
 
-  def self.device hwid, msg
-    if !(file = @@device_files[hwid])
-      @@device_files[hwid] = file = File.open("#{DIR}/deice.#{hwid}.log", 'a')
+  def write message
+    puts message
+    File.open("log/" + @filename + ".txt", "a") do |log|
+      log.puts message
     end
-    file.write(msg)
   end
-
 end

@@ -35,3 +35,4 @@ build/
 .rvmrc
 
 .byebug_history
+/log/*.txt

@@ -26,6 +26,7 @@ require_relative 'db/group.rb'
 require_relative 'group_interface.rb'
 require_relative 'device_manager.rb'
 require_relative 'package_generator.rb'
+require_relative 'logger.rb'
 
 get '/devices/list/manual' do
   response.headers['Access-Control-Allow-Origin'] = '*'
