@@ -1,18 +1,21 @@
 # Work with sensors data
 #
 # module LineFollower
+  # HWID = hiwd
   class Sensors
     OneZeroDeliver = 4
     MaxHistory = 10
 
     def initialize
       @history = []
+      @log = Logger.new(HWID)
     end
 
     def update values, print = false
       @history.unshift(values)
       @history = @history[0..(MaxHistory-1)]
       if print
+        LOGGER.write "last: #{values[0..4]}"
         puts "last: #{values[0..4]}"
         puts "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
       end
@@ -63,43 +66,44 @@
   # Create answer - command for car
   #
   class Answer
-    def initialize
+    def initialize log
       @answer = []
+      @log = log
     end
 
     def stop
       puts '*** stop'
-      @answer.push '18!0"0#0$0'
+      @answer.push PackageGenerator::BUG.right_left_wheel(0,0)
     end
 
     def start
       puts '*** start'
-      @answer.push '18!0"1#1$0'
+      @answer.push PackageGenerator::BUG.right_left_wheel(1,1)
     end
 
     def back
       puts '*** back'
-      @answer.push '18!1"0#0$1'
+      @answer.push PackageGenerator::BUG.right_left_wheel(0,0)
     end
 
     def right
       puts '*** right'
-      @answer.push '18!1"0#1$0'
+      @answer.push PackageGenerator::BUG.right_left_wheel(1,-1)
     end
 
     def left
       puts '*** left'
-      @answer.push '18!0"1#0$1'
+      @answer.push PackageGenerator::BUG.right_left_wheel(-1,1)
     end
 
     def right_wheel
       puts '*** right_wheel'
-      @answer.push '18!0"1#0$0'
+      @answer.push PackageGenerator::BUG.right_left_wheel(1,0)
     end
 
     def left_wheel
       puts '*** left_wheel'
-      @answer.push '18!0"0#1$0'
+      @answer.push PackageGenerator::BUG.right_left_wheel(0,1)
     end
 
     def get
@@ -339,25 +343,22 @@
   class Main
     def initialize device
       @device = device
+      device.hwid
 
       @answer = Answer.new
-      @sensors = Sensors.new
+      @sensors = Sensors.new hwie
       @mover = Mover.new @sensors, @answer, self
 
-      @device.out_msg_left('MAX_TIMEOUT:1.0:18!0"0#0$0~')
+      @device.out_msg_left("MAX_TIMEOUT:1.0:#{PackageGenerator::BUG.right_left_wheel(0,0)}")
       @device.out_msg_left('SETUP_PING:5:3')
 
 
       @device.out_msg_left('04INIT')
-      @device.out_msg_left('18!0"0#0$0~')
+      @device.out_msg_left(PackageGenerator::BUG.right_left_wheel(0,0))
 
       @messages = []
 
     end
-
-    # def stop_command!
-    #   @device.out_msg_left('18!0"0#0$0')
-    # end
 
     def finish crash = false
       @command = nil
