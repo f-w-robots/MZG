@@ -38,7 +38,7 @@ class DB::Device < DB
     # TODO
     mod = Module.new
      mod.module_eval "
-     HWID = '#{@hwid}''
+     HWID = '#{@hwid}'
      #{code}
      "
     mod

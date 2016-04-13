@@ -87,12 +87,12 @@
 
     def right
       @log.write '*** right'
-      @answer.push PackageGenerator::BUG.right_left_wheel(1,-1)
+      @answer.push PackageGenerator::BUG.right_left_wheel(-1,1)
     end
 
     def left
       @log.write '*** left'
-      @answer.push PackageGenerator::BUG.right_left_wheel(-1,1)
+      @answer.push PackageGenerator::BUG.right_left_wheel(1,-1)
     end
 
     def right_wheel
