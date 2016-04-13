@@ -8,14 +8,12 @@
 
     def initialize
       @history = []
-      @log = Logger.new(HWID)
     end
 
     def update values, print = false
       @history.unshift(values)
       @history = @history[0..(MaxHistory-1)]
       if print
-        LOGGER.write "last: #{values[0..4]}"
         puts "last: #{values[0..4]}"
         puts "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
       end
@@ -66,9 +64,8 @@
   # Create answer - command for car
   #
   class Answer
-    def initialize log
+    def initialize
       @answer = []
-      @log = log
     end
 
     def stop
@@ -343,10 +340,9 @@
   class Main
     def initialize device
       @device = device
-      device.hwid
 
       @answer = Answer.new
-      @sensors = Sensors.new hwie
+      @sensors = Sensors.new
       @mover = Mover.new @sensors, @answer, self
 
       @device.out_msg_left("MAX_TIMEOUT:1.0:#{PackageGenerator::BUG.right_left_wheel(0,0)}")
