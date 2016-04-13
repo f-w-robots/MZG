@@ -7,14 +7,15 @@
 
     def initialize
       @history = []
+      @log = Logger.new(HWID)
     end
 
     def update values, print = false
       @history.unshift(values)
       @history = @history[0..(MaxHistory-1)]
       if print
-        puts "last: #{values[0..4]}"
-        puts "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
+        @log.write "last: #{values[0..4]}"
+        @log.write "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
       end
     end
 
@@ -65,40 +66,41 @@
   class Answer
     def initialize
       @answer = []
+      @log = Logger.new(HWID)
     end
 
     def stop
-      puts '*** stop'
+      @log.write '*** stop'
       @answer.push '18!0"0#0$0'
     end
 
     def start
-      puts '*** start'
+      @log.write '*** start'
       @answer.push '18!0"1#1$0'
     end
 
     def back
-      puts '*** back'
+      @log.write '*** back'
       @answer.push '18!1"0#0$1'
     end
 
     def right
-      puts '*** right'
+      @log.write '*** right'
       @answer.push '18!1"0#1$0'
     end
 
     def left
-      puts '*** left'
+      @log.write '*** left'
       @answer.push '18!0"1#0$1'
     end
 
     def right_wheel
-      puts '*** right_wheel'
+      @log.write '*** right_wheel'
       @answer.push '18!0"1#0$0'
     end
 
     def left_wheel
-      puts '*** left_wheel'
+      @log.write '*** left_wheel'
       @answer.push '18!0"0#1$0'
     end
 
@@ -118,6 +120,7 @@
       @sensor = sensor
       @answer = answer
       @commands = commands
+      @log = Logger.new(HWID)
     end
 
     def sensor value
@@ -131,7 +134,7 @@
 
       if @sensor.sensorRaw('r') + @sensor.sensorRaw('c') + @sensor.sensorRaw('l') +
          @sensor.sensorRaw('rr') + @sensor.sensorRaw('ll') < 3
-        puts "@"*500
+        @log.write "@"*500
         finish_command :crash
       end
 
@@ -139,12 +142,12 @@
       if @override_command
         cmd = @override_command
       end
-      puts "allow_time: #{allow_time}" if @time
-      puts "#{cmd}, step_mode: #{@step_mode}"
+      @log.write "allow_time: #{allow_time}" if @time
+      @log.write "#{cmd}, step_mode: #{@step_mode}"
 
 
       send(cmd)
-      puts '-'*12
+      @log.write '-'*12
     end
 
     private
@@ -177,7 +180,7 @@
 
       case @step_mode[:step]
       when -1
-        puts "r: #{sensor('r')} l: #{sensor('l')}"
+        @log.write "r: #{sensor('r')} l: #{sensor('l')}"
         if !sensor('rr') && !sensor('ll')
           @step_mode[:step] = 0
         end
@@ -193,7 +196,7 @@
         end
         @answer.start
       when 0
-        puts "r: #{sensor('r')} l: #{sensor('l')}"
+        @log.write "r: #{sensor('r')} l: #{sensor('l')}"
         if (sensor('rr') || sensor('ll')) && allow_time
           @step_mode = {step: 1, sensor: (sensor('ll') ? 'll' : 'rr')}
         end
@@ -318,9 +321,9 @@
       @answer.stop
       @commands.finish(crash)
 
-      puts "FINISH #{'-'*150}"
-      puts "#{'#'*160}"
-      puts "#{'#'*160}"
+      @log.write "FINISH #{'-'*150}"
+      @log.write "#{'#'*160}"
+      @log.write "#{'#'*160}"
     end
   end
 
@@ -340,7 +343,7 @@
       @device.out_msg_left('18!0"0#0$0~')
 
       @messages = []
-
+      @log = Logger.new(HWID)
     end
 
     # def stop_command!

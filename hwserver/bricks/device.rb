@@ -4,6 +4,7 @@ class Device < Brick
     @bricks = bricks
 
     @threads = {}
+    @log = Logger.new(hwid)
   end
 
   def hwid
@@ -15,14 +16,14 @@ class Device < Brick
       @ws = ws
 
       ws.onopen do
-        puts "connected with id: #{@hwid}"
+        @log.write "connected with id: #{@hwid}"
         on_open
       end
 
       ws.onmessage do |msg|
         if msg == 'PONG'
           @wait_pong = false
-          puts "RECIVE PONG"
+          @log.write "RECIVE PONG"
         else
           @send_to_device_time = nil
           out_msg_right(msg)
@@ -30,7 +31,7 @@ class Device < Brick
       end
 
       ws.onclose do
-        puts "disconnected with id: #{@hwid}"
+        @log.write "disconnected with id: #{@hwid}"
         on_close
       end
     end
@@ -41,7 +42,7 @@ class Device < Brick
       loop do
         sleep 0.001
         if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
-          puts "ABORT!, retrive"
+          @log.write "ABORT!, retrive"
           @send_to_device_time = Time.now
           send_to_device(abort_message || @latest_message)
           if dead_times
@@ -62,11 +63,11 @@ class Device < Brick
         if !@send_ping_time || @send_ping_time < Time.now - time
           @send_ping_time = Time.now
           @ws.send 'PING'
-          puts "SEND PING"
+          @log.write "SEND PING"
           @wait_pong = true
         end
         if @wait_pong && @send_ping_time && @send_ping_time < Time.now - timeout
-          puts "ABORTED by PING-PONG"
+          @log.write "ABORTED by PING-PONG"
           on_close
         end
       end
@@ -95,7 +96,7 @@ class Device < Brick
   end
 
   def send_to_device msg
-    puts "MSG to device: #{msg}"
+    @log.write "MSG to device: #{msg}"
     @send_to_device_time = Time.now
     @latest_message = msg
     @ws.send msg
@@ -103,7 +104,7 @@ class Device < Brick
 
   private
   def out_msg_right msg
-    puts "MSG from device: #{msg}"
+    @log.write "MSG from device: #{msg}"
     @callback_right.in_msg_left(msg, @hwid)
   end
 
