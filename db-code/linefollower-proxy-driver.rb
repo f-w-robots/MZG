@@ -80,7 +80,7 @@
 
     def back
       puts '*** back'
-      @answer.push PackageGenerator::BUG.right_left_wheel(0,0)
+      @answer.push PackageGenerator::BUG.right_left_wheel(-1,-1)
     end
 
     def right
