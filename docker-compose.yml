@@ -20,6 +20,7 @@ hwserver:
     - "2500:2500"
   volumes:
     - ./hwserver:/app
+    - ./log:/app/log
   links:
     - db
   env_file: .env

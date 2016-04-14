@@ -7,3 +7,5 @@ ADD Gemfile /app
 ADD Gemfile.lock /app
 
 RUN bundle install --jobs=5
+
+VOLUME ["/app/log"]
