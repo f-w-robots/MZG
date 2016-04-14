@@ -4,22 +4,23 @@ db:
     - mzg_db:/data/db
     - mzg_db_config:/data/configdb
 control:
-  build: .
-  command: ruby control/app.rb
+  build: control/.
+  command: ruby app.rb
   ports:
     - "3900:3900"
   volumes:
-    - .:/app
+    - ./control:/app
   links:
     - db
   env_file: .env
 hwserver:
-  build: .
-  command: ruby hwserver/server.rb
+  build: hwserver/.
+  command: rackup
   ports:
     - "2500:2500"
   volumes:
-    - .:/app
+    - ./hwserver:/app
+    - ./log:/app/log
   links:
     - db
   env_file: .env

@@ -43,6 +43,3 @@ DEPENDENCIES
   mongo (~> 2.2.2)
   sinatra (~> 1.4.7)
   sinatra-websocket (~> 0.3.1)
-
-BUNDLED WITH
-   1.11.2
