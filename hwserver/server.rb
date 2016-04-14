@@ -7,7 +7,6 @@ require 'byebug'
 Thread::abort_on_exception = true
 
 require 'json'
-require 'sinatra'
 require 'sinatra/base'
 require 'sinatra-websocket'
 require 'mongo'

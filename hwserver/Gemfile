@@ -6,5 +6,3 @@ gem 'mongo', '~> 2.2.2'
 
 # Development
 gem 'byebug'
-
-gem 'faye-websocket'
