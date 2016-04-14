@@ -14,12 +14,12 @@ control:
     - db
   env_file: .env
 hwserver:
-  build: .
-  command: ruby hwserver/server.rb
+  build: hwserver/.
+  command: rackup
   ports:
     - "2500:2500"
   volumes:
-    - .:/app
+    - ./hwserver:/app
   links:
     - db
   env_file: .env

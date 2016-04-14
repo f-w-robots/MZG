@@ -1,4 +1,5 @@
 class DB::Device < DB
+  attr_reader :record
   def initialize hwid, db
     @db = db
     @hwid = hwid
@@ -24,7 +25,7 @@ class DB::Device < DB
   end
 
   def group?
-    !(@record['group'].empty? || @record['group'] == nil)
+    !(@record['group'].empty? || @record['group'] == nil) if @record
   end
 
   def proxy?
