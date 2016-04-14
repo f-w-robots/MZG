@@ -21,6 +21,7 @@ hwserver:
   volumes:
     - ./hwserver:/app
     - ./log:/app/log
+    - ./db-code:/app/db-code
   links:
     - db
   env_file: .env

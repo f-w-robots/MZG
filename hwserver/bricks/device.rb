@@ -17,74 +17,48 @@ class Device < Brick
 
       ws.onopen do
         @log.write "connected with id: #{@hwid}"
+        if ws.pingable?
+          start_ping_thread 5, 3
+          @log.write "PING-PONG supported"
+        else
+          @log.write "PING-PONG not supported"
+        end
         on_open
       end
 
       ws.onmessage do |msg|
-        if msg == 'PONG'
-          @wait_pong = false
-          @log.write "RECIVE PONG"
-        else
-          @send_to_device_time = nil
-          out_msg_right(msg)
-        end
+        @send_to_device_time = nil
+        out_msg_right(msg)
       end
 
       ws.onclose do
         @log.write "disconnected with id: #{@hwid}"
         on_close
       end
-    end
-  end
 
-  def start_abort_control abort_timeout, abort_message = nil, dead_times = nil
-    @threads[:abort] = Thread.new do
-      loop do
-        sleep 0.001
-        if @send_to_device_time && @send_to_device_time.to_f < (Time.now.to_f - abort_timeout)
-          @log.write "ABORT!, retrive"
-          @send_to_device_time = Time.now
-          send_to_device(abort_message || @latest_message)
-          if dead_times
-            if dead_times < 1
-              on_close
-            end
-            dead_times -= 1
-          end
-        end
+      ws.onpong do
+        @wait_pong = false
+        @log.write "RECIVE PONG"
       end
     end
   end
 
-  def start_ping_control time, timeout
+  def start_ping_thread time, timeout
     @threads[:ping] = Thread.new do
       loop do
-        sleep 1
-        if !@send_ping_time || @send_ping_time < Time.now - time
-          @send_ping_time = Time.now
-          @ws.send 'PING'
-          @log.write "SEND PING"
-          @wait_pong = true
-        end
-        if @wait_pong && @send_ping_time && @send_ping_time < Time.now - timeout
+        sleep 5
+        if @wait_pong
           @log.write "ABORTED by PING-PONG"
           on_close
+          break
         end
+        @ws.ping(body = '')
+        @wait_pong = true
       end
     end
   end
 
   def in_msg_right msg, hwid
-    if msg.start_with?('MAX_TIMEOUT:')
-      config = msg.sub('MAX_TIMEOUT:', '').split(":")
-      start_abort_control(config.first.to_f, config[1], config.last.to_i)
-      return
-    end
-    if msg.start_with?('SETUP_PING:')
-      config = msg.sub('SETUP_PING:', '').split(":")
-      start_ping_control(config.first.to_f, config.last.to_f,)
-      return
-    end
     send_to_device msg
   end
 

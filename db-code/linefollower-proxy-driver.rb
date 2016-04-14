@@ -358,10 +358,6 @@
       @sensors = Sensors.new
       @mover = Mover.new @sensors, @answer, self
 
-      @device.out_msg_left("MAX_TIMEOUT:1.0:#{PackageGenerator::BUG.right_left_wheel(0,0)}")
-      @device.out_msg_left('SETUP_PING:5:3')
-
-
       @device.out_msg_left('04INIT')
       @device.out_msg_left(PackageGenerator::BUG.right_left_wheel(0,0))
 

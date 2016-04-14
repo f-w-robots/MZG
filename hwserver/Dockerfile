@@ -8,4 +8,4 @@ ADD Gemfile.lock /app
 
 RUN bundle install --jobs=5
 
-VOLUME ["/app/log"]
+VOLUME ["/app/log", "/app/db-code"]
