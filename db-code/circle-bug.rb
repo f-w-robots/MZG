@@ -1,5 +1,5 @@
 # eight
-commands = 'frfrfrfrflflflfl'
+commands = 'rfrfrfrflflflflf'
 # circle
 # commands = 'fflfflfflffl'
 

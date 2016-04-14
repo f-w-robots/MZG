@@ -109,7 +109,7 @@
       if @answer.size != 1
         raise("end loop, @answers count #{@answer.size}")
       else
-        "#{@answer.shift}~"
+        @answer.shift
       end
     end
   end
@@ -130,14 +130,16 @@
     end
 
     def move command
-      if !sensor('c') && command.to_sym != :lead
-        finish_command :search
-      end
+      if command.to_sym != :lead
+        if !sensor('c')
+          finish_command :search
+        end
 
-      if @sensor.sensorRaw('r') + @sensor.sensorRaw('c') + @sensor.sensorRaw('l') +
-         @sensor.sensorRaw('rr') + @sensor.sensorRaw('ll') < 3
-        @log.write "@"*500
-        finish_command :crash
+        if @sensor.sensorRaw('r') + @sensor.sensorRaw('c') + @sensor.sensorRaw('l') +
+           @sensor.sensorRaw('rr') + @sensor.sensorRaw('ll') < 3
+          @log.write "@"*500
+          finish_command :crash
+        end
       end
 
       cmd = command
@@ -232,15 +234,23 @@
     end
 
     def lead
-      if sensor('r') && !(sensor('r') && sensor('l'))
-        @answer.right
-        return
-      end
-      if sensor('l') && !(sensor('r') && sensor('l'))
+      a = 0
+      a += 1 if(sensor('c'))
+      a += 1 if(sensor('r'))
+      a += 1 if(sensor('l'))
+      if (a == 3 || (sensor('c') && a == 1))
+        @answer.start
+      elsif sensor('l')
+        @answer.right_wheel
+      elsif sensor('r')
+        @answer.left_wheel
+      elsif sensor('ll')
         @answer.left
-        return
+      elsif sensor('rr')
+        @answer.right
+      else
+        @answer.stop
       end
-      @answer.start
     end
 
     def left
