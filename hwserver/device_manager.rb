@@ -21,7 +21,7 @@ class DeviceManager
       end
 
       ws.onclose do
-        ws.send({keys: []}.to_json)
+        ws.send({devices: {manual: [], algorithm: []}}.to_json)
       end
     end
   end

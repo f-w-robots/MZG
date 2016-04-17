@@ -2,6 +2,17 @@
 #
 # module LineFollower
   # HWID = hiwd
+  class PackageGenerator
+    def self.g controller_id, data, finish = true
+      "#{controller_id}#{data.length}#{data}#{finish ? '~' : ''}"
+    end
+
+    def self.right_left_wheel right, left
+      g(1, "#{right == 1 ? '!0"1' : (right == -1 ? '!1"0' : '!0"0')}" +
+        "#{left == 1 ? '#1$0' : (left == -1 ? '#0$1' : '#0$0')}")
+    end
+  end
+
   class Sensors
     OneZeroDeliver = 4
     MaxHistory = 10
@@ -72,37 +83,37 @@
 
     def stop
       @log.write '*** stop'
-      @answer.push PackageGenerator::BUG.right_left_wheel(0,0)
+      @answer.push PackageGenerator.right_left_wheel(0,0)
     end
 
     def start
       @log.write '*** start'
-      @answer.push PackageGenerator::BUG.right_left_wheel(1,1)
+      @answer.push PackageGenerator.right_left_wheel(1,1)
     end
 
     def back
       @log.write '*** back'
-      @answer.push PackageGenerator::BUG.right_left_wheel(-1,-1)
+      @answer.push PackageGenerator.right_left_wheel(-1,-1)
     end
 
     def right
       @log.write '*** right'
-      @answer.push PackageGenerator::BUG.right_left_wheel(-1,1)
+      @answer.push PackageGenerator.right_left_wheel(-1,1)
     end
 
     def left
       @log.write '*** left'
-      @answer.push PackageGenerator::BUG.right_left_wheel(1,-1)
+      @answer.push PackageGenerator.right_left_wheel(1,-1)
     end
 
     def right_wheel
       @log.write '*** right_wheel'
-      @answer.push PackageGenerator::BUG.right_left_wheel(1,0)
+      @answer.push PackageGenerator.right_left_wheel(1,0)
     end
 
     def left_wheel
       @log.write '*** left_wheel'
-      @answer.push PackageGenerator::BUG.right_left_wheel(0,1)
+      @answer.push PackageGenerator.right_left_wheel(0,1)
     end
 
     def get
@@ -359,7 +370,7 @@
       @mover = Mover.new @sensors, @answer, self
 
       @device.out_msg_left('04INIT')
-      @device.out_msg_left(PackageGenerator::BUG.right_left_wheel(0,0))
+      @device.out_msg_left(PackageGenerator.right_left_wheel(0,0))
 
       @messages = []
       @log = Logger.new(HWID)
@@ -384,6 +395,10 @@
       @thread = Thread.new do
         loop do
           wait_message
+
+          if finish?
+            break
+          end
 
           @sensors.update shift_msg, true
 

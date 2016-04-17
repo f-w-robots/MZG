@@ -10,6 +10,7 @@ control:
     - "3900:3900"
   volumes:
     - ./control:/app
+    - ./db-code:/app/db-code
   links:
     - db
   env_file: .env

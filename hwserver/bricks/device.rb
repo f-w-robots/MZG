@@ -53,6 +53,7 @@ class Device < Brick
           break
         end
         @ws.ping(body = '')
+        @log.write "SEND PING"
         @wait_pong = true
       end
     end

@@ -14,8 +14,10 @@ class Proxy < Brick
         while @messeges.empty? || !@driver.finish?
           sleep 0.001
         end
+        m = @messeges.shift
+        puts "SHIFT msg #{m.inspect}"
         if @driver.finish?
-          @driver.command @messeges.shift
+          @driver.command m
         end
       end
     end
@@ -26,6 +28,7 @@ class Proxy < Brick
   end
 
   def in_msg_right msg, hwid
+    puts "MESSAGES to driver #{msg}"
     @messeges.push msg
     out_msg_right 'accepted'
   end
