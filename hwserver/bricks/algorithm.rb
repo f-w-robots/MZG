@@ -1,14 +1,28 @@
 class Algorithm < Brick
-  def initialize hwid, algorithm
+  def initialize hwid, algorithm, bricks
     @algorithm = algorithm
     @unread_messages = []
     @hwid = hwid
+    @bricks = bricks
   end
 
   def start request
-    @thread = Thread.new do
-      eval @algorithm
-    end
+    run_code @algorithm
+  end
+
+  def restart algorithm
+    @thread.terminate
+    run_code algorithm
+  end
+
+  def run_code code
+      @thread = Thread.new do
+        begin
+          eval code
+        rescue
+          @bricks.bad_code
+        end
+      end
   end
 
   def in_msg_left msg, hwid

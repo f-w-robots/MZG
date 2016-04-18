@@ -6,7 +6,16 @@ export default Ember.Component.extend(saveModelControllerMixin, {
   deviceObserver: function() {
     this.set('algorithm', null)
     this.set('interface', null);
+    this.set('badCode', null);
   }.observes('model', 'model.manual'),
+
+  setup: function() {
+    Ember.DMSocket.addOnMessage('bad_code', function(data) {
+      if(this.get('_state') == 'inDOM') {
+        this.set('badCode', true);
+      }
+    }, this);
+  }.on('init'),
 
   actions: {
     editInterface: function() {
@@ -50,6 +59,19 @@ export default Ember.Component.extend(saveModelControllerMixin, {
       setTimeout(function(){
         self.set('saveStatus', null);
       }, 1500);
+    },
+
+    apply: function(code) {
+      this.set('badCode', false);
+      if(!String.prototype.replaceAll) {
+        String.prototype.replaceAll = function(search, replacement) {
+          var target = this;
+          return target.replace(new RegExp(search, 'g'), replacement);
+        };
+      }
+      code = code.replaceAll('"','\\"')
+      code = code.replace(/(?:\r\n|\r|\n)/g, '\\n');
+      Ember.DMSocket.sendDirect("{\"restart\":\"" + this.get('model.hwid') + "\",\"code\":\"" + code + "\"}")
     },
   },
 });

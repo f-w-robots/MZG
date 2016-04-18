@@ -17,6 +17,13 @@ class DeviceManager
           ws.send(device_list)
         elsif msg.start_with?('kill_device:')
           @devices[msg.sub('kill_device:', '')].destroy if @devices[msg.sub('kill_device:', '')]
+        else
+          msg = JSON.parse(msg)
+          if msg["restart"]
+            hwid = msg["restart"]
+            code = msg["code"].sub('\n', "\n")
+            @devices[hwid].restart code
+          end
         end
       end
 
@@ -44,6 +51,12 @@ class DeviceManager
   def device_add hwid, device
     @devices[hwid] = device
     update_device
+  end
+
+  def bad_code hwid
+    @web_sockets.keys.each do |key|
+      key.send({bad_code: :hwid}.to_json)
+    end
   end
 
   private

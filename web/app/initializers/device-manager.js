@@ -18,6 +18,8 @@ var Socket = Ember.Object.extend({
     socket.onmessage = function (event) {
       var data = JSON.parse(event.data);
       var prefix = Object.keys(data)[0];
+      if(prefix == 'bad_code')
+        console.log(data);
       data = data[prefix];
       self.latestMessages[prefix] = data;
       if(!self.onMessageListeners[prefix]) {

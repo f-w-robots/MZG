@@ -71,6 +71,10 @@
 
   {{#if algorithm}}
   {{#unless interface}}
+    <div class="btn btn-default" {{action "apply" algorithm.algorithm}}>Apply</div>
+    {{#if badCode}}
+      <div class="alert alert-danger" role="alert">Bad Code</div>
+    {{/if}}
     <form>
       <div class="form-group">
         ruby code: <br>

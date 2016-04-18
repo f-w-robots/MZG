@@ -88,7 +88,7 @@ module Sinatra
                 bricks.push_interface backend
               end
             else
-              backend = Algorithm.new hwid, device_record.algorithm
+              backend = Algorithm.new hwid, device_record.algorithm, bricks
               backend.start request
               bricks.push backend
             end
@@ -111,4 +111,3 @@ module Sinatra
     end
   end
 end
-

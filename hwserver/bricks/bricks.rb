@@ -10,6 +10,9 @@ class Bricks
   end
 
   def push brick
+    if brick.is_a?(Algorithm)
+      @algorithm = brick
+    end
     @list.push brick
   end
 
@@ -53,5 +56,13 @@ class Bricks
     end
 
     @manager.device_destroy @hwid
+  end
+
+  def restart code
+    @algorithm.restart code
+  end
+
+  def bad_code
+    @manager.bad_code hwid
   end
 end
