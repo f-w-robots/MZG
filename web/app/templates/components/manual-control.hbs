@@ -1,34 +1,52 @@
 {{#if errorDeviceManager}}
   <div class="alert alert-danger" role="alert">Сonnection is not established!</div>
 {{/if}}
-<div class="row">
-{{#each manual_devices as |deviceId|}}
-  <div class="col-md-1 col-md-offset-1">
-    <a href="#" {{action "select" deviceId}}>
-      <img src="images/device.png" height="100">
-      {{deviceId}}
-    </a>
-    {{reset-button hwid=deviceId}}
-  </div>
-{{/each}}
-{{#each algorithm_devices as |deviceId|}}
-  <div class="col-md-1 col-md-offset-1">
-    <a href="#" {{action "select" deviceId}}>
-      <img src="images/algorithm_device.png" height="100">
-      {{deviceId}}
-    </a>
-    {{reset-button hwid=deviceId}}
-  </div>
-{{/each}}
-{{#if (eq manual_devices.length 0)}}
-  {{#if (eq algorithm_devices.length 0)}}
-  no device avaliable
+<div class="col-md-2">
+  {{#each manual_devices as |deviceId|}}
+      <a href="#" {{action "select" deviceId}}>
+        <div class="row">
+          <img src="images/device.png" height="100">
+        </div>
+        <div class="row">
+          {{deviceId}}
+        </div>
+      </a>
+      <div class="row">
+        <div class="col-md-4">
+          {{reset-button hwid=deviceId}}
+        </div>
+        <div class="col-md-4">
+          <a href="#" class="btn btn-success" {{action "openControl" deviceId}}>
+            Control
+          </a>
+        </div>
+      </div>
+  {{/each}}
+  {{#each algorithm_devices as |deviceId|}}
+      <a href="#" {{action "select" deviceId}}>
+        <div class="row">
+          <img src="images/algorithm_device.png" height="100">
+        </div>
+        <div class="row">
+          {{deviceId}}
+        </div>
+      </a>
+      {{reset-button hwid=deviceId}}
+  {{/each}}
+  {{#if (eq manual_devices.length 0)}}
+    {{#if (eq algorithm_devices.length 0)}}
+    no device avaliable
+    {{/if}}
   {{/if}}
-{{/if}}
 </div>
+
 {{#if url}}
-<div class="row">
-  <iframe src="{{url}}" width="600" height="400" class="control">
-  </iframe>
-</div>
+  <iframe class="control col-md-6" height="500" src="{{url}}"></iframe>
+{{else}}
+{{#if device}}
+  <div class="col-md-9">
+    {{device-edit model=device algorithms=algorithms interfaces=interfaces}}
+  </div>
+{{/if}}
+
 {{/if}}

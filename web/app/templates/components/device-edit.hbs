@@ -1,0 +1,82 @@
+{{partial "partials/save-message"}}
+<div class="col-md-4">
+  <form>
+    <div class="row">
+      <div class="form-group">
+        Device ID: {{input value=model.hwid class="form-control"}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group">
+        Group: {{input value=model.group class="form-control"}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="checkbox form-group">
+        <label>
+          {{input type="checkbox" checked=model.manual}} Manual
+        </label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="">
+        {{#if model.manual}}
+          Interface:
+          {{select-bootstrap options=interfaces valueKey="interfaceId" labelKey="interfaceId" value=model.interfaceId}}
+          <a href="#" {{action "editInterface"}}>Edit</a>
+        {{else}}
+          Algorithm:
+          {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.algorithmId}}
+          <a href="#" {{action "editAlgorithm"}}>Edit</a>
+        {{/if}}
+      </div>
+    </div>
+    <br>
+    {{image-input imageWidth=100 file=model.icon}}
+    <br>
+    <div class="row">
+      <div class="checkbox form-group">
+        <label>
+          {{input type="checkbox" checked=model.useProxy}} Proxy
+        </label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        {{#if model.useProxy}}
+          Algorithm:
+          {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.proxyId}}
+        {{/if}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-3">
+        <div class="btn btn-default" {{action "saveRecord" model}}>Save</div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="col-md-8">
+  {{#if interface}}
+  {{#unless algorithm}}
+    <form>
+      <div class="form-group">
+        body, html: <br>
+        {{#textarea value=interface.interface cols="80" rows="20" class="form-control"}}{{/textarea}}
+      </div>
+    </form>
+  {{/unless}}
+  {{/if}}
+
+  {{#if algorithm}}
+  {{#unless interface}}
+    <form>
+      <div class="form-group">
+        ruby code: <br>
+        {{#textarea value=algorithm.algorithm cols="80" rows="20" class="form-control"}}{{/textarea}}
+      </div>
+    </form>
+  {{/unless}}
+  {{/if}}
+</div>

@@ -14,9 +14,10 @@ export default Ember.Mixin.create({
   }.property('saveStatus'),
 
   actions: {
-    saveRecord: function() {
+    saveRecord: function(record) {
       var self = this;
-      this.get('model').save().then(function() {
+      var model = record;
+      model.save().then(function() {
         self.set('saveStatus', 'success');
       }, function(){
         self.set('saveStatus', 'error');

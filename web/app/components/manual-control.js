@@ -46,7 +46,28 @@ export default Ember.Component.extend({
 
   actions: {
     select: function(deviceId) {
-      this.set('url', this.currentHost('3900') + '/'+ deviceId);
+      if(this.get('selectedDeviceId') == deviceId && !this.get('url')) {
+        this.set('device', null);
+      } else {
+        this.set('url', null)
+        var device;
+        this.get('devices').find(function(d) {
+          if(d.get('hwid') == deviceId)
+            device = d
+        });
+        this.set('device', device);
+        this.set('selectedDeviceId', deviceId);
+      }
     },
+
+    openControl: function(deviceId) {
+      var url = this.currentHost('3900') + '/'+ deviceId;
+      if(this.get('url') == url)
+        this.set('url', null);
+      else
+        this.set('url', url);
+    },
+
+
   },
 });
