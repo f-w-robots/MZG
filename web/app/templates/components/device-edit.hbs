@@ -63,7 +63,7 @@
     <form>
       <div class="form-group">
         body, html: <br>
-        {{#textarea value=interface.interface cols="80" rows="20" class="form-control"}}{{/textarea}}
+        {{#ace-editor mode="html" value=interface.interface cols="80" rows="20"}}{{/ace-editor}}
       </div>
     </form>
   {{/unless}}
@@ -78,7 +78,7 @@
     <form>
       <div class="form-group">
         ruby code: <br>
-        {{#textarea value=algorithm.algorithm cols="80" rows="20" class="form-control"}}{{/textarea}}
+        {{#ace-editor mode="ruby" value=algorithm.algorithm cols="80" rows="20" class=""}}{{/ace-editor}}
       </div>
     </form>
   {{/unless}}
