@@ -13,6 +13,11 @@ export default Ember.Component.extend({
   setup: function() {
     Ember.DMSocket.addOnMessage('devices', function(data) {
       if(this.get('_state') == 'inDOM') {
+        var all_devices = data["manual"].concat(data["algorithm"])
+        if(all_devices.indexOf(this.get('selectedDeviceId')) < 0) {
+          this.set('device', null);
+          this.set('selectedDeviceId', null);
+        }
         this.set('manual_devices', data["manual"]);
         this.set('algorithm_devices', data["algorithm"]);
       }

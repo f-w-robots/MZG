@@ -7,7 +7,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
     this.set('algorithm', null)
     this.set('interface', null);
     this.set('badCode', null);
-  }.observes('model', 'model.manual'),
+  }.observes('model', 'model.manual', 'model.algorithmId', 'model.interfaceId'),
 
   setup: function() {
     Ember.DMSocket.addOnMessage('bad_code', function(data) {
