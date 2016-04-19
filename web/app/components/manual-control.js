@@ -46,10 +46,11 @@ export default Ember.Component.extend({
 
   actions: {
     select: function(deviceId) {
-      if(this.get('selectedDeviceId') == deviceId && !this.get('url')) {
+      this.set('url', null);
+      if(this.get('selectedDeviceId') == deviceId) {
         this.set('device', null);
+        this.set('selectedDeviceId', null);
       } else {
-        this.set('url', null)
         var device;
         this.get('devices').find(function(d) {
           if(d.get('hwid') == deviceId)
@@ -61,6 +62,7 @@ export default Ember.Component.extend({
     },
 
     openControl: function(deviceId) {
+      this.set('device', null);
       var url = this.currentHost('3900') + '/'+ deviceId;
       if(this.get('url') == url)
         this.set('url', null);

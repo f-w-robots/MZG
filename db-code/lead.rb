@@ -15,7 +15,9 @@ loop do
     :right => '18!1"0#1$0~',
     :left => '18!0"1#0$1~',
     :right_wheel => '18!0"1#0$0~',
+    :right_wheel_back => '18!1"0#0$0~',
     :left_wheel => '18!0"0#1$0~',
+    :left_wheel_back => '18!0"0#0$1~',
     :stop => '18!0"0#0$0~',
   }
 
@@ -25,11 +27,11 @@ loop do
 
   result = if (sensor['c'] && sensor['r'] && sensor['l']) ||
       (sensor['c'] && !sensor['r'] && !sensor['l'])
-    package[:forward]
+    package[:back]
   elsif sensor['l']
-    package[:right_wheel]
+    package[:right_wheel_back]
   elsif sensor['r']
-    package[:left_wheel]
+    package[:left_wheel_back]
   elsif sensor['ll']
     package[:left]
   elsif sensor['rr']

@@ -41,12 +41,15 @@
 </div>
 
 {{#if url}}
+{{#unless device}}
   <iframe class="control col-md-6" height="500" src="{{url}}"></iframe>
-{{else}}
+{{/unless}}
+{{/if}}
+
 {{#if device}}
+{{#unless url}}
   <div class="col-md-9">
     {{device-edit model=device algorithms=algorithms interfaces=interfaces}}
   </div>
-{{/if}}
-
+{{/unless}}
 {{/if}}
