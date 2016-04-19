@@ -23,11 +23,9 @@
         {{#if model.manual}}
           Interface:
           {{select-bootstrap options=interfaces valueKey="interfaceId" labelKey="interfaceId" value=model.interfaceId}}
-          <a href="#" {{action "editInterface"}}>Edit</a>
         {{else}}
           Algorithm:
           {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.algorithmId}}
-          <a href="#" {{action "editAlgorithm"}}>Edit</a>
         {{/if}}
       </div>
     </div>

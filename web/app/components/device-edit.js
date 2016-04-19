@@ -3,11 +3,30 @@ import Ember from 'ember';
 import saveModelControllerMixin from '../mixins/save-model-controller';
 
 export default Ember.Component.extend(saveModelControllerMixin, {
-  deviceObserver: function() {
-    this.set('algorithm', null)
-    this.set('interface', null);
+  algorithmInterfaceObserver: function() {
     this.set('badCode', null);
-  }.observes('model', 'model.manual', 'model.algorithmId', 'model.interfaceId'),
+    if(!this.get('model.manual')) {
+      var target = null;
+      var algorithmId = this.get('model.algorithmId');
+
+      this.get('algorithms').find(function(i){
+        if(algorithmId == i.get('algorithmId'))
+          target = i;
+      });
+      this.set('algorithm', target)
+      this.set('interface', null)
+    } else {
+      var target = null;
+      var interfaceId = this.get('model.interfaceId');
+      this.get('interfaces').find(function(i){
+        if(interfaceId == i.get('interfaceId'))
+          target = i;
+      });
+      console.log(target);
+      this.set('interface', target)
+      this.set('algorithm', null)
+    }
+  }.observes('model', 'model.manual','model.algorithmId', 'model.interfaceId'),
 
   setup: function() {
     Ember.DMSocket.addOnMessage('bad_code', function(data) {
@@ -15,6 +34,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
         this.set('badCode', true);
       }
     }, this);
+    this.algorithmInterfaceObserver();
   }.on('init'),
 
   actions: {
