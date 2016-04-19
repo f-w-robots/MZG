@@ -1,0 +1,24 @@
+{{#if addNew}}
+  Write new {{modelName}} name:
+  <div class="row">
+    <div class="col-md-9">
+      <div class="form-group">
+        {{input value=newName class="form-control"}}
+      </div>
+    </div>
+    <div class="col-md-3">
+      <a href="#" {{action "save"}}>save</a>
+    </div>
+  </div>
+{{else}}
+  {{modelName}}
+  <div class="row">
+    <div class="col-md-9">
+      {{select-bootstrap options=options valueKey=valueKey labelKey=labelKey value=value}}
+    </div>
+    <div class="col-md-3">
+      <a href="#" {{action "add"}}>add</a>/
+      <a href="#" {{action "delete"}}>delete</a>
+    </div>
+  </div>
+{{/if}}

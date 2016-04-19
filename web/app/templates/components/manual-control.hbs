@@ -1,55 +1,42 @@
 {{#if errorDeviceManager}}
   <div class="alert alert-danger" role="alert">Сonnection is not established!</div>
 {{/if}}
-<div class="col-md-2">
-  {{#each manual_devices as |deviceId|}}
-      <a href="#" {{action "select" deviceId}}>
-        <div class="row">
-          <img src="images/robot.png" height="100">
+<div class="col-md-12"><h3>Devices</h3>
+  <div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+      {{#each devices as |device|}}
+        {{#if device.active}}
+          <li class="active">
+            <a href="#" {{action "selectDevice" device}}>
+              {{device.hwid}}
+              {{#if device.online}}
+                <img src="images/online.png" height="10px">
+              {{/if}}
+            </a>
+          </li>
+        {{else}}
+          <li>
+            <a href="#" {{action "selectDevice" device}}>
+              {{device.hwid}}
+              {{#if device.online}}
+                <img src="images/online.png" height="10px">
+              {{/if}}
+            </a>
+          </li>
+        {{/if}}
+      {{/each}}
+      <li>
+        <a href="#" {{action "createDevice"}}>
+          create New
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      {{#if currentDeivce}}
+        <div class="col-md-10">
+          {{device-edit model=currentDeivce algorithms=algorithms interfaces=interfaces}}
         </div>
-        <div class="row">
-          {{deviceId}}
-        </div>
-      </a>
-      <div class="row">
-        <div class="col-md-4">
-          {{reset-button hwid=deviceId}}
-        </div>
-        <div class="col-md-4">
-          <a href="#" class="btn btn-success" {{action "openControl" deviceId}}>
-            Control
-          </a>
-        </div>
-      </div>
-  {{/each}}
-  {{#each algorithm_devices as |deviceId|}}
-      <a href="#" {{action "select" deviceId}}>
-        <div class="row">
-          <img src="images/robot.png" height="100">
-        </div>
-        <div class="row">
-          {{deviceId}}
-        </div>
-      </a>
-      {{reset-button hwid=deviceId}}
-  {{/each}}
-  {{#if (eq manual_devices.length 0)}}
-    {{#if (eq algorithm_devices.length 0)}}
-    no device avaliable
-    {{/if}}
-  {{/if}}
-</div>
-
-{{#if url}}
-{{#unless device}}
-  <iframe class="control col-md-6" height="500" src="{{url}}"></iframe>
-{{/unless}}
-{{/if}}
-
-{{#if device}}
-{{#unless url}}
-  <div class="col-md-9">
-    {{device-edit model=device algorithms=algorithms interfaces=interfaces}}
+      {{/if}}
+    </div>
   </div>
-{{/unless}}
-{{/if}}
+</div>

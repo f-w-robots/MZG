@@ -6,6 +6,7 @@ export default DS.Model.extend({
   group: DS.attr('string'),
   algorithmId: DS.attr('string'),
   interfaceId: DS.attr('string'),
+  proxyId:  DS.attr('string'),
   icon: DS.attr(),
   useProxy: DS.attr('boolean'),
   proxyId: DS.attr('string'),

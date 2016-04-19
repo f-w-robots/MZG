@@ -5,7 +5,7 @@ module Sinatra
         def self.registered(app)
           settings = ::App
 
-          app.get '/devices/list/manual' do
+          app.get '/devices/manage' do
             response.headers['Access-Control-Allow-Origin'] = '*'
             return if !request.websocket?
             ::App.device_manager.open_socket request

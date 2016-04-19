@@ -1,80 +1,54 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  devices: null,
-  url: null,
-  socket: null,
-  errorDeviceManager: false,
-
-  currentHost: function(port) {
-    return location.protocol + '//' + location.hostname + ':' + port;
-  },
-
-  setup: function() {
-    Ember.DMSocket.addOnMessage('devices', function(data) {
-      if(this.get('_state') == 'inDOM') {
-        var all_devices = data["manual"].concat(data["algorithm"])
-        if(all_devices.indexOf(this.get('selectedDeviceId')) < 0) {
-          this.set('device', null);
-          this.set('selectedDeviceId', null);
-        }
-        this.set('manual_devices', data["manual"]);
-        this.set('algorithm_devices', data["algorithm"]);
-      }
-    }, this);
-
-    Ember.DMSocket.addOnOpen(this.openDM, this);
-    Ember.DMSocket.addOnError(this.errorDM, this);
-    Ember.DMSocket.addOnClose(this.errorDM, this);
-  }.on('init'),
+  //TODO - inject service
+  dm: Ember.getDMSocket(),
+  store: Ember.inject.service('store'),
+  connecteDevices: Ember.computed.alias('dm.devices'),
+  errorDeviceManager: Ember.computed.alias('dm.error'),
 
   didInsertElement: function() {
-    var socket = Ember.DMSocket.getSocket();
-
-    Ember.DMSocket.sendDirect('devices');
+    this.get('dm').updateDevices();
   },
 
-  errorDM: function() {
-    if(this.get('_state') == 'inDOM') {
-      this.set('errorDeviceManager', true);
-      this.set('manual_devices', []);
-      this.set('algorithm_devices', []);
-    }
-  },
-
-  openDM: function() {
-    if(this.get('_state') == 'inDOM') {
-      Ember.DMSocket.sendDirect('devices');
-      this.set('errorDeviceManager', false);
-    }
-  },
+  refreshDeviceState: function() {
+    this.get('devices').find(function(device) {
+      if(this.get('connecteDevices').indexOf(device.get('hwid')) > -1) {
+        device.set('online', true);
+      } else {
+        device.set('online', false);
+      }
+    }, this)
+  }.observes('connecteDevices'),
 
   actions: {
-    select: function(deviceId) {
-      this.set('url', null);
-      if(this.get('selectedDeviceId') == deviceId) {
-        this.set('device', null);
-        this.set('selectedDeviceId', null);
+    createDevice: function() {
+      var device = this.get('store').createRecord('device', {hwid: 'NONAME'})
+      this.actions.selectDevice.apply(this, [device]);
+    },
+
+    selectDevice: function(device) {
+      if(this.get('currentDeivce')) {
+        this.set('currentDeivce.active', null);
+      }
+      device.set('active', true);
+
+      this.set('controlUrl', null)
+      if(this.get('currentDeivce.hwid') == device.get('hwid') ) {
+        this.set('currentDeivce', null);
       } else {
-        var device;
-        this.get('devices').find(function(d) {
-          if(d.get('hwid') == deviceId)
-            device = d
-        });
-        this.set('device', device);
-        this.set('selectedDeviceId', deviceId);
+        this.set('currentDeivce', device);
       }
     },
 
-    openControl: function(deviceId) {
-      this.set('device', null);
-      var url = this.currentHost('3900') + '/'+ deviceId;
-      if(this.get('url') == url)
-        this.set('url', null);
-      else
-        this.set('url', url);
+    killDevice: function(device) {
+      this.get('dm').killDevice(device.get('hwid'));
     },
 
-
+    controlDevice: function(device) {
+      this.set('currentDeivce', null);
+      this.set('controlUrl', location.protocol + '//'
+        + location.hostname + ':3900/' + device.get('hwid'));
+    },
   },
 });

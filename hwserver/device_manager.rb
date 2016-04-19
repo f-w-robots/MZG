@@ -63,11 +63,7 @@ class DeviceManager
   def device_list
     devices = @devices.map{|k,v|!v.group_interface? ? v : nil}.reject{|v|!v}
     {
-      devices: {
-      manual:
-        devices.map{|v|v.manual? ? v.hwid : nil}.reject{|v|!v},
-      algorithm:
-        devices.map{|v|!v.manual? ? v.hwid : nil}.reject{|v|!v},
-      }}.to_json
+      devices: devices.map{|d| d.hwid}
+    }.to_json
   end
 end

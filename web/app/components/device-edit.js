@@ -3,78 +3,45 @@ import Ember from 'ember';
 import saveModelControllerMixin from '../mixins/save-model-controller';
 
 export default Ember.Component.extend(saveModelControllerMixin, {
-  algorithmInterfaceObserver: function() {
-    this.set('badCode', null);
-    if(!this.get('model.manual')) {
-      var target = null;
-      var algorithmId = this.get('model.algorithmId');
+  dm: Ember.getDMSocket(),
 
-      this.get('algorithms').find(function(i){
-        if(algorithmId == i.get('algorithmId'))
-          target = i;
-      });
-      this.set('algorithm', target)
-      this.set('interface', null)
-    } else {
-      var target = null;
-      var interfaceId = this.get('model.interfaceId');
-      this.get('interfaces').find(function(i){
-        if(interfaceId == i.get('interfaceId'))
-          target = i;
-      });
-      console.log(target);
-      this.set('interface', target)
-      this.set('algorithm', null)
-    }
-  }.observes('model', 'model.manual','model.algorithmId', 'model.interfaceId'),
+  algorithmObserver: function() {
+    var target = null;
 
-  setup: function() {
-    Ember.DMSocket.addOnMessage('bad_code', function(data) {
-      if(this.get('_state') == 'inDOM') {
-        this.set('badCode', true);
+    this.get('algorithms').find(function(i){
+      if(this.get('model.algorithmId') == i.get('algorithmId')) {
+        target = i;
       }
     }, this);
-    this.algorithmInterfaceObserver();
+    this.set('algorithm', target)
+  }.observes('model.algorithmId'),
+
+  interfaceObserver: function() {
+    var target = null;
+
+    this.get('interfaces').find(function(i){
+      if(this.get('model.interfaceId') == i.get('interfaceId')) {
+        target = i;
+      }
+    }, this);
+    this.set('interface', target)
+  }.observes('model.interfaceId'),
+
+  setup: function() {
+    this.algorithmObserver();
+    this.interfaceObserver();
   }.on('init'),
 
   actions: {
-    editInterface: function() {
-      var interfaceId = this.get('model.interfaceId');
-      var interfac;
-      this.get('interfaces').find(function(i){
-        if(interfaceId == i.get('interfaceId'))
-          interfac = i;
-      });
-      this.set('interface', interfac)
-      this.set('algorithm', null);
-    },
-
-    editAlgorithm: function() {
-      var interfaceId = this.get('model.algorithmId');
-      var target;
-      this.get('algorithms').find(function(i){
-        if(interfaceId == i.get('algorithmId'))
-          target = i;
-      });
-      this.set('algorithm', target)
-      this.set('interface', null);
-    },
-
     saveRecord: function() {
       var self = this;
-
-      var models = [this.get('model')];
-      if(this.get('interface'))
-        models.push(this.get('interface'));
-      if(this.get('algorithm'))
-        models.push(this.get('algorithm'));
-      $.each(models, function(i, model) {
+      $.each([this.get('model'), this.get('interface'), this.get('algorithm')], function(i, model) {
         model.save().then(function() {
           self.set('saveStatus', 'success');
-        }, function(){
+        }, function() {
           self.set('saveStatus', 'error');
         });
-      })
+      });
 
       setTimeout(function(){
         self.set('saveStatus', null);
@@ -92,6 +59,19 @@ export default Ember.Component.extend(saveModelControllerMixin, {
       code = code.replaceAll('"','\\"')
       code = code.replace(/(?:\r\n|\r|\n)/g, '\\n');
       Ember.DMSocket.sendDirect("{\"restart\":\"" + this.get('model.hwid') + "\",\"code\":\"" + code + "\"}")
+    },
+
+    kill: function(device) {
+      this.get('dm').killDevice(device.get('hwid'));
+    },
+
+    control: function(device) {
+      if(this.get('controlUrl')) {
+        this.set('controlUrl', undefined);
+      } else {
+        this.set('controlUrl', location.protocol + '//'
+          + location.hostname + ':3900/' + device.get('hwid'));
+      }
     },
   },
 });

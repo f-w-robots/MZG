@@ -6,11 +6,11 @@
         Device ID: {{input value=model.hwid class="form-control"}}
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="form-group">
         Group: {{input value=model.group class="form-control"}}
       </div>
-    </div>
+    </div> -->
     <div class="row">
       <div class="checkbox form-group">
         <label>
@@ -19,19 +19,15 @@
       </div>
     </div>
     <div class="row">
-      <div class="">
-        {{#if model.manual}}
-          Interface:
-          {{select-bootstrap options=interfaces valueKey="interfaceId" labelKey="interfaceId" value=model.interfaceId}}
-        {{else}}
-          Algorithm:
-          {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.algorithmId}}
-        {{/if}}
-      </div>
+      {{#if model.manual}}
+        {{select-code model=interface options=interfaces valueKey="interfaceId" labelKey="interfaceId" value=model.interfaceId modelName="interface"}}
+      {{else}}
+        {{select-code model=algorithm options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.algorithmId modelName="algorithm"}}
+      {{/if}}
     </div>
-    <br>
+    <!-- <br>
     {{image-input imageWidth=100 file=model.icon}}
-    <br>
+    <br> -->
     <div class="row">
       <div class="checkbox form-group">
         <label>
@@ -40,7 +36,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="">
         {{#if model.useProxy}}
           Algorithm:
           {{select-bootstrap options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.proxyId}}
@@ -48,37 +44,45 @@
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-md-3">
-        <div class="btn btn-default" {{action "saveRecord" model}}>Save</div>
-      </div>
+      <div class="btn btn-default" {{action "saveRecord" model}}>Save</div>
+      {{#if model.online}}
+        <div class="btn btn-danger" {{action "kill" model}}>KILL</div>
+        {{#if model.manual}}
+          <div class="btn btn-warning" {{action "control" model}}>Control</div>
+        {{/if}}
+      {{/if}}
     </div>
   </form>
 </div>
 
 <div class="col-md-8">
-  {{#if interface}}
-  {{#unless algorithm}}
-    <form>
-      <div class="form-group">
-        body, html: <br>
-        {{#ace-editor mode="html" value=interface.interface cols="80" rows="20"}}{{/ace-editor}}
-      </div>
-    </form>
-  {{/unless}}
-  {{/if}}
-
-  {{#if algorithm}}
-  {{#unless interface}}
-    <div class="btn btn-default" {{action "apply" algorithm.algorithm}}>Apply</div>
-    {{#if badCode}}
-      <div class="alert alert-danger" role="alert">Bad Code</div>
+  {{#if controlUrl}}
+    <iframe class="control col-md-12" height="500" src="{{controlUrl}}"></iframe>
+  {{else}}
+    {{#if model.manual}}
+    {{#if interface}}
+      <form>
+        <div class="form-group">
+          body, html: <br>
+          {{#ace-editor mode="html" value=interface.interface cols="80" rows="20"}}{{/ace-editor}}
+        </div>
+      </form>
     {{/if}}
-    <form>
-      <div class="form-group">
-        ruby code: <br>
-        {{#ace-editor mode="ruby" value=algorithm.algorithm cols="80" rows="20" class=""}}{{/ace-editor}}
-      </div>
-    </form>
-  {{/unless}}
+    {{/if}}
+
+    {{#unless model.manual}}
+    {{#if algorithm}}
+      <div class="btn btn-default" {{action "apply" algorithm.algorithm}}>Apply</div>
+      {{#if badCode}}
+        <div class="alert alert-danger" role="alert">Bad Code</div>
+      {{/if}}
+      <form>
+        <div class="form-group">
+          ruby code: <br>
+          {{#ace-editor mode="ruby" value=algorithm.algorithm}}{{/ace-editor}}
+        </div>
+      </form>
+    {{/if}}
+    {{/unless}}
   {{/if}}
 </div>
