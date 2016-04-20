@@ -4,12 +4,13 @@ require 'json'
 require 'sinatra/base'
 require 'sinatra/cross_origin'
 require 'mongo'
+require 'omniauth'
+require 'omniauth-vkontakte'
 
 $LOAD_PATH.push File.expand_path('../routes', __FILE__)
 %w{ config }.each { |file| require file }
 
 require_relative 'helpers/helpers'
-
 
 class App < Sinatra::Base
   MODELS = %w{ algorithm device group interface }
@@ -31,6 +32,12 @@ class App < Sinatra::Base
     200
   end
 
+  require 'user'
+  User.init db
+  use Rack::Session::Cookie
+  use OmniAuth::Builder do
+    provider :vkontakte, ENV['AUTH_API_KEY'], ENV['AUTH_API_SECRET']
+  end
 
   helpers Sinatra::App::Helpers
   register Sinatra::App::Routing::Config

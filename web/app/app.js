@@ -15,4 +15,10 @@ App = Ember.Application.extend({
 
 loadInitializers(App, config.modulePrefix);
 
+Ember.$.ajaxSetup({
+  crossDomain: true,
+  xhrFields: {
+    withCredentials: true
+}})
+
 export default App;
