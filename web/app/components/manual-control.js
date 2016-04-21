@@ -13,7 +13,7 @@ export default Ember.Component.extend({
 
   refreshDeviceState: function() {
     this.get('devices').find(function(device) {
-      if(this.get('connecteDevices').indexOf(device.get('hwid')) > -1) {
+      if(this.get('connecteDevices') && this.get('connecteDevices').indexOf(device.get('hwid')) > -1) {
         device.set('online', true);
       } else {
         device.set('online', false);

@@ -4,6 +4,7 @@ import saveModelControllerMixin from '../mixins/save-model-controller';
 
 export default Ember.Component.extend(saveModelControllerMixin, {
   dm: Ember.getDMSocket(),
+  badCode: Ember.computed.alias('dm.badCode'),
 
   algorithmObserver: function() {
     var target = null;

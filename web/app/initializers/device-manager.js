@@ -3,6 +3,7 @@ import abstractSocket from '../mixins/abstract-socket';
 var Socket = Ember.Object.extend(abstractSocket, {
   devices: null,
   error: null,
+  badCode: null,
 
   init() {
     this.set('url', 'ws://' + location.hostname + ':2500/devices/manage')
@@ -11,12 +12,16 @@ var Socket = Ember.Object.extend(abstractSocket, {
       this.set('devices', data);
     }, this);
 
+    this.addOnMessage('bad_code', function(data) {
+      this.set('badCode', true);
+    }, this);
+
     this.addOnOpen(function(){
-      this.set('errorDeviceManager', false);
+      this.set('error', false);
     }, this);
 
     var onError = function() {
-      this.set('errorDeviceManager', true);
+      this.set('error', true);
       this.set('devices', null);
     }
 
