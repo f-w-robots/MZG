@@ -30,6 +30,10 @@ var Socket = Ember.Object.extend(abstractSocket, {
 
   killDevice(hwid) {
     this.sendDirect("kill_device:" + hwid);
+  },
+
+  updateCode(hwid, code) {
+    this.sendDirect("{\"restart\":\"" + hwid + "\",\"code\":\"" + code + "\"}")
   }
 });
 

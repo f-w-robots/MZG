@@ -50,15 +50,9 @@ export default Ember.Component.extend(saveModelControllerMixin, {
 
     apply: function(code) {
       this.set('badCode', false);
-      if(!String.prototype.replaceAll) {
-        String.prototype.replaceAll = function(search, replacement) {
-          var target = this;
-          return target.replace(new RegExp(search, 'g'), replacement);
-        };
-      }
-      code = code.replaceAll('"','\\"')
+      code = code.replace(/(")/g,'\\"');
       code = code.replace(/(?:\r\n|\r|\n)/g, '\\n');
-      Ember.DMSocket.sendDirect("{\"restart\":\"" + this.get('model.hwid') + "\",\"code\":\"" + code + "\"}")
+      this.get('dm').updateCode(this.get('model.hwid'), code);
     },
 
     kill: function(device) {
