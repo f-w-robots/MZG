@@ -51,7 +51,7 @@ module Sinatra
 
           app.get '/:hwid' do |hwid|
             return if !request.websocket?
-            puts "Connection from #{hwid}"
+            puts "Connection from #{hwid}, ip: #{request.ip}"
 
             bricks = Bricks.new hwid, settings.device_manager
 
