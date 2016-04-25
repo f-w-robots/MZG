@@ -25,7 +25,7 @@ class DB::Device < DB
   end
 
   def group?
-    !(@record['group'].empty? || @record['group'] == nil) if @record
+    !(@record['group'] == nil || @record['group'].empty?) if @record
   end
 
   def proxy?
