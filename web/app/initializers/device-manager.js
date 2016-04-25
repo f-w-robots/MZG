@@ -4,6 +4,7 @@ var Socket = Ember.Object.extend(abstractSocket, {
   devices: null,
   error: null,
   badCode: null,
+  output: Ember.RSVP.hash({}),
 
   init() {
     this.set('url', 'ws://' + location.hostname + ':2500/devices/manage')
@@ -14,6 +15,13 @@ var Socket = Ember.Object.extend(abstractSocket, {
 
     this.addOnMessage('bad_code', function(data) {
       this.set('badCode', true);
+    }, this);
+
+    this.addOnMessage('output', function(data) {
+      var self = this;
+      $.each(Object.keys(data), function(i, key) {
+        self.set('output.' + key, data[key]);
+      });
     }, this);
 
     this.addOnOpen(function(){
@@ -30,11 +38,11 @@ var Socket = Ember.Object.extend(abstractSocket, {
   },
 
   updateDevices() {
-    this.sendDirect('devices');
+    this.sendDirect(JSON.stringify({'list':''}));
   },
 
-  killDevice(hwid) {
-    this.sendDirect("kill_device:" + hwid);
+  updateDevice(hwid) {
+    this.sendDirect(JSON.stringify({'update': hwid}));
   },
 
   updateCode(hwid, code) {

@@ -24,6 +24,7 @@ export default Ember.Mixin.create({
       data = data[prefix];
       self.latestMessages[prefix] = data;
       if(!self.onMessageListeners[prefix]) {
+        console.log(prefix, data);
         return;
       }
       $.each(self.onMessageListeners[prefix], function(i, func) {

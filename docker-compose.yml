@@ -3,6 +3,14 @@ db:
   volumes:
     - mzg_db:/data/db
     - mzg_db_config:/data/configdb
+docker:
+  build: docker/.
+  privileged: true
+  ports:
+    - "2375:2375"
+  volumes:
+    - mzg_docker:/var/lib/docker
+    - ./containers:/app/containers
 control:
   build: control/.
   command: ruby app.rb
@@ -14,17 +22,19 @@ control:
   links:
     - db
   env_file: .env
-hwserver:
-  build: hwserver/.
+hwserver2:
+  build: hwserver2/.
   command: rackup
   ports:
     - "2500:2500"
   volumes:
-    - ./hwserver:/app
+    - ./hwserver2:/app
     - ./log:/app/log
     - ./db-code:/app/db-code
+    - ./containers:/app/containers
   links:
     - db
+    - docker
   env_file: .env
 apiserver:
   build: apiserver/.
@@ -46,11 +56,6 @@ web:
     - ./web/public:/app/public
     - ./web/tests:/app/tests
     - ./web/config:/app/config
-  links:
-    - db
-    - apiserver
-    - control
-    - hwserver
   env_file: .env
 game:
   build: ./game
@@ -62,6 +67,4 @@ game:
     - ./game/public:/app/public
     - ./game/tests:/app/tests
     - ./game/config:/app/config
-  links:
-    - hwserver
   env_file: .env

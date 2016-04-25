@@ -31,14 +31,16 @@ export default Ember.Component.extend(saveModelControllerMixin, {
   setup: function() {
     this.algorithmObserver();
     this.interfaceObserver();
+    this.set('output', Ember.computed.alias('dm.output.' + this.get('model.hwid')));
   }.on('init'),
 
   actions: {
-    saveRecord: function() {
+    update: function() {
       var self = this;
       $.each([this.get('model'), this.get('interface'), this.get('algorithm')], function(i, model) {
         model.save().then(function() {
           self.set('saveStatus', 'success');
+          self.get('dm').updateDevice(self.get('model.hwid'));
         }, function() {
           self.set('saveStatus', 'error');
         });
@@ -54,10 +56,6 @@ export default Ember.Component.extend(saveModelControllerMixin, {
       code = code.replace(/(")/g,'\\"');
       code = code.replace(/(?:\r\n|\r|\n)/g, '\\n');
       this.get('dm').updateCode(this.get('model.hwid'), code);
-    },
-
-    kill: function(device) {
-      this.get('dm').killDevice(device.get('hwid'));
     },
 
     control: function(device) {

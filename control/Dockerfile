@@ -1,4 +1,8 @@
-FROM ruby:2.3
+FROM ruby:2.3-alpine
+
+RUN apk add --update \
+  build-base \
+  && rm -rf /var/cache/apk/*
 
 RUN mkdir /app
 WORKDIR /app

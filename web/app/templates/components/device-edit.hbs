@@ -44,9 +44,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="btn btn-default" {{action "saveRecord" model}}>Save</div>
+      <div class="btn btn-danger" {{action "update" model}}>Update</div>
       {{#if model.online}}
-        <div class="btn btn-danger" {{action "kill" model}}>KILL</div>
         {{#if model.manual}}
           <div class="btn btn-warning" {{action "control" model}}>Control</div>
         {{/if}}
@@ -61,27 +60,17 @@
   {{else}}
     {{#if model.manual}}
     {{#if interface}}
-      <form>
-        <div class="form-group">
-          body, html: <br>
-          {{#ace-editor mode="html" value=interface.interface cols="80" rows="20"}}{{/ace-editor}}
-        </div>
-      </form>
+      body, html: <br>
+      {{#ace-editor mode="html" value=interface.interface cols="80" rows="20"}}{{/ace-editor}}
     {{/if}}
     {{/if}}
 
     {{#unless model.manual}}
     {{#if algorithm}}
-      <div class="btn btn-default" {{action "apply" algorithm.algorithm}}>Apply</div>
-      {{#if badCode}}
-        <div class="alert alert-danger" role="alert">Bad Code</div>
-      {{/if}}
-      <form>
-        <div class="form-group">
-          ruby code: <br>
-          {{#ace-editor mode="ruby" value=algorithm.algorithm}}{{/ace-editor}}
-        </div>
-      </form>
+      ruby code: <br>
+      {{#ace-editor mode="ruby" value=algorithm.algorithm}}{{/ace-editor}}
+      output:
+      {{output}}
     {{/if}}
     {{/unless}}
   {{/if}}
