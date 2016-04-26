@@ -1,0 +1,55 @@
+db:
+  image: mongo:3.2
+  volumes:
+    - ./volumes/db/data:/data/db
+    - ./volumes/db/config:/data/configdb
+docker:
+  build: docker/.
+  dockerfile: Dockerfile.production
+  privileged: true
+  ports:
+    - "2375:2375"
+  volumes:
+    - ./volumes/docker:/var/lib/docker
+    - ./containers:/app/containers
+control:
+  build: control/.
+  command: ruby app.rb
+  ports:
+    - "3900:3900"
+  volumes:
+    - ./control:/app
+    - ./db-code:/app/db-code
+  links:
+    - db
+  env_file: .env
+hwserver2:
+  build: hwserver2/.
+  command: rackup
+  ports:
+    - "2500:2500"
+  volumes:
+    - ./hwserver2:/app
+    - ./log:/app/log
+    - ./db-code:/app/db-code
+    - ./containers:/app/containers
+  links:
+    - db
+    - docker
+  env_file: .env
+apiserver:
+  build: apiserver/.
+  command: rackup
+  ports:
+    - "2600:2600"
+  volumes:
+    - ./apiserver:/app
+  links:
+    - db
+  env_file: .env
+web:
+  build: web
+  command: ember build --environment=production
+  volumes:
+    - ./web/dist:/app/dist
+  env_file: .env
