@@ -1,32 +1,21 @@
-# eight
-commands = 'rfrfrfrflflflflf'
-# circle
-# commands = 'fflfflfflffl'
+require_relative 'unix_connection.rb'
 
-hash = {'f' => "forward", 'r' => 'right', 'l' => 'left'}
+@unix = UNIXConnection.new lambda {|msg| on_message(msg)}
 
-current_command = 0
+@unix.send_message('forward')
+@last_command = 'forward'
 
-out_msg_left('stop')
+def on_message msg
+  if msg == 'ready'
+    if @last_command == 'forward'
+      @unix.send_message('left')
+      @last_command = 'left'
+    else
+      @unix.send_message('forward')
+      @last_command = 'forward'
+    end
 
-loop do
-  while msg_empty?
-    sleep(0.001)
-  end
-
-  msg = shift_msg
-
-  if msg != 'ready'
-    next
-  end
-
-  command = hash[commands[current_command]]
-
-  puts command
-  out_msg_left(command)
-
-  current_command += 1
-  if current_command == commands.size
-    current_command = 0
   end
 end
+
+sleep

@@ -123,8 +123,8 @@ class Device
       end
 
       ws.onmessage do |msg|
-        success = @unix.send_message(msg)
-        puts "MSG from DEVICE: #{msg}, success:#{success}"
+        puts "MSG from DEVICE: #{msg}"
+        @unix.send_message(msg)
       end
 
       ws.onclose do

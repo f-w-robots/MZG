@@ -10,11 +10,13 @@ class Device::Record
   end
 
   def algorithm
+    return nil if !@record
     record = @db[:algorithms].find(:'algorithm-id' => @record['algorithm-id']).first
     content(record, 'algorithm') if record
   end
 
   def interface
+    return nil if !@record
     record = @db[:interfaces].find(:'interface-id' => @record['interface-id']).first
     content(record, 'interface') if record
   end
