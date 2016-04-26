@@ -48,7 +48,7 @@ apiserver:
     - db
   env_file: .env
 web:
-  build: web
+  build: web/.
   command: ember build --environment=production
   volumes:
     - ./web/dist:/app/dist
