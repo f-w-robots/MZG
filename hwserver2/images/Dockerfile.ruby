@@ -5,4 +5,4 @@ WORKDIR /app
 
 VOLUME ["/app"]
 
-ENTRYPOINT ruby entrypoint.rb > output 2>&1
+CMD ruby entrypoint.rb

@@ -19,8 +19,8 @@ class Device
     create_container('ruby')
     prepare_volume('ruby')
     open_sockets
-    @container.start
-    set_notifier
+    @container.start!
+    start_logging
   end
 
   def recreate_container
@@ -34,18 +34,11 @@ class Device
   end
 
   private
-  def set_notifier
-    notifier = INotify::Notifier.new
-
-    # FileUtils.touch "#{@path}/output"
-
-    notifier.watch("#{@path}/output", :modify) do
-      new_output
-    end
-
-    @threads[:inotify].terminate if @threads[:inotify]
-    @threads[:inotify] = Thread.new do
-      notifier.run
+  def start_logging
+    Thread.new do
+      @container.streaming_logs(follow: true, stdout: true, stderr: true) do |stream, message|
+        puts "#{stream}: #{message}"
+      end
     end
   end
 
@@ -85,7 +78,7 @@ class Device
 
     @container = Docker::Container.create(
       "Image" => image.id,
-      "Binds" => ["#{@path}/:/app"]
+      "Binds" => ["#{@path}/:/app"],
     )
   end
 
@@ -130,8 +123,8 @@ class Device
       end
 
       ws.onmessage do |msg|
-        puts "MSG from DEVICE: #{msg}"
-        @unix.send_message(msg)
+        success = @unix.send_message(msg)
+        puts "MSG from DEVICE: #{msg}, success:#{success}"
       end
 
       ws.onclose do

@@ -37,14 +37,22 @@ export default Ember.Component.extend(saveModelControllerMixin, {
   actions: {
     update: function() {
       var self = this;
-      $.each([this.get('model'), this.get('interface'), this.get('algorithm')], function(i, model) {
-        model.save().then(function() {
+      $.each([this.get('interface'), this.get('algorithm')], function(i, model) {
+        if(model) {
+          model.save().then(function() {
+            self.set('saveStatus', 'success');
+          }, function() {
+            self.set('saveStatus', 'error');
+          });
+        }
+      });
+
+      this.get('model').save().then(function() {
           self.set('saveStatus', 'success');
           self.get('dm').updateDevice(self.get('model.hwid'));
         }, function() {
           self.set('saveStatus', 'error');
         });
-      });
 
       setTimeout(function(){
         self.set('saveStatus', null);
