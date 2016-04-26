@@ -4,5 +4,3 @@ RUN mkdir /app
 WORKDIR /app
 
 VOLUME ["/app"]
-
-CMD ruby entrypoint.rb

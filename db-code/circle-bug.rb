@@ -4,8 +4,12 @@ require_relative 'unix_connection.rb'
 
 @unix.send_message('forward')
 @last_command = 'forward'
+puts "hex"
+STDOUT.sync = true
 
 def on_message msg
+  puts 'xxx'
+  STDOUT.sync = true
   if msg == 'ready'
     if @last_command == 'forward'
       @unix.send_message('left')

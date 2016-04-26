@@ -16,11 +16,9 @@ class UNIXConnection
   end
 
   def send_message msg
-    return false if !File.exists?(@path_out)
     socket = UNIXSocket.new(@path_out)
     socket.write(msg)
     socket.close
-    true
   end
 
   private

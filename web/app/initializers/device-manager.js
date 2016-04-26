@@ -20,7 +20,9 @@ var Socket = Ember.Object.extend(abstractSocket, {
     this.addOnMessage('output', function(data) {
       var self = this;
       $.each(Object.keys(data), function(i, key) {
-        self.set('output.' + key, data[key]);
+        var output = self.get('output.' + key);
+        if(!output) { output = ''}
+        self.set('output.' + key, output + data[key]);
       });
     }, this);
 

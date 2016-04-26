@@ -1,5 +1,5 @@
 require 'socket'
-
+Thread::abort_on_exception = true
 class UNIXConnection
   def initialize on_message
     path_in = 'socket'

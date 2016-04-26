@@ -37,16 +37,8 @@ class Device
   def start_logging
     Thread.new do
       @container.streaming_logs(follow: true, stdout: true, stderr: true) do |stream, message|
-        puts "#{stream}: #{message}"
+        @manager.new_output @hwid, "#{stream}: #{message}"
       end
-    end
-  end
-
-  def new_output
-    if File.exists?("#{@path}/output")
-      @manager.new_output @hwid, open("#{@path}/output").read
-    else
-      @manager.new_output @hwid, ''
     end
   end
 
@@ -67,7 +59,7 @@ class Device
         FileUtils.cp fname, "#{@path}/#{nfname}"
       end
     end
-    puts Dir["#{@path}/**/*"]
+
     if lang == 'ruby'
       File.open("#{@path}/entrypoint.rb", 'w') { |file| file.write(@record.algorithm) }
     end
@@ -79,6 +71,7 @@ class Device
     @container = Docker::Container.create(
       "Image" => image.id,
       "Binds" => ["#{@path}/:/app"],
+      'Cmd' => ['ruby', 'entrypoint.rb' ]
     )
   end
 
@@ -102,7 +95,6 @@ class Device
           break
         end
         @ws.ping(body = '')
-        @log.write "SEND PING"
         @wait_pong = true
       end
     end
@@ -124,7 +116,11 @@ class Device
 
       ws.onmessage do |msg|
         puts "MSG from DEVICE: #{msg}"
-        @unix.send_message(msg)
+        begin
+          @unix.send_message(msg)
+        rescue
+          @ws.close_connection
+        end
       end
 
       ws.onclose do
@@ -134,7 +130,7 @@ class Device
 
       ws.onpong do
         @wait_pong = false
-        puts "RECIVE PONG"
+        puts "PING-PONG"
       end
     end
   end
