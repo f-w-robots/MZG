@@ -31,14 +31,10 @@ export default Ember.Component.extend({
       if(this.get('currentDeivce')) {
         this.set('currentDeivce.active', null);
       }
+
       device.set('active', true);
 
-      this.set('controlUrl', null)
-      if(this.get('currentDeivce.hwid') == device.get('hwid') ) {
-        this.set('currentDeivce', null);
-      } else {
-        this.set('currentDeivce', device);
-      }
+      this.set('currentDeivce', device);
     },
 
     killDevice: function(device) {

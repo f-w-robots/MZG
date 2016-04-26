@@ -44,12 +44,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="btn btn-danger" {{action "update" model}}>Update</div>
-      {{#if model.online}}
-        {{#if model.manual}}
-          <div class="btn btn-warning" {{action "control" model}}>Control</div>
-        {{/if}}
-      {{/if}}
+      <div class="btn btn-warning" {{action "update" model}}>Update</div>
+      <div class="btn btn-danger" {{action "delete" model}}>Delete</div>
     </div>
   </form>
 </div>

@@ -74,5 +74,11 @@ export default Ember.Component.extend(saveModelControllerMixin, {
           + location.hostname + ':3900/' + device.get('hwid'));
       }
     },
+
+    delete: function(device) {
+      device.deleteRecord();
+      device.save();
+      this.set('model', null);
+    },
   },
 });
