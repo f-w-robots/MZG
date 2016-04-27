@@ -20,7 +20,8 @@ class User
     params = {'provider' => data['provider'], 'uid' => data['uid']}
     user = @@db[:users].find(params).first
     if !user
-      user = @@db[:users].insert_one(params)
+      user_id = @@db[:users].insert_one(params).inserted_id
+      user = @@db[:users].find({'_id' => inserted_id}).first
     end
 
     @@db[:sessions].find(:session_id => session_id).find_one_and_delete

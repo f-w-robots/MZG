@@ -22,7 +22,7 @@ control:
     - ./db-code:/app/db-code
   links:
     - db
-  env_file: .env
+  env_file: .env.production
 hwserver2:
   build: hwserver2/.
   command: rackup
@@ -36,7 +36,7 @@ hwserver2:
   links:
     - db
     - docker
-  env_file: .env
+  env_file: .env.production
 apiserver:
   build: apiserver/.
   command: rackup
@@ -46,10 +46,9 @@ apiserver:
     - ./apiserver:/app
   links:
     - db
-  env_file: .env
+  env_file: .env.production
 web:
   build: web/.
   command: ember build --environment=production
   volumes:
     - ./web/dist:/app/dist
-  env_file: .env

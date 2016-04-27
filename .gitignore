@@ -7,3 +7,5 @@
 !/log/.keep
 
 /volumes/*
+
+.env.production
