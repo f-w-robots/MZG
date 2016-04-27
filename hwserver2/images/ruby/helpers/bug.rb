@@ -11,10 +11,22 @@ module BUG
   end
 
   class Sensor
-    def self.update
+    def self.update msg
+      @@msg = msg
     end
 
-    def self.v
+    def self.v s
+      if s == 'rr'
+        @@msg[4]
+      elsif s == 'll'
+        @@msg[0]
+      elsif s == 'r'
+        @@msg[3]
+      elsif s == 'l'
+        @@msg[1]
+      elsif s == 'c'
+        @@msg[2]
+      end
     end
   end
 end

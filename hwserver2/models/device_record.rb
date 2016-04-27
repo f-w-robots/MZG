@@ -11,7 +11,7 @@ class Device::Record
 
   def algorithm
     return nil if !@record
-    record = @db[:algorithms].find(:'algorithm-id' => @record['algorithm-id']).first
+    record = @db[:algorithms].find('_id' =>BSON::ObjectId(@record['algorithm-id'])).first
     content(record, 'algorithm') if record
   end
 
