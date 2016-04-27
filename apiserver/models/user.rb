@@ -57,4 +57,8 @@ class User
 
     allow
   end
+
+  def authorized?
+    !!@user
+  end
 end

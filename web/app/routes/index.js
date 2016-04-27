@@ -11,6 +11,7 @@ export default Ember.Route.extend({
       devices: this.store.findAll('device'),
       interfaces: this.store.findAll('interface'),
       algorithms: this.store.findAll('algorithm'),
+      user: this.store.findRecord('user', 'current'),
     });
   },
 });

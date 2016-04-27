@@ -1,6 +1,4 @@
 <div class="container">
-  <!-- <div class="btn btn-success"> -->
-    {{authorization-button}}
-  <!-- </div> -->
-  {{manual-control devices=model.devices algorithms=model.algorithms interfaces=model.interfaces}}
+  {{authorization-button user=model.user}}
+  {{manual-control user=model.user devices=model.devices algorithms=model.algorithms interfaces=model.interfaces}}
 </div>

@@ -1,1 +1,3 @@
-<div class="btn btn-success" {{action "authorize"}}>Authorize</div>
+{{#unless user.authorized}}
+  <div class="btn btn-success" {{action "authorize"}}>Authorize</div>
+{{/unless}}

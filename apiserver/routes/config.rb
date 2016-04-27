@@ -59,6 +59,18 @@ module Sinatra
               app.set :user, User.login(request.env['omniauth.auth'].to_hash, cookies[:session_id])
               redirect ENV['AUTH_REDIRECT']
             end
+
+            app.get '/api/v1/users/current' do
+              '{"data":
+                  {
+                    "type": "users",
+                    "id": "current",
+                    "attributes": {
+                        "authorized": ' + @user.authorized?.to_s + '
+                    }
+                  }
+                }'
+            end
           end
         end
       end
