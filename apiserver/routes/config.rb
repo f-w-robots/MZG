@@ -30,8 +30,12 @@ module Sinatra
 
               attrs[:user_id] = @user.record['_id']
 
-              model.create(attrs)
-              status 201
+              success = model.create(attrs)
+              if success
+                status 201
+              else
+                status 500
+              end
               {meta:{}}.to_json
             end
 
