@@ -3,7 +3,6 @@ import abstractSocket from '../mixins/abstract-socket';
 var Socket = Ember.Object.extend(abstractSocket, {
   devices: null,
   error: null,
-  badCode: null,
   output: Ember.RSVP.hash({}),
 
   init() {
@@ -13,16 +12,24 @@ var Socket = Ember.Object.extend(abstractSocket, {
       this.set('devices', data);
     }, this);
 
-    this.addOnMessage('bad_code', function(data) {
-      this.set('badCode', true);
-    }, this);
-
     this.addOnMessage('output', function(data) {
       var self = this;
       $.each(Object.keys(data), function(i, key) {
-        var output = self.get('output.' + key);
-        if(!output) { output = ''}
-        self.set('output.' + key, output + data[key]);
+        if(!self.get('output.' + key)) {
+          self.set('output.' + key, []);
+        }
+        var out = data[key];
+        var obj = {line: out[1]};
+        if(out[0]=='stdout') {
+          obj['stdout'] = true;
+        } else {
+          obj['stderr'] = true;
+        }
+
+        self.get('output.' + key).push(Ember.Object.create(obj));
+        self.set('output.' + key, self.get('output.' + key).slice(0));
+        // self.notifyPropertyChange('output');
+
       });
     }, this);
 

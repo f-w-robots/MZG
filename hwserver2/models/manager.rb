@@ -26,9 +26,9 @@ class Manager
     update_devices_list
   end
 
-  def new_output hwid, data
+  def new_output hwid, std, data
     @web_sockets.keys.each do |key|
-      key.send({output: { hwid => data }}.to_json)
+      key.send({output: { hwid => [std, data] }}.to_json)
     end
   end
 

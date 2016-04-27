@@ -37,7 +37,7 @@ class Device
   def start_logging
     Thread.new do
       @container.streaming_logs(follow: true, stdout: true, stderr: true) do |stream, message|
-        @manager.new_output @hwid, "#{stream}: #{message}"
+        @manager.new_output @hwid, stream, message
       end
     end
   end

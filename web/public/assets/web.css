@@ -18,3 +18,10 @@ body > .ember-view > .container {
   width: 600px;
   height: 500px;
 }
+
+.output .line.stderr {
+  color: red;
+}
+
+.output .line.stdout {
+}

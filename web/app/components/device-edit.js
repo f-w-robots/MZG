@@ -4,7 +4,6 @@ import saveModelControllerMixin from '../mixins/save-model-controller';
 
 export default Ember.Component.extend(saveModelControllerMixin, {
   dm: Ember.getDMSocket(),
-  badCode: Ember.computed.alias('dm.badCode'),
 
   algorithmObserver: function() {
     var target = null;
@@ -50,6 +49,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
       this.get('model').save().then(function() {
           self.set('saveStatus', 'success');
           self.get('dm').updateDevice(self.get('model.hwid'));
+          self.set('output', null)
         }, function() {
           self.set('saveStatus', 'error');
         });

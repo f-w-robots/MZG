@@ -1,0 +1,16 @@
+<div class='output'>
+  <i>output:</i>
+<br>
+{{#each data as |line|}}
+  {{#if line.stderr}}
+  <div class="line stderr">
+    {{line.line}}
+  </div>
+  {{/if}}
+  {{#if line.stdout}}
+  <div class="line stdout">
+    {{line.line}}
+  </div>
+  {{/if}}
+{{/each}}
+</div>
