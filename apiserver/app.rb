@@ -26,6 +26,10 @@ class App < Sinatra::Base
     content_type :json
   end
 
+  before '/api/*' do
+    @user = User.new(request.cookies["rack.session"]) if request.cookies["rack.session"]
+  end
+
   options "/api/*" do
     response.headers["Access-Control-Allow-Methods"] = "HEAD,GET,PUT, PATCH,POST,DELETE,OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"

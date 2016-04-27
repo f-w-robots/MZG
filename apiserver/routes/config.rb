@@ -9,34 +9,26 @@ module Sinatra
             model.init ::App.db
 
             app.get "/api/v1/#{model.pluralize}" do
-              if !User.access?(request.cookies["rack.session"])
-                @records = []
-              else
-                @records = model.all
-                @attributes = model.attributes
-                @model = model
-              end
+              @records = @user.records(model)
+              @attributes = model.attributes
+              @model = model
 
               erb :'api/models/index'
             end
 
             app.get "/api/v1/#{model.pluralize}/:id" do |id|
-              if !User.access?(request.cookies["rack.session"])
-                @records = []
-              else
-                @records = model.get id
-                @attributes = model.attributes
-                @model = model
-              end
+              @records = @user.records(model, id)
+              @attributes = model.attributes
+              @model = model
 
               erb :'api/models/index'
             end
 
             app.post "/api/v1/#{model.pluralize}" do
-              return 403 if !User.access?(request.cookies["rack.session"])
-
               params = JSON.parse(request.body.read)
               attrs = params["data"]["attributes"]
+
+              attrs[:user_id] = @user.record['_id']
 
               model.create(attrs)
               status 201
@@ -44,13 +36,15 @@ module Sinatra
             end
 
             app.delete "/api/v1/#{model.pluralize}/:id" do |id|
-              return 403 if !User.access?(request.cookies["rack.session"])
+              return 403 if !@user.access?(model, id)
+
               model.delete id
               {meta:{}}.to_json
             end
 
             app.patch "/api/v1/#{model.pluralize}/:id" do |id|
-              return 403 if !User.access?(request.cookies["rack.session"])
+              return 403 if !@user.access?(model, id)
+
               params = JSON.parse(request.body.read)
               model.update(id, params["data"]["attributes"])
 

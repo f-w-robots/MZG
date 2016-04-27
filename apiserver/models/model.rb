@@ -25,6 +25,6 @@ class Model
   end
 
   def self.update(id, params)
-    @db[@table].find({'_id' => BSON::ObjectId(id)}).update_one(params)
+    @db[@table].find({'_id' => BSON::ObjectId(id)}).update_one({ '$set' => params})
   end
 end
