@@ -21,7 +21,7 @@ class User
     user = @@db[:users].find(params).first
     if !user
       user_id = @@db[:users].insert_one(params).inserted_id
-      user = @@db[:users].find({'_id' => inserted_id}).first
+      user = @@db[:users].find({'_id' => user_id}).first
     end
 
     @@db[:sessions].find(:session_id => session_id).find_one_and_delete
