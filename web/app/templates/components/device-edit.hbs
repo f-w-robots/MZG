@@ -11,19 +11,15 @@
         Group: {{input value=model.group class="form-control"}}
       </div>
     </div> -->
-    <div class="row">
+    <!-- <div class="row">
       <div class="checkbox form-group">
         <label>
           {{input type="checkbox" checked=model.manual}} Manual
         </label>
       </div>
-    </div>
+    </div> -->
     <div class="row">
-      {{#if model.manual}}
-        {{select-code model=interface options=interfaces valueKey="interfaceId" labelKey="interfaceId" value=model.interfaceId modelName="interface"}}
-      {{else}}
-        {{select-code model=algorithm options=algorithms valueKey="algorithmId" labelKey="algorithmId" value=model.algorithmId modelName="algorithm"}}
-      {{/if}}
+      {{select-code model=algorithm options=algorithms valueKey="id" labelKey="name" name=algorithm.name value=model.algorithmId modelName="algorithm"}}
     </div>
     <!-- <br>
     {{image-input imageWidth=100 file=model.icon}}

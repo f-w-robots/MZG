@@ -3,8 +3,8 @@ require_relative 'model'
 class Algorithm < Model
   def self.attributes
     [
-      :'algorithm-id',
       :algorithm,
+      :name
     ]
   end
 

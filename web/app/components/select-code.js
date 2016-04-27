@@ -12,7 +12,7 @@ export default Ember.Component.extend({
     save() {
       // TODO - validation
       var record = {};
-      record[this.get('modelName') + 'Id'] = this.get('newName');
+      record['name'] = this.get('newName');
       record[this.get('modelName')] = "";
       this.get('store').createRecord(this.get('modelName'), record).save().then(function() {
         this.set('addNew', null);
