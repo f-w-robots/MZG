@@ -6,7 +6,7 @@ class User
   end
 
   def initialize session_id
-    @session_id = session_id[10..125]#TODO!!!
+    @session_id = session_id
 
     session = @@db[:sessions].find(:session_id => @session_id).first
     if session
@@ -16,7 +16,7 @@ class User
 
   def self.login data, session_id
     return false if !session_id
-    session_id = session_id[10..125]#TODO!!!
+    session_id = session_id
     params = {'provider' => data['provider'], 'uid' => data['uid']}
     user = @@db[:users].find(params).first
     if !user

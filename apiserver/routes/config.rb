@@ -30,13 +30,12 @@ module Sinatra
 
               attrs[:user_id] = @user.record['_id']
 
-              success = model.create(attrs)
-              if success
-                status 201
-              else
-                status 500
-              end
-              {meta:{}}.to_json
+              r = model.create(attrs)
+              @records = @user.records(model, r.inserted_id)
+              @attributes = model.attributes
+              @model = model
+
+              erb :'api/models/index'
             end
 
             app.delete "/api/v1/#{model.pluralize}/:id" do |id|
@@ -57,7 +56,7 @@ module Sinatra
 
             app.get '/auth/:provider/callback' do |provider|
               content_type 'text/plain'
-              app.set :user, User.login(request.env['omniauth.auth'].to_hash, request.cookies["rack.session"])
+              app.set :user, User.login(request.env['omniauth.auth'].to_hash, cookies[:session_id])
               redirect ENV['AUTH_REDIRECT']
             end
           end

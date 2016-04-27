@@ -3,6 +3,7 @@ require 'byebug'
 require 'json'
 require 'sinatra/base'
 require 'sinatra/cross_origin'
+require "sinatra/cookies"
 require 'mongo'
 require 'omniauth'
 require 'omniauth-vkontakte'
@@ -27,7 +28,10 @@ class App < Sinatra::Base
   end
 
   before '/api/*' do
-    @user = User.new(request.cookies["rack.session"]) if request.cookies["rack.session"]
+    if !cookies[:session_id]
+      cookies[:session_id] = (0...50).map{ ('a'..'z').to_a[rand(26)] }.join
+    end
+    @user = User.new(cookies[:session_id])
   end
 
   options "/api/*" do
@@ -44,6 +48,8 @@ class App < Sinatra::Base
   end
 
   helpers Sinatra::App::Helpers
+  helpers Sinatra::Cookies
+
   register Sinatra::App::Routing::Config
   register Sinatra::CrossOrigin
 
