@@ -6,19 +6,17 @@ export default Ember.Component.extend({
 
   actions: {
     add() {
-      this.set('addNew', true);
+      var self=this;
+      var record = this.get('store').createRecord('algorithm', {name:'', algorithm: ''});
+      record.save().then(function(record) {
+        self.set('device.algorithmId', record.get('id'));
+      });
+      this.set('record', record);
+      this.set('model', record);
     },
 
     save() {
-      // TODO - validation
-      var record = {};
-      record['name'] = this.get('newName');
-      record[this.get('modelName')] = "";
-      this.get('store').createRecord(this.get('modelName'), record).save().then(function() {
-        this.set('addNew', null);
-      }.bind(this), function() {
-
-      }.bind(this))
+      this.set('record', null);
     },
 
     delete() {

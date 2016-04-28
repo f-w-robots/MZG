@@ -1,13 +1,13 @@
-{{#if addNew}}
-  Write new {{modelName}} name:
+{{#if record}}
+  Write new name:
   <div class="row">
     <div class="col-md-9">
       <div class="form-group">
-        {{input value=newName class="form-control"}}
+        {{input value=record.name class="form-control"}}
       </div>
     </div>
     <div class="col-md-3">
-      <a href="#" {{action "save"}}>save</a>
+      <a href="#" {{action "save"}}>close</a>
     </div>
   </div>
 {{else}}

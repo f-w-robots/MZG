@@ -7,20 +7,18 @@ export default Ember.Component.extend(saveModelControllerMixin, {
 
   algorithmObserver: function() {
     var target = null;
-
+    console.log('algorithmObserver');
     this.get('algorithms').find(function(i){
-      console.log();
       if(this.get('model.algorithmId') == i.get('id')) {
         target = i;
       }
     }, this);
-    this.set('algorithm', target)
     console.log(target);
+    this.set('algorithm', target)
   }.observes('model.algorithmId'),
 
   setup: function() {
     this.algorithmObserver();
-    // this.interfaceObserver();
     this.set('output', Ember.computed.alias('dm.output.' + this.get('model.hwid')));
   }.on('init'),
 
