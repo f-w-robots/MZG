@@ -1,15 +1,21 @@
 require 'socket'
+
+STDOUT.sync = true
 Thread::abort_on_exception = true
-class UNIXConnection
-  def initialize on_message
+
+class Connection
+  def initialize worker
     path_in = 'socket'
     @path_out = 'socket.server'
     File.unlink(path_in) if File.exists?(path_in)
     @server = UNIXServer.new(path_in)
+
+    @worker = worker.new(self)
+
     Thread.new do
       loop do
         line = on_request
-        on_message.call(line)
+        @worker.from_device(line)
       end
     end
   end
@@ -18,7 +24,7 @@ class UNIXConnection
     File.exists?(@path_out)
   end
 
-  def send_message msg
+  def to_device msg
     return false if !File.exists?(@path_out)
     socket = UNIXSocket.new(@path_out)
     socket.write(msg)

@@ -1,25 +1,27 @@
-require_relative 'unix_connection.rb'
+require_relative 'connection.rb'
 
-@unix = UNIXConnection.new lambda {|msg| on_message(msg)}
+class Worker
+  def initialize connection
+    @connection = connection
 
-@unix.send_message('forward')
-@last_command = 'forward'
-puts "hex"
-STDOUT.sync = true
+    next_step
+  end
 
-def on_message msg
-  puts 'xxx'
-  STDOUT.sync = true
-  if msg == 'ready'
+  def next_step
     if @last_command == 'forward'
-      @unix.send_message('left')
+      @connection.to_device('left')
       @last_command = 'left'
     else
-      @unix.send_message('forward')
+      @connection.to_device('forward')
       @last_command = 'forward'
     end
+  end
 
+  def from_device msg
+    next_step if msg == 'ready'
   end
 end
+
+Connection.new Worker
 
 sleep
