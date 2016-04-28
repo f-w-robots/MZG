@@ -115,7 +115,7 @@ class Device
       end
 
       ws.onmessage do |msg|
-        puts "MSG from DEVICE: #{msg}"
+        puts "MSG from DEVICE: #{msg}, #{(msg || "").bytes.map{|a|a.to_s(16)}}"
         begin
           @unix.send_message(msg)
         rescue

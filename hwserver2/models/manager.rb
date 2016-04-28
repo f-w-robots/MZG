@@ -28,6 +28,7 @@ class Manager
 
   def new_output hwid, std, data
     @web_sockets.keys.each do |key|
+      data = data.encode('UTF-8', {:invalid => :replace,:undef   => :replace,:replace => '?'})
       key.send({output: { hwid => [std, data] }}.to_json)
     end
   end
