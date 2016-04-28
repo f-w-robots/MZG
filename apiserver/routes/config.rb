@@ -55,8 +55,13 @@ module Sinatra
             end
 
             app.get '/auth/:provider/callback' do |provider|
-              content_type 'text/plain'
               app.set :user, User.login(request.env['omniauth.auth'].to_hash, cookies[:session_id])
+              redirect ENV['AUTH_REDIRECT']
+            end
+
+            app.get '/auth/logout' do
+              user = User.new(cookies[:session_id])
+              user.logout
               redirect ENV['AUTH_REDIRECT']
             end
 

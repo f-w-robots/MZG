@@ -2,8 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   actions: {
-    authorize: function() {
+    login: function() {
       location.replace("http://" + location.hostname + ":2600/auth/vkontakte")
     },
+
+    logout: function() {
+      location.replace("http://" + location.hostname + ":2600/auth/logout")
+    }
   }
 });

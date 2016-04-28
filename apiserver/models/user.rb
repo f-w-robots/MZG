@@ -30,6 +30,10 @@ class User
     user
   end
 
+  def logout
+    @@db[:sessions].find({session_id: @session_id}).delete_many
+  end
+
   def records model, id = nil
     records = []
     return records if !@user
