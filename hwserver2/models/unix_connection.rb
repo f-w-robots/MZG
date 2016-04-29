@@ -24,7 +24,11 @@ class UNIXConnection
   private
   def on_request
     socket = @server.accept
-    line = socket.readline
+    begin
+      line = socket.readline
+    rescue EOFError
+      line = ""
+    end
     socket.close
     line
   end

@@ -52,7 +52,7 @@ class Device
           @manager.new_output @hwid, stream, message
         end
       rescue Docker::Error::TimeoutError
-        puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa"*1000
+
       end
     end
   end

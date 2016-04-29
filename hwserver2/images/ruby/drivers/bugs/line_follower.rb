@@ -379,7 +379,6 @@ module Bugs
       @device.out_msg_left('04INIT')
       @device.out_msg_left(PackageGenerator.right_left_wheel(0,0))
 
-      @messages = []
       @log = Logger.new
     end
 
@@ -398,52 +397,20 @@ module Bugs
 
     def command cmd
       @command = cmd
+    end
 
-      @thread = Thread.new do
-        loop do
-          wait_message
+    def tick msg
+      puts "MSGGG: #{msg}"
+      @sensors.update msg, true
 
-          if finish?
-            break
-          end
+      @mover.move current_command
 
-          @sensors.update shift_msg, true
-
-          @mover.move current_command
-
-          @device.out_msg_left(@answer.get)
-          @request_time = Time.now
-
-          if finish?
-            break
-          end
-        end
-      end
+      @device.out_msg_left(@answer.get)
+      @request_time = Time.now
     end
 
     def current_command
       @command
-    end
-
-    def message_from_device msg
-      @messages.push msg
-    end
-
-    private
-    def wait_message
-      while msg_empty?
-        sleep 0.000001
-      end
-    end
-
-    def msg_empty?
-      @messages.empty?
-    end
-
-    def shift_msg
-      msg = @messages.shift
-      @messages.clear
-      msg
     end
   end
 end
