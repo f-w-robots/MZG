@@ -2,10 +2,11 @@ class Manager
   def initialize
     @devices = []
     @web_sockets = {}
+    @mailer = Mailer.new
   end
 
   def connect device
-    device = Device.new(device, self)
+    device = Device.new(device, self, @mailer)
     response = device.start
     @devices.push device
     on_device_connected

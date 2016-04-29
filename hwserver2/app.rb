@@ -19,6 +19,7 @@ require_relative 'models/device_record.rb'
 require_relative 'models/device.rb'
 require_relative 'models/logger.rb'
 require_relative 'models/manager.rb'
+require_relative 'models/mailer.rb'
 require_relative 'models/unix_connection.rb'
 
 $LOAD_PATH.push File.expand_path('../routes', __FILE__)

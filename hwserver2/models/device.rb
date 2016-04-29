@@ -1,7 +1,7 @@
 class Device
   attr_reader :record
 
-  def initialize device_record, manager
+  def initialize device_record, manager, mailer
     @hwid = device_record.hwid
     @log = Logger.new(@hwid)
 
@@ -11,6 +11,9 @@ class Device
     @record = device_record
 
     @path = "#{Dir.pwd}/containers/#{@hwid}"
+
+    @mailer = mailer
+    @mailer.register(@hwid, self)
 
     start_container
   end
@@ -31,6 +34,10 @@ class Device
 
   def start
     open_websocket
+  end
+
+  def recive_mail from, message
+    @mail.send_message("#{from}#{30.chr}#{message}")
   end
 
   private
@@ -77,11 +84,17 @@ class Device
 
   def open_sockets
     @unix = UNIXConnection.new "#{@path}/socket.server", "#{@path}/socket", lambda {|msg| message_from_container(msg)}
+    @mail = UNIXConnection.new "#{@path}/socket.mail.server", "#{@path}/socket.mail", lambda {|msg| message_from_container_by_mail(msg)}
   end
 
   def message_from_container msg
     puts "MSG to DEVICE: #{msg}"
     @ws.send(msg)
+  end
+
+  def message_from_container_by_mail msg
+    puts "FROM container BY mail #{msg}"
+    @mailer.raw(@hwid, msg)
   end
 
   def start_ping_thread time, timeout
