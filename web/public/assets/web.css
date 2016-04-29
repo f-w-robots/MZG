@@ -25,3 +25,9 @@ body > .ember-view > .container {
 
 .output .line.stdout {
 }
+
+.output {
+  border: 4px double black;
+  height: 300px;
+  overflow: scroll;
+}

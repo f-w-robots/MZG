@@ -6,7 +6,7 @@ module Bugs
     end
 
     def write msg
-      puts msg
+      # puts msg
     end
   end
 
@@ -167,7 +167,6 @@ module Bugs
       end
       @log.write "allow_time: #{allow_time}" if @time
       @log.write "#{cmd}, step_mode: #{@step_mode}"
-
 
       send(cmd)
       @log.write '-'*12
