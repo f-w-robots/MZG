@@ -21,7 +21,7 @@ class Mailer
   private
   def send_mail opts
     return if !@devices[opts[:to]]
-    return if !@permissions[opts[:to]].include?(opts[:from])
+    return if !(@permissions[opts[:to]] && @permissions[opts[:to]].include?(opts[:from]))
     to = @devices[opts[:to]]
     to.recive_mail(opts[:from], opts[:message])
   end

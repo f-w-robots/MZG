@@ -1,6 +1,15 @@
 module Drivers
 module Bugs
-module LineFollower
+  module LineFollower
+  class Logger
+    def initialize
+    end
+
+    def write msg
+      puts msg
+    end
+  end
+
   class PackageGenerator
     def self.g controller_id, data, finish = true
       "#{controller_id}#{data.length}#{data}#{finish ? '~' : ''}"
@@ -18,7 +27,7 @@ module LineFollower
 
     def initialize
       @history = []
-      @log = Logger.new(HWID)
+      @log = Logger.new
     end
 
     def update values, print = false
@@ -77,7 +86,7 @@ module LineFollower
   class Answer
     def initialize
       @answer = []
-      @log = Logger.new(HWID)
+      @log = Logger.new
     end
 
     def stop
@@ -132,7 +141,7 @@ module LineFollower
       @sensor = sensor
       @answer = answer
       @commands = commands
-      @log = Logger.new(HWID)
+      @log = Logger.new
     end
 
     def sensor value
@@ -372,7 +381,7 @@ module LineFollower
       @device.out_msg_left(PackageGenerator.right_left_wheel(0,0))
 
       @messages = []
-      @log = Logger.new(HWID)
+      @log = Logger.new
     end
 
     def finish crash = false

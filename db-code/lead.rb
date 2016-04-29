@@ -10,10 +10,10 @@ class Worker
   end
 
   def from_device msg
-    Sensor.update(msg)
+    BUG::Sensor.update(msg)
 
-    result = if (Sensor.v('c') && Sensor.v('r') && Sensor.v('l')) ||
-        (Sensor.v('c') && !Sensor.v('r') && !Sensor.v('l'))
+    result = if (Sensor.v('c') && BUG::Sensor.v('r') && BUG::Sensor.v('l')) ||
+        (BUG::Sensor.v('c') && !BUG::Sensor.v('r') && !BUG::Sensor.v('l'))
       BUG::Package.right_left_wheel(-1,-1)
     elsif sensor['l']
       BUG::Package.right_left_wheel(-1,0)
@@ -27,7 +27,7 @@ class Worker
       BUG::Package.right_left_wheel(0,0)
     end
 
-    @Connection.to_device(result)
+    @connection.to_device(result)
   end
 end
 

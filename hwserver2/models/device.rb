@@ -37,14 +37,22 @@ class Device
   end
 
   def recive_mail from, message
-    @mail.send_message("#{from}#{30.chr}#{message}")
+    begin
+      @mail.send_message("#{from}#{30.chr}#{message}")
+    rescue
+
+    end
   end
 
   private
   def start_logging
-    Thread.new do
-      @container.streaming_logs(follow: true, stdout: true, stderr: true) do |stream, message|
-        @manager.new_output @hwid, stream, message
+    @threads[:logging] = Thread.new do
+      begin
+        @container.streaming_logs(follow: true, stdout: true, stderr: true) do |stream, message|
+          @manager.new_output @hwid, stream, message
+        end
+      rescue Docker::Error::TimeoutError
+        puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa"*1000
       end
     end
   end

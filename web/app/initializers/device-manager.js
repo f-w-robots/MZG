@@ -27,10 +27,9 @@ var Socket = Ember.Object.extend(abstractSocket, {
         }
 
         self.get('output.' + key).push(Ember.Object.create(obj));
-        self.set('output.' + key, self.get('output.' + key).slice(0));
+        var len = self.get('output.' + key).length;
+        self.set('output.' + key, self.get('output.' + key).slice(len - 1000));
         self.set('outputUpdated', []);
-        // self.notifyPropertyChange('output');
-
       });
     }, this);
 
