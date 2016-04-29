@@ -25,6 +25,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
     this.algorithmObserver();
     this.get('dm').addObserver('outputUpdated', function() {
       self.set('output', self.get('dm.output.' + self.get('model.hwid')))
+
     });
   }.on('init'),
 
@@ -44,7 +45,8 @@ export default Ember.Component.extend(saveModelControllerMixin, {
       this.get('model').save().then(function() {
           self.set('saveStatus', 'success');
           self.get('dm').updateDevice(self.get('model.hwid'));
-          self.set('output', null)
+          self.set('dm.output.' + self.get('model.hwid'), []);
+          self.set('output', null);
         }, function() {
           self.set('saveStatus', 'error');
         });

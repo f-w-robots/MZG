@@ -104,7 +104,7 @@ class Device
         sleep 5
         if @wait_pong
           @log.write "ABORTED by PING-PONG"
-          destroy
+          @ws.close_connection
           break
         end
         @ws.ping(body = '')

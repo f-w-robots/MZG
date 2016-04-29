@@ -61,7 +61,9 @@
     {{#if algorithm}}
       ruby code: <br>
       {{#ace-editor mode="ruby" value=algorithm.algorithm}}{{/ace-editor}}
-      {{std-output data=output}}
+
+        {{std-output data=output}}
+
     {{/if}}
     {{/unless}}
   {{/if}}
