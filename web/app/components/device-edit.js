@@ -4,22 +4,28 @@ import saveModelControllerMixin from '../mixins/save-model-controller';
 
 export default Ember.Component.extend(saveModelControllerMixin, {
   dm: Ember.getDMSocket(),
+  output: null,
 
   algorithmObserver: function() {
     var target = null;
-    console.log('algorithmObserver');
     this.get('algorithms').find(function(i){
       if(this.get('model.algorithmId') == i.get('id')) {
         target = i;
       }
     }, this);
-    console.log(target);
     this.set('algorithm', target)
   }.observes('model.algorithmId'),
 
+  modelObserver: function() {
+    this.set('output', this.get('dm.output.' + this.get('model.hwid')))
+  }.observes('model'),
+
   setup: function() {
+    var self = this;
     this.algorithmObserver();
-    this.set('output', Ember.computed.alias('dm.output.' + this.get('model.hwid')));
+    this.get('dm').addObserver('outputUpdated', function() {
+      self.set('output', self.get('dm.output.' + self.get('model.hwid')))
+    });
   }.on('init'),
 
   actions: {
