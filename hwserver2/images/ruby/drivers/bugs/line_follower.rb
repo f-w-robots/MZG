@@ -400,7 +400,7 @@ module Bugs
     end
 
     def tick msg
-      puts "MSGGG: #{msg}"
+      # puts "MSGGG: #{msg}"
       @sensors.update msg, true
 
       @mover.move current_command
