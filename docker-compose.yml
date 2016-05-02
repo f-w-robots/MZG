@@ -6,8 +6,6 @@ db:
 docker:
   build: docker/.
   privileged: true
-  ports:
-    - "2375:2375"
   volumes:
     - mzg_docker:/var/lib/docker
     - ./tmp/containers:/app/containers

@@ -1,4 +1,4 @@
-FROM docker:1.11-dind
+FROM docker:1.11.1-dind
 
 RUN mkdir /containers
 

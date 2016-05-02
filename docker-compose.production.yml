@@ -5,10 +5,7 @@ db:
     - ./volumes/db/config:/data/configdb
 docker:
   build: docker/.
-  dockerfile: Dockerfile.production
   privileged: true
-  ports:
-    - "2375:2375"
   volumes:
     - ./volumes/docker:/var/lib/docker
     - ./tmp/containers:/app/containers

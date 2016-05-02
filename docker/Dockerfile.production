@@ -1,7 +1,0 @@
-FROM docker:1.11-dind
-
-RUN mkdir /containers
-
-VOLUME ["/containers"]
-
-ENTRYPOINT dockerd-entrypoint.sh --storage-driver=aufs
