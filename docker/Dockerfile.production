@@ -4,4 +4,4 @@ RUN mkdir /containers
 
 VOLUME ["/containers"]
 
-ENTRYPOINT dockerd-entrypoint.sh --storage-driver=overlay
+ENTRYPOINT dockerd-entrypoint.sh --storage-driver=aufs

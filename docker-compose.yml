@@ -10,7 +10,7 @@ docker:
     - "2375:2375"
   volumes:
     - mzg_docker:/var/lib/docker
-    - ./containers:/app/containers
+    - ./tmp/containers:/app/containers
 control:
   build: control/.
   command: ruby app.rb
@@ -31,7 +31,7 @@ hwserver2:
     - ./hwserver2:/app
     - ./log:/app/log
     - ./db-code:/app/db-code
-    - ./containers:/app/containers
+    - ./tmp/containers:/app/containers
   links:
     - db
     - docker
