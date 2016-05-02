@@ -12,17 +12,6 @@ docker:
   volumes:
     - ./volumes/docker:/var/lib/docker
     - ./tmp/containers:/app/containers
-control:
-  build: control/.
-  command: ruby app.rb
-  ports:
-    - "3900:3900"
-  volumes:
-    - ./control:/app
-    - ./db-code:/app/db-code
-  links:
-    - db
-  env_file: .env.production
 hwserver2:
   build: hwserver2/.
   command: rackup
