@@ -12,6 +12,14 @@ class Model
     @db[@table].insert_one(params)
   end
 
+  def self.first params
+    @db[@table].find(params).first
+  end
+
+  def self.find params
+    @db[@table].find(params)
+  end
+
   def self.get(id)
     @db[@table].find({'_id' => BSON::ObjectId(id)})
   end

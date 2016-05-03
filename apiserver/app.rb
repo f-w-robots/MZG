@@ -1,37 +1,41 @@
 require 'byebug'
 
+require 'bundler'
+Bundler.require
+
 require 'json'
-require 'sinatra/base'
-require 'sinatra/cross_origin'
-require "sinatra/cookies"
-require 'mongo'
-require 'omniauth'
-require 'omniauth-vkontakte'
 
 $LOAD_PATH.push File.expand_path('../routes', __FILE__)
-%w{ config }.each { |file| require file }
+%w{ config auth }.each { |file| require file }
 
 require_relative 'helpers/helpers'
 
 class App < Sinatra::Base
-  MODELS = %w{ algorithm device group interface }
-  $LOAD_PATH.push File.expand_path('../models', __FILE__)
-  MODELS.each { |model_name| require model_name }
+  helpers Sinatra::Cookies
+  enable :sessions
+  set :session_secret, ENV['SECRET']
+  use Rack::Session::Cookie, secret: ENV['SECRET']
 
+  MODELS = %w{ algorithm device group interface}
+  $LOAD_PATH.push File.expand_path('../models', __FILE__)
+  (MODELS+['user']).each { |model_name| require model_name }
+
+  Mongo::Logger.logger.level = ::Logger::FATAL
   set :root, File.dirname(__FILE__)
   set :db,  Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => ENV['DB_NAME'])
   set :port, ENV['API_SERVER_PORT']
   set :bind, '0.0.0.0'
+
+  require './migration'
+  migrate db
 
   before '/api/*' do
     content_type :json
   end
 
   before '/api/*' do
-    if !cookies[:session_id]
-      cookies[:session_id] = (0...50).map{ ('a'..'z').to_a[rand(26)] }.join
-    end
-    @user = User.new(cookies[:session_id])
+    @user = env['warden'].user
+    # halt "{\"data\":[]}" if !@user
   end
 
   options "/api/*" do
@@ -40,18 +44,29 @@ class App < Sinatra::Base
     200
   end
 
-  require 'user'
+  use Warden::Manager do |config|
+    config.serialize_into_session{|user| user.id }
+    config.serialize_from_session{|id| User.get(id) }
+
+    config.scope_defaults :default,
+      strategies: [:password],
+      action: 'auth/unauthenticated'
+
+    config.failure_app = self
+  end
+
   User.init db
-  use Rack::Session::Cookie
   use OmniAuth::Builder do
     provider :vkontakte, ENV['AUTH_API_KEY'], ENV['AUTH_API_SECRET']
   end
 
   helpers Sinatra::App::Helpers
-  helpers Sinatra::Cookies
 
   register Sinatra::App::Routing::Config
+  register Sinatra::App::Routing::Auth
   register Sinatra::CrossOrigin
 
   enable :cross_origin
+
+  Mongo::Logger.logger.level = ::Logger::FATAL
 end

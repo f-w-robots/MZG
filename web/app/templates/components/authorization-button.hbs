@@ -1,5 +1,7 @@
 {{#unless user.authorized}}
   <div class="btn btn-success" {{action "login"}}>Login</div>
+  <div class="btn btn-success" {{action "register"}}>Register</div>
+  <div class="btn btn-success" {{action "vkontakte"}}>vkontakte</div>
 {{else}}
   <div class="btn btn-success" {{action "logout"}}>Logout</div>
 {{/unless}}

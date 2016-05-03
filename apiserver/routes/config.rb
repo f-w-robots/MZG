@@ -9,6 +9,8 @@ module Sinatra
             model.init ::App.db
 
             app.get "/api/v1/#{model.pluralize}" do
+              halt "{\"data\":[]}" if !@user
+
               @records = @user.records(model)
               @attributes = model.attributes
               @model = model
@@ -17,6 +19,8 @@ module Sinatra
             end
 
             app.get "/api/v1/#{model.pluralize}/:id" do |id|
+              halt "{\"data\":[]}" if !@user
+
               @records = @user.records(model, id)
               @attributes = model.attributes
               @model = model
@@ -25,13 +29,14 @@ module Sinatra
             end
 
             app.post "/api/v1/#{model.pluralize}" do
-              params = JSON.parse(request.body.read)
+              halt "{\"data\":[]}" if !@user
+
+              params = ::JSON.parse(request.body.read)
               attrs = params["data"]["attributes"]
 
               attrs[:user_id] = @user.record['_id']
 
-              r = model.create(attrs)
-              @records = @user.records(model, r.inserted_id)
+              @records = @user.records(model, model.create(attrs).inserted_id)
               @attributes = model.attributes
               @model = model
 
@@ -39,30 +44,19 @@ module Sinatra
             end
 
             app.delete "/api/v1/#{model.pluralize}/:id" do |id|
-              return 403 if !@user.access?(model, id)
+              return 403 if !@user || !@user.access?(model, id)
 
               model.delete id
               {meta:{}}.to_json
             end
 
             app.patch "/api/v1/#{model.pluralize}/:id" do |id|
-              return 403 if !@user.access?(model, id)
+              return 403 if !@user || !@user.access?(model, id)
 
               params = JSON.parse(request.body.read)
               model.update(id, params["data"]["attributes"])
 
               {meta:{}}.to_json
-            end
-
-            app.get '/auth/:provider/callback' do |provider|
-              app.set :user, User.login(request.env['omniauth.auth'].to_hash, cookies[:session_id])
-              redirect ENV['AUTH_REDIRECT']
-            end
-
-            app.get '/auth/logout' do
-              user = User.new(cookies[:session_id])
-              user.logout
-              redirect ENV['AUTH_REDIRECT']
             end
 
             app.get '/api/v1/users/current' do
@@ -71,7 +65,7 @@ module Sinatra
                     "type": "users",
                     "id": "current",
                     "attributes": {
-                        "authorized": ' + @user.authorized?.to_s + '
+                        "authorized": ' + env['warden'].authenticate?.to_s + '
                     }
                   }
                 }'
