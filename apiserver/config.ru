@@ -39,7 +39,13 @@ Warden::Strategies.add(:vkontakte) do
     user = User.first({"providers.#{data['provider']}.uid" => data['uid']})
 
     if user.nil?
-      user = User.create({providers: {data['provider'] => data}, username: data['provider'] + '-' + data['uid']})
+      password = ""
+      32.times{password << ((rand(2)==1?65:97) + rand(25)).chr}
+      user = User.create({
+        providers: {data['provider'] => data},
+        username: data['provider'] + '-' + data['uid'],
+        password: password,
+      })
       success!(user)
     else
       success!(user)

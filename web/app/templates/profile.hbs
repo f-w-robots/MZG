@@ -1,0 +1,29 @@
+{{#if model.authorized}}
+<div class="col-md-4">
+  {{#if success}}
+    <div class="alert alert-success" role="alert">
+      Saved!
+    </div>
+  {{/if}}
+  {{#if errors}}
+    <div class="alert alert-danger" role="alert">
+      {{model.errors}}
+    </div>
+  {{/if}}
+  <form>
+    <div class="row">
+      <div class="form-group">
+        Username: {{input value=model.username class="form-control"}}
+      </div>
+      <div class="form-group">
+        Password: {{input value=model.password class="form-control"}}
+      </div>
+      <div class="form-group">
+        Password confirmation: {{input value=model.passwordConfirmation class="form-control"}}
+      </div>
+    </div>
+
+    <div class="btn btn-success" {{action "save"}}>Save</div>
+  </form>
+</div>
+{{/if}}

@@ -44,6 +44,12 @@ class App < Sinatra::Base
     200
   end
 
+  options "/auth/*" do
+    response.headers["Access-Control-Allow-Methods"] = "HEAD,GET,PUT, PATCH,POST,DELETE,OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
+    200
+  end
+
   use Warden::Manager do |config|
     config.serialize_into_session{|user| user.id }
     config.serialize_from_session{|id| User.get(id) }

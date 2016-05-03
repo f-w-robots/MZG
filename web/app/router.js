@@ -10,6 +10,9 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: '/edit/:group_id' });
   });
+  this.route('profile');
+  this.route('signin');
+  this.route('signup');
 });
 
 export default Router;

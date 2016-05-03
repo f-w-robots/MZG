@@ -1,0 +1,11 @@
+{"data":
+    {
+      "type": "users",
+      "id": "current",
+      "attributes": {
+          "username": "<%= @username.to_s %>",
+          "authorized": <%= @authorized.to_s %>,
+          "errors": <%= @errors.to_json %>
+      }
+    }
+}

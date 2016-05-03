@@ -44,31 +44,40 @@ module Sinatra
             end
 
             app.delete "/api/v1/#{model.pluralize}/:id" do |id|
-              return 403 if !@user || !@user.access?(model, id)
+              return 403 if !@user || !@user.owner?(model, id)
 
               model.delete id
               {meta:{}}.to_json
             end
 
             app.patch "/api/v1/#{model.pluralize}/:id" do |id|
-              return 403 if !@user || !@user.access?(model, id)
+              return 403 if !@user || !@user.owner?(model, id)
 
-              params = JSON.parse(request.body.read)
+              params = ::JSON.parse(request.body.read)
               model.update(id, params["data"]["attributes"])
 
               {meta:{}}.to_json
             end
 
             app.get '/api/v1/users/current' do
-              '{"data":
-                  {
-                    "type": "users",
-                    "id": "current",
-                    "attributes": {
-                        "authorized": ' + env['warden'].authenticate?.to_s + '
-                    }
-                  }
-                }'
+              record = @user ? @user.record : {}
+              @username = record['username']
+              @authorized = env['warden'].authenticate?
+
+              erb :'api/user'
+            end
+
+            app.patch "/api/v1/users/:id" do |id|
+              params = ::JSON.parse(request.body.read)["data"]["attributes"]
+
+              user = env['warden'].user
+
+              @errors = user.update(params)
+
+              @username = user.record['username']
+              @authorized = env['warden'].authenticate?
+
+              erb :'api/user'
             end
           end
         end

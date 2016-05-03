@@ -20,21 +20,17 @@ module Sinatra
           app.post '/auth/signin' do
             env['warden'].authenticate!(:password)
 
-            if env['warden'].user
-              # status 200
-              redirect ENV['AUTH_REDIRECT']
-            else
-              status 403
-            end
-
-            redirect ENV['AUTH_REDIRECT']
+            status 201
           end
 
           app.post '/auth/signup' do
-            User.create(params['user'])
+            user = User.create(params['user'] || {})
 
-            # status 200
-            redirect ENV['AUTH_REDIRECT']
+            if user
+              status 201
+            else
+              status 200
+            end
           end
 
           app.get '/auth/logout' do
