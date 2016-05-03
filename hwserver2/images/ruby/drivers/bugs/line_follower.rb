@@ -21,22 +21,59 @@ module Bugs
     end
   end
 
-  class Sensors
-    OneZeroDeliver = 4
-    MaxHistory = 10
+  class SensorsHistory
+    MaxHistorySize = 5
+    MaxHistoryTime = 0.05
 
     def initialize
       @history = []
       @log = Logger.new
     end
 
-    def update values, print = false
-      @history.unshift(values)
-      @history = @history[0..(MaxHistory-1)]
-      if print
-        @log.write "last: #{values[0..4]}"
-        @log.write "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
+    def add values
+      @history.unshift({values: values, time: Time.now})
+      cut_history
+      @log.write "last: #{values[0..4]}"
+      @log.write "medium: #{medium(0)}#{medium(1)}#{medium(2)}#{medium(3)}#{medium(4)}"
+    end
+
+    def clear
+      @history = @history[0..0]
+    end
+
+    def medium sensor_number
+      result = 0
+      @history.each do |row|
+        result += row[:values][sensor_number].to_i
       end
+      (result / @history.size).round
+    end
+
+    private
+    def cut_history
+      count = 1
+      @history[1..-1].each do |row|
+        if Time.now - row[:time] > MaxHistoryTime
+          break
+        else
+          count += 1
+        end
+      end
+      count = [count, MaxHistorySize].min
+      @history = @history[0..count-1]
+    end
+  end
+
+  class Sensors
+    OneZeroDeliver = 4
+
+    def initialize
+      @history = SensorsHistory.new
+      @log = Logger.new
+    end
+
+    def update values
+      @history.add values
     end
 
     def value s
@@ -55,29 +92,21 @@ module Bugs
     end
 
     def clear_history
-      @history = @history[0..0]
+      @history.clear
     end
 
     def sensorRaw s
       if s == 'rr'
-        medium(4)
+        @history.medium(4)
       elsif s == 'll'
-        medium(0)
+        @history.medium(0)
       elsif s == 'r'
-        medium(3)
+        @history.medium(3)
       elsif s == 'l'
-        medium(1)
+        @history.medium(1)
       elsif s == 'c'
-        medium(2)
+        @history.medium(2)
       end
-    end
-
-    def medium sensor_number
-      result = 0
-      @history.each do |row|
-        result += row[sensor_number].to_i
-      end
-      (result / @history.size).round
     end
   end
 
@@ -401,7 +430,7 @@ module Bugs
 
     def tick msg
       # puts "MSGGG: #{msg}"
-      @sensors.update msg, true
+      @sensors.update msg
 
       @mover.move current_command
 
