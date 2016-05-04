@@ -5,7 +5,7 @@ module Sinatra
         def self.registered(app)
           app.get '/auth/:provider/callback' do |provider|
             params['omniauth'] = request.env['omniauth.auth'].to_hash
-            env['warden'].authenticate!(provider.to_sym)
+            env['warden'].authenticate(provider.to_sym)
             redirect ENV['AUTH_REDIRECT']
           end
 

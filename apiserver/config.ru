@@ -33,18 +33,16 @@ Warden::Strategies.add(:vkontakte) do
     data = env['omniauth.auth'].to_hash
     data['provider'] == 'vkontakte' && !data['uid'].empty?
   end
-
   def authenticate!
     data = env['omniauth.auth'].to_hash
     user = User.first({"providers.#{data['provider']}.uid" => data['uid']})
-
     if user.nil?
       password = ""
       32.times{password << ((rand(2)==1?65:97) + rand(25)).chr}
       user = User.create({
-        providers: {data['provider'] => data},
-        username: data['provider'] + '-' + data['uid'],
-        password: password,
+        'providers' => {data['provider'] => data},
+        'username' => data['provider'] + '-' + data['uid'],
+        'password' => password,
       })
       success!(user)
     else
