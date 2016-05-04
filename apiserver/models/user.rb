@@ -1,4 +1,5 @@
 require_relative 'model'
+require 'bcrypt'
 
 class User
   def self.init(db)
@@ -25,7 +26,7 @@ class User
   end
 
   def authenticate password
-    @params[:password] == password
+    BCrypt::Password.new(@params[:password]) == password
   end
 
   def records model, id = nil
@@ -52,6 +53,7 @@ class User
 
   def self.create(params)
     if User.validate(:password, params['password'])
+      params['password'] = BCrypt::Password.create(params['password'])
       get(@@db[@@table].insert_one(params).inserted_id)
     end
   end
@@ -79,6 +81,7 @@ class User
     if params['password']
       if params['password-confirmation'] == params['password']
         if User.validate(:password, params['password'])
+          params['password'] = BCrypt::Password.create(params['password'])
           @@db['users'].update_one({'_id' => @params['_id']}, {"$set" => {"password" => params['password']}})
         else
           errors = [:err2]
