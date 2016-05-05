@@ -23,20 +23,35 @@ describe "api" do
         get "/api/v1/algorithms/#{@algorithm['_id']}"
         expect(last_response.body).to eq '{"data":[]}'
       end
+
+      describe "patch" do
+        it do
+          patch "/api/v1/algorithms/#{@algorithm['_id']}", {algorithm: 'sleep2'}
+          expect(Algorithm.get(@algorithm['_id']).first['algorithm']).not_to eq 'sleep2'
+        end
+      end
     end
 
-    describe "unauthorized" do
+    describe "authorized" do
+      before do
+        allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
+      end
       it do
         get "/api/v1/algorithms/#{@algorithm['_id']}"
         expect(last_response.status).to be 200
       end
 
       it do
-        allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
-
         get "/api/v1/algorithms/#{@algorithm['_id']}"
         response = JSON.parse(last_response.body)
         expect(response["data"]["id"]).to eq(@algorithm['_id'].to_s)
+      end
+
+      describe "patch" do
+        it do
+          patch "/api/v1/algorithms/#{@algorithm['_id']}", '{"data": { "attributes": {"algorithm": "sleep2"} } }'
+          expect(Algorithm.get(@algorithm['_id']).first['algorithm']).to eq 'sleep2'
+        end
       end
     end
   end

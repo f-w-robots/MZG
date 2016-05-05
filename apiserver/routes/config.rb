@@ -29,7 +29,7 @@ module Sinatra
 
             app.post "/api/v1/#{model.pluralize}" do
               halt "{\"data\":[]}" if !@user
-
+              debugger
               params = ::JSON.parse(request.body.read)
               attrs = params["data"]["attributes"]
 
@@ -53,6 +53,7 @@ module Sinatra
               return 403 if !@user || !@user.owner?(model, id)
 
               params = ::JSON.parse(request.body.read)
+
               model.update(id, params["data"]["attributes"])
 
               {meta:{}}.to_json
