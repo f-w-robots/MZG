@@ -41,3 +41,18 @@ describe "api" do
     end
   end
 end
+
+describe "auth" do
+  it "should create new user" do
+    post '/auth/signup', { user: { username: 'new_user', password: 'password', password_confimation: 'password' } }
+    user = User.first({username: 'new_user'})
+
+    expect(last_response.status).not_to be nil
+  end
+
+  it "should not create user with dublicate username" do
+    User.create({ username: 'new_user', password: 'password', password_confimation: 'password' })
+
+    expect{ post '/auth/signup', { user: { username: 'new_user', password: 'password', password_confimation: 'password' } } }.to raise_error(Mongo::Error::OperationFailure)
+  end
+end
