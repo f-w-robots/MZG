@@ -9,7 +9,7 @@ class Model
   end
 
   def self.create(params)
-    @db[@table].insert_one(params)
+    self.get(@db[@table].insert_one(params).inserted_id)
   end
 
   def self.first params

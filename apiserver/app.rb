@@ -16,7 +16,7 @@ class App < Sinatra::Base
   set :session_secret, ENV['SECRET']
   use Rack::Session::Cookie, secret: ENV['SECRET']
 
-  MODELS = %w{ algorithm device group interface}
+  MODELS = %w{ algorithm device }
   $LOAD_PATH.push File.expand_path('../models', __FILE__)
   (MODELS+['user']).each { |model_name| require model_name }
 
@@ -27,7 +27,10 @@ class App < Sinatra::Base
   set :bind, '0.0.0.0'
 
   require './migration'
-  migrate db
+  if ENV['RACK_ENV'] == 'test'
+    db.database.drop
+  end
+  Migration.migrate db
 
   before '/api/*' do
     content_type :json

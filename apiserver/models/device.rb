@@ -6,11 +6,7 @@ class Device < Model
       :manual,
       :hwid,
       :'algorithm-id',
-      :'interface-id',
       :icon,
-      :group,
-      :'use-proxy',
-      :'proxy-id',
     ]
   end
 

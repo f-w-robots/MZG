@@ -20,7 +20,6 @@ module Sinatra
 
             app.get "/api/v1/#{model.pluralize}/:id" do |id|
               halt "{\"data\":[]}" if !@user
-
               @records = @user.records(model, id)
               @attributes = model.attributes
               @model = model
