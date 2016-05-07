@@ -29,13 +29,12 @@ module Sinatra
 
             app.post "/api/v1/#{model.pluralize}" do
               halt "{\"data\":[]}" if !@user
-              debugger
               params = ::JSON.parse(request.body.read)
               attrs = params["data"]["attributes"]
 
               attrs[:user_id] = @user.record['_id']
 
-              @records = @user.records(model, model.create(attrs).inserted_id)
+              @records = model.create(attrs)
               @attributes = model.attributes
               @model = model
 
