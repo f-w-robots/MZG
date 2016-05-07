@@ -18,6 +18,13 @@ module BUG
         raise "Unknow threshold: #{threshold}"
       end
     end
+
+    def self.setSensorsCount count
+      if count > 9 || count < 1
+        raise "Count"
+      end
+      g(1, "&#{count}")
+    end
   end
 
   class Sensor
