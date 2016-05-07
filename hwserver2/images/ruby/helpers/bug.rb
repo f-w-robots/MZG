@@ -1,7 +1,7 @@
 module BUG
   class Package
     def self.g controller_id, data
-      "#{controller_id}#{data.length}#{data}#{finish ? '~' : ''}"
+      "#{controller_id}#{data.length}#{data}"
     end
 
     def self.right_left_wheel right, left

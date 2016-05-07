@@ -12,16 +12,16 @@ class Worker
   def from_device msg
     BUG::Sensor.update(msg)
 
-    result = if (Sensor.v('c') && BUG::Sensor.v('r') && BUG::Sensor.v('l')) ||
+    result = if (BUG::Sensor.v('c') && BUG::Sensor.v('r') && BUG::Sensor.v('l')) ||
         (BUG::Sensor.v('c') && !BUG::Sensor.v('r') && !BUG::Sensor.v('l'))
       BUG::Package.right_left_wheel(-1,-1)
-    elsif sensor['l']
+    elsif BUG::Sensor.v('l')
       BUG::Package.right_left_wheel(-1,0)
-    elsif sensor['r']
+    elsif BUG::Sensor.v('r')
       BUG::Package.right_left_wheel(0,-1)
-    elsif sensor['ll']
+    elsif BUG::Sensor.v('ll')
       BUG::Package.right_left_wheel(1,-1)
-    elsif sensor['rr']
+    elsif BUG::Sensor.v('rr')
       BUG::Package.right_left_wheel(-1,1)
     else
       BUG::Package.right_left_wheel(0,0)
