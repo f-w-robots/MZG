@@ -7,20 +7,17 @@ module Sinatra
 
           app.get '/devices/manage' do
             response.headers['Access-Control-Allow-Origin'] = '*'
-            return if !request.websocket?
-            app.manager.manage request
-          end
 
-          app.get '/control/:hwid' do |hwid|
-            # device = ::App.device_manager.device(hwid)
-            # return '' if !device || !device.manual? || device.group_interface?
-            #
-            # response = device.interface.start(request)
-            # response
+            if !Faye::WebSocket.websocket?(request.env)
+              status 500
+              return
+            end
+
+            app.manager.manage(Faye::WebSocket.new(request.env))
           end
 
           app.get '/:hwid' do |hwid|
-            if !request.websocket?
+            if !Faye::WebSocket.websocket?(request.env)
               status 500
               return
             end

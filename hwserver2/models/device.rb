@@ -97,7 +97,7 @@ class Device
 
   def message_from_container msg
     puts "MSG to DEVICE: #{msg}"
-    @ws.send(msg)
+    EM.next_tick {@ws.send(msg)}
   end
 
   def message_from_container_by_mail msg
@@ -105,55 +105,49 @@ class Device
     @mailer.raw(@hwid, msg)
   end
 
-  def start_ping_thread time, timeout
-    @threads[:ping].terminate if @threads[:ping]
+  def start_ping_thread delay, ws
     @threads[:ping] = Thread.new do
+      wait_pong = nil
       loop do
-        sleep 5
-        if @wait_pong
-          @log.write "ABORTED by PING-PONG"
-          @ws.close_connection
-          break
+        sleep delay
+        if wait_pong
+          ws.instance_eval{@stream}.instance_eval{@rack_hijack_io_reader}.close_connection
+          puts 'ABORT by ping-pong'
         end
-        @ws.ping(body = '')
-        @wait_pong = true
+        wait_pong = true
+        puts "PING"
+        ws.ping
+        ws.ping(body = '') do
+          puts "PONG"
+          wait_pong = false
+        end
       end
     end
   end
 
   def open_websocket
-    @record.request.websocket do |ws|
-      @ws = ws
+    ws = Faye::WebSocket.new(@record.request.env)
+    @ws = ws
+    ws.on(:open) do
+      puts "connected with id: #{@hwid}"
+      start_ping_thread 5, ws
+    end
 
-      ws.onopen do
-        puts "connected with id: #{@hwid}"
-        if ws.pingable?
-          start_ping_thread 5, 3
-          puts "PING-PONG supported"
-        else
-          puts "PING-PONG not supported"
-        end
-      end
-
-      ws.onmessage do |msg|
-        puts "MSG from DEVICE: #{msg}, #{(msg || "").bytes.map{|a|a.to_s(16)}}"
-        begin
-          @unix.send_message(msg)
-        rescue
-          @ws.close_connection
-        end
-      end
-
-      ws.onclose do
-        puts "disconnected with id: #{@hwid}"
-        destroy
-      end
-
-      ws.onpong do
-        @wait_pong = false
-        puts "PING-PONG"
+    ws.on(:message) do |msg|
+      puts "MSG from DEVICE: #{msg.data}"
+      begin
+        @unix.send_message(msg.data)
+      rescue
+        @ws.close_connection
       end
     end
+
+    ws.on(:close) do |event|
+      puts "disconnected with id: #{@hwid}"
+      destroy
+    end
+
+    ws.rack_response
   end
 
   def destroy

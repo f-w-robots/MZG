@@ -30,36 +30,36 @@ class Manager
   def new_output hwid, std, data
     @web_sockets.keys.each do |key|
       data = data.encode('UTF-8', {:invalid => :replace,:undef   => :replace,:replace => '?'})
-      key.send({output: { hwid => [std, data] }}.to_json)
+      EM.next_tick { key.send({output: { hwid => [std, data] }}.to_json) }
     end
   end
 
-  def manage request
-    request.websocket do |ws|
-      @web_sockets[ws] = true
+  def manage ws
+    ws.on(:open) do |event|
+      puts "MANAGE open"
+    end
 
-      ws.onopen do
+    ws.on(:message) do |msg|
+      puts "MANAGE: #{msg.data}"
+      msg = JSON.parse(msg.data)
 
+      if msg['list']
+        EM.next_tick { ws.send(device_list) }
       end
 
-      ws.onmessage do |msg|
-        puts "MANAGE: #{msg}"
-        msg = JSON.parse(msg)
-
-        if msg['list']
-          ws.send(device_list)
-        end
-
-        if msg['update']
-          puts 'recreate_device'
-          recreate_device(msg['update'])
-        end
-      end
-
-      ws.onclose do
-        ws.send({devices: []}.to_json)
+      if msg['update']
+        puts 'recreate_device'
+        recreate_device(msg['update'])
       end
     end
+
+    ws.on(:close) do |event|
+      p [:close, event.code, event.reason]
+      EM.next_tick { ws.send({devices: []}.to_json) }
+      puts "MANAGE close"
+    end
+
+    ws.rack_response
   end
 
   def recreate_device hwid
@@ -74,7 +74,7 @@ class Manager
 
   def update_devices_list
     @web_sockets.keys.each do |key|
-      key.send(device_list)
+      EM.next_tick { key.send(device_list) }
     end
   end
 
