@@ -1,9 +1,9 @@
+<div class = menuItem>{{#link-to 'index'}}main{{/link-to}}</div>
 {{#unless user.authorized}}
-  {{#link-to 'signin'}}SignIn{{/link-to}}
-  {{#link-to 'signup'}}SignUn{{/link-to}}
-  <div class="btn btn-success" {{action "vkontakte"}}>vkontakte</div>
+  <div class = menuItem>{{#link-to 'signin'}}SignIn{{/link-to}}</div>
+  <div class = menuItem>{{#link-to 'signup'}}SignUp{{/link-to}}</div>
+  <button class = menuItem {{action "vkontakte"}}>Vk</button>
 {{else}}
-  <div class="btn btn-success" {{action "logout"}}>Logout</div>
-  {{#link-to 'profile'}}profile{{/link-to}}
+<div class = menuItem>{{#link-to 'profile'}}Profile{{/link-to}}</div>
+<button class = menuItem {{action "logout"}}>Logout</button>
 {{/unless}}
-{{#link-to 'index'}}main{{/link-to}}
