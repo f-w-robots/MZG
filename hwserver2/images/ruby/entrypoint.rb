@@ -1,28 +1,18 @@
-require_relative 'unix_connection.rb'
+require_relative 'connection.rb'
+require_relative 'helpers/bug.rb'
 
-@unix = UNIXConnection.new lambda {|msg| on_message(msg)}
+class Worker
+  def initialize connection
+    @connection = connection
 
-def on_message msg
+    @connection.to_device('message to device')
+  end
 
+  def from_device msg
+    puts msg
+  end
 end
 
-sleep
+Connection.new Worker
 
-# Example, circle move
-#
-# @unix.send_message('forward')
-# @last_command = 'forward'
-#
-# def on_message msg
-#   if(msg == 'ready')
-#     if(@last_command == 'forward')
-#       @unix.send_message('left')
-#       @last_command = 'left'
-#     else
-#       @unix.send_message('forward')
-#       @last_command = 'forward'
-#     end
-#   end
-# end
-#
-# sleep
+sleep

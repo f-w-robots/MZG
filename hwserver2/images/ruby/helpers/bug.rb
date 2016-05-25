@@ -34,15 +34,15 @@ module BUG
 
     def self.v s
       if s == 'rr'
-        @@msg[4]
+        @@msg[4].to_i < 4
       elsif s == 'll'
-        @@msg[0]
+        @@msg[0].to_i < 4
       elsif s == 'r'
-        @@msg[3]
+        @@msg[3].to_i < 4
       elsif s == 'l'
-        @@msg[1]
+        @@msg[1].to_i < 4
       elsif s == 'c'
-        @@msg[2]
+        @@msg[2].to_i < 4
       end
     end
   end
