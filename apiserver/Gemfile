@@ -6,8 +6,9 @@ gem 'sinatra-cross_origin', '~> 0.3.2'
 gem 'mongo', '~> 2.2.2'
 
 gem 'bcrypt-ruby', '3.1.5'
-gem 'warden'
+gem 'warden', '~> 1.2.6'
 gem 'omniauth-vkontakte', '~> 1.3.6'
+gem 'omniauth-github', '~> 1.1.2'
 gem 'omniauth-google-oauth2'
 
 gem 'byebug'

@@ -5,16 +5,8 @@ module Sinatra
         def self.registered(app)
           app.get '/auth/:provider/callback' do |provider|
             params['omniauth'] = request.env['omniauth.auth'].to_hash
-            env['warden'].authenticate!(provider.to_sym)
+            env['warden'].authenticate!(:omniauth)
             redirect ENV['AUTH_REDIRECT']
-          end
-
-          app.get '/auth/signin' do
-            erb :signin
-          end
-
-          app.get '/auth/signup' do
-            erb :signup
           end
 
           app.post '/auth/signin' do
@@ -36,9 +28,6 @@ module Sinatra
           app.get '/auth/logout' do
             env['warden'].raw_session.inspect
             env['warden'].logout
-
-            # status 200
-            # ''
 
             redirect ENV['AUTH_REDIRECT']
           end
