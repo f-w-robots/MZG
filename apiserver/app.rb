@@ -67,6 +67,7 @@ class App < Sinatra::Base
   User.init db
   use OmniAuth::Builder do
     provider :vkontakte, ENV['AUTH_API_KEY'], ENV['AUTH_API_SECRET']
+    provider :github, ENV['AUTH_GITHUB_KEY'], ENV['AUTH_GITHUB_SECRET'], scope: "user"
   end
 
   helpers Sinatra::App::Helpers

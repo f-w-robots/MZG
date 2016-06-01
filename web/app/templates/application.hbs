@@ -1,36 +1,8 @@
-<!-- <nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      {{link-to 'WEB Interface' 'application' class="navbar-brand"}}
-    </div>
-    <div id="navbar" class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        {{#navbar-link route='application' currentRouteName=currentRouteName}}
-          Devices
-        {{/navbar-link}}
-        {{#navbar-link route='admin' currentRouteName=currentRouteName}}
-          Admin
-        {{/navbar-link}}
-      </ul>
-      {{authorization-button}}
-    </div>
-
-  </div>
-</nav> -->
-<!-- <div class="container"> -->
-<div class="container">
+<header>
   {{authorization-button user=currentUser}}
-  {{outlet}}
-</div>
-<!-- </div> -->
-<!-- <footer class="footer">
+</header>
+<section>
   <div class="container">
-    <p class="text-muted">НИЛ Робототехники</p>
+    {{outlet}}
   </div>
-</footer> -->
+</section>

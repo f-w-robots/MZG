@@ -28,10 +28,10 @@ Warden::Strategies.add(:password) do
   end
 end
 
-Warden::Strategies.add(:vkontakte) do
+Warden::Strategies.add(:omniauth) do
   def valid?
     data = env['omniauth.auth'].to_hash
-    data['provider'] == 'vkontakte' && !data['uid'].empty?
+    !data['provider'].empty? && !data['uid'].empty?
   end
   def authenticate!
     data = env['omniauth.auth'].to_hash

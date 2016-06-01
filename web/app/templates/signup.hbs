@@ -9,7 +9,7 @@
       "Error"
     </div>
   {{/if}}
-  <form>
+  <!--<form>
     <div class="row">
       <div class="form-group">
         Username: {{input value=username class="form-control"}}
@@ -19,5 +19,12 @@
       </div>
     </div>
     <div class="btn btn-success" {{action "signup"}}>SignUP</div>
-  </form>
+  </form> -->
+  <div class="contactImputBlock row">
+    <div class="imputLeftBlock">
+    Username: {{input value=username}}
+    Password: {{input value=password}}
+    </div>
+    <div class="btn btn-success" {{action "signup"}}>SignUP</div>
+  </div>
 </div>
