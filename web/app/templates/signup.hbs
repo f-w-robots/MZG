@@ -1,30 +1,24 @@
-<div class="col-md-4">
-  {{#if success}}
-    <div class="alert alert-success" role="alert">
-      Saved!
+<div class="container">
+  <div class="row">
+    <div class="login-form">
+      <h3>Please Sign Up, or {{#link-to 'index'}}Log in{{/link-to}}</h3>
+      <form role="form">
+        <div class="form-group">
+          <label for="inputUsernameEmail">Username</label>
+          {{input value=username class="form-control"}}
+        </div>
+        <div class="form-group">
+          <label for="inputPassword">Password</label>
+          {{input value=password class="form-control"}}
+        </div>
+        <div class="form-group">
+          <label for="inputPassword">Password Configmation</label>
+          {{input value=password_confirmation class="form-control"}}
+        </div>
+        <button type="submit" class="btn btn btn-primary" {{action "signup"}}>
+          Sign Up
+        </button>
+      </form>
     </div>
-  {{/if}}
-  {{#if error}}
-    <div class="alert alert-danger" role="alert">
-      "Error"
-    </div>
-  {{/if}}
-  <!--<form>
-    <div class="row">
-      <div class="form-group">
-        Username: {{input value=username class="form-control"}}
-      </div>
-      <div class="form-group">
-        Password: {{input value=password class="form-control"}}
-      </div>
-    </div>
-    <div class="btn btn-success" {{action "signup"}}>SignUP</div>
-  </form> -->
-  <div class="contactImputBlock row">
-    <div class="imputLeftBlock">
-    Username: {{input value=username}}
-    Password: {{input value=password}}
-    </div>
-    <div class="btn btn-success" {{action "signup"}}>SignUP</div>
   </div>
 </div>

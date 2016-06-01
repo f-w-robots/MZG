@@ -29,6 +29,7 @@ export default Ember.Controller.extend( {
           console.log(xhr.status);
           if(xhr.status == 201) {
             self.set('success', true);
+            location.replace(location.origin);
           } else {
             self.set('success', false);
             self.set('error', true);

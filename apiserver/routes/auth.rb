@@ -19,6 +19,7 @@ module Sinatra
             user = User.create(params['user'] || {})
 
             if user
+              env['warden'].authenticate!(:password)
               status 201
             else
               status 200

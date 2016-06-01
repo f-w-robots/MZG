@@ -7,7 +7,7 @@
       <h3>Please Log In, or {{#link-to 'signup'}}Sign Up{{/link-to}}</h3>
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
-          <a href="#" class="btn btn-lg btn-primary btn-block">Vkontakte</a>
+          <a href="#" class="btn btn-lg btn-primary btn-block" {{action "vkontakte"}}>Vkontakte</a>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6">
           <a href="#" class="btn btn-lg btn-info btn-block" {{action "github"}}>Github</a>
@@ -30,7 +30,7 @@
         </div>
         <div class="checkbox pull-right">
           <label>
-            <input type="checkbox">
+            <input type="checkbox" disabled="disabled">
             Remember me </label>
         </div>
         <button type="submit" class="btn btn btn-primary" {{action "signin"}}>
