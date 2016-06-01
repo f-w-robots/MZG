@@ -1,9 +1,33 @@
-<div class = menuItem>{{#link-to 'index'}}main{{/link-to}}</div>
-{{#unless user.authorized}}
-  <div class = menuItem>{{#link-to 'signin'}}SignIn{{/link-to}}</div>
-  <div class = menuItem>{{#link-to 'signup'}}SignUp{{/link-to}}</div>
-  <button class = menuItem {{action "vkontakte"}}>Vk</button>
-{{else}}
-<div class = menuItem>{{#link-to 'profile'}}Profile{{/link-to}}</div>
-<button class = menuItem {{action "logout"}}>Logout</button>
-{{/unless}}
+  <div class="navbar" role="navigation" id="slide-nav">
+    <div class="container">
+     <div class="navbar-header">
+       <a class="navbar-toggle pull-right">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+       </a>
+       <div class="cybergizer">
+         <a href="/" class="nounderline">
+           <img src="images/cybergizer_img.png" alt="">
+           <span>Robatz Network</span>
+           <p>Cybernetics of Smart Things</p>
+         </a>
+       </div>
+     </div>
+     <div id="slidemenu">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="menuItem ">{{#link-to 'index'}}main{{/link-to}}</li>
+        {{#unless user.authorized}}
+          <li class="menuItem ">{{#link-to 'signin'}}SignIn{{/link-to}}</li>
+          <li class="menuItem ">{{#link-to 'signup'}}SignUp{{/link-to}}</li>
+          <li class="menuItem"><a href="#"{{action "vkontakte"}}>Vk</a></li>
+        {{else}}
+        <li class="menuItem ">{{#link-to 'profile'}}Profile{{/link-to}}</li>
+        <li class="menuItem"><a href="#" {{action "logout"}}>Logout</a></li>
+        {{/unless}}
+      </ul>
+     </div>
+    </div>
+   </div>
+  <div id="ornament_top">&nbsp;</div>

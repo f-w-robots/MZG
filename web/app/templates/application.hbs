@@ -1,18 +1,8 @@
 <header>
-  <div class="page_size">
-    <div class="headerContent">
-      <div class="cybergizer">
-        <img src="images/cybergizer_img.png" alt="">
-        <span>Robatz Network</span>
-        <p>Cybernetics of Smart Things</p>
-      </div>
-      <div class="desktopMenu">
-        {{authorization-button user=currentUser}}
-      </div>
-    </div>
-  </div>
-    <div id="ornament_top">&nbsp;</div>
+  {{authorization-button user=currentUser}}
 </header>
-<div class="container">
-  {{outlet}}
-</div>
+<section>
+  <div class="container">
+    {{outlet}}
+  </div>
+</section>
