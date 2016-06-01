@@ -1,1 +1,48 @@
+{{#unless model.user.authorized}}
+<div class="container">
+  <div class="row">
+
+    <div class="login-form">
+
+      <h3>Please Log In, or {{#link-to 'signup'}}Sign Up{{/link-to}}</h3>
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <a href="#" class="btn btn-lg btn-primary btn-block">Vkontakte</a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <a href="#" class="btn btn-lg btn-info btn-block" {{action "github"}}>Github</a>
+        </div>
+      </div>
+      <div class="login-or">
+        <hr class="hr-or">
+        <span class="span-or">or</span>
+      </div>
+
+      <form role="form">
+        <div class="form-group">
+          <label for="inputUsernameEmail">Username or email</label>
+          {{input value=username class="form-control"}}
+        </div>
+        <div class="form-group">
+          <a class="pull-right" href="#">Forgot password?</a>
+          <label for="inputPassword">Password</label>
+          {{input value=password class="form-control"}}
+        </div>
+        <div class="checkbox pull-right">
+          <label>
+            <input type="checkbox">
+            Remember me </label>
+        </div>
+        <button type="submit" class="btn btn btn-primary" {{action "signin"}}>
+          Log In
+        </button>
+      </form>
+
+    </div>
+
+  </div>
+</div>
+{{/unless}}
+{{#if model.user.authorized}}
 {{manual-control user=model.user devices=model.devices algorithms=model.algorithms interfaces=model.interfaces}}
+{{/if}}
