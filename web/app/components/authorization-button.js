@@ -64,7 +64,7 @@ export default Ember.Component.extend({
       location.replace("http://" + location.hostname + ":2600/auth/vkontakte")
     },
 
-    githu: function() {
+    github: function() {
       location.replace("http://" + location.hostname + ":2600/auth/github")
     },
 

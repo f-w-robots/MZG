@@ -21,7 +21,7 @@
         {{#unless user.authorized}}
           <li class="menuItem ">{{#link-to 'signin'}}SignIn{{/link-to}}</li>
           <li class="menuItem ">{{#link-to 'signup'}}SignUp{{/link-to}}</li>
-          <li class="menuItem"><a href="#"{{action "vkontakte"}}>Vk</a></li>
+          <li class="menuItem"><a href="#"{{action "github"}}>GITHUB</a></li>
         {{else}}
         <li class="menuItem ">{{#link-to 'profile'}}Profile{{/link-to}}</li>
         <li class="menuItem"><a href="#" {{action "logout"}}>Logout</a></li>
