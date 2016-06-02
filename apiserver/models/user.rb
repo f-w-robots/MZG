@@ -4,6 +4,10 @@ class User
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
 
+  validates_length_of :username, minimum: 3
+  validates_length_of :password, minimum: 6
+  validates_uniqueness_of :username
+
   has_many :devices
   has_many :algorithms
 

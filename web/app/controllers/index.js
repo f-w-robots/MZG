@@ -17,15 +17,14 @@ export default Ember.Controller.extend({
         function(data, textStatus, xhr) {
           console.log(xhr.status);
           if(xhr.status == 201) {
-
-            self.set('success', true);
             location.replace(location.origin);
           } else {
-            self.set('success', false);
-            self.set('error', true);
+            self.set('error', 'Wrong username or password');
           }
-        },
-      );
+        }
+      ).fail(function() {
+        self.set('error', 'Wrong username or password');
+      });
     },
 
     signup: function() {
@@ -40,16 +39,14 @@ export default Ember.Controller.extend({
             }
         },
         function(data, textStatus, xhr) {
-          console.log(data);
-          if(xhr.status == 201) {
-            self.set('success', true);
-            location.replace(location.origin);
-          } else {
-            self.set('success', false);
-            self.set('error', true);
-          }
+          location.replace(location.origin);
         },
-      );
+      ).fail(function(data, darta2, d3 ) {
+        console.log(data.responseText);
+        var j = JSON.parse(data.responseText)
+        console.log(j);
+        self.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
+      });
     },
 
   }
