@@ -65,8 +65,26 @@ module Sinatra
               params = ::JSON.parse(request.body.read)["data"]["attributes"]
 
               user = env['warden'].user
+              if !params["password"]
+                params.delete "password"
+                params.delete "password-confirmation"
+              else
+                if params["password"] == params["password-confirmation"]
+                  params.delete "password-confirmation"
+                else
+                  @errors = ['password confimation']
+                end
+              end
 
-              @errors = user.update(params)
+              if !@errors
+                user.update(params)
+
+                if user.errors.size > 0
+                  @errors = user.errors.map{|k,e|e}
+                else
+                  env['warden'].authenticate!(:password)
+                end
+              end
 
               @username = user['username']
               @authorized = env['warden'].authenticate?
