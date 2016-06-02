@@ -1,30 +1,33 @@
 module BUG
   class Package
     def self.g controller_id, data
-      "#{controller_id}#{data.length}#{data}"
+      ([controller_id, data.size] + data).pack('c*')
     end
 
     def self.right_left_wheel right, left
-      g(1, "#{right == 1 ? '!0"1' : (right == -1 ? '!1"0' : '!0"0')}" +
-        "#{left == 1 ? '#1$0' : (left == -1 ? '#0$1' : '#0$0')}")
+      g(1, ["0000#{right == 1 ? '1' : '0'}#{right == -1 ? '1' : '0'}#{left == 1 ? '1' : '0'}#{left == -1 ? '1' : '0'}".to_i(2)])
     end
 
-    def self.calibrate threshold
-      if threshold == :down || threshold == :black
-        self.g(1, "%1")
-      elsif threshold == :up || threshold == :white
-        self.g(1, "%2")
-      else
-        raise "Unknow threshold: #{threshold}"
-      end
+    def self.init
+      [29].pack('c*')
     end
 
-    def self.setSensorsCount count
-      if count > 9 || count < 1
-        raise "Count"
-      end
-      g(1, "&#{count}")
-    end
+    # def self.calibrate threshold
+    #   if threshold == :down || threshold == :black
+    #     self.g(1, "%1")
+    #   elsif threshold == :up || threshold == :white
+    #     self.g(1, "%2")
+    #   else
+    #     raise "Unknow threshold: #{threshold}"
+    #   end
+    # end
+    #
+    # def self.setSensorsCount count
+    #   if count > 9 || count < 1
+    #     raise "Count"
+    #   end
+    #   g(1, "&#{count}")
+    # end
   end
 
   class Sensor

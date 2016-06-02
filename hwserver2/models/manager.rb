@@ -35,6 +35,7 @@ class Manager
   end
 
   def manage ws
+    @web_sockets[ws] = true
     ws.on(:open) do |event|
       puts "MANAGE open"
     end

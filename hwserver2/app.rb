@@ -8,7 +8,7 @@ Thread::abort_on_exception = true
 
 require 'json'
 require 'sinatra/base'
-require 'sinatra-websocket'
+require 'faye/websocket'
 require 'mongo'
 require 'docker'
 require 'socket'
