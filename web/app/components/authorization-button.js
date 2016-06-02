@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  tagName: 'a',
+
   didInsertElement: function() {
     $('#slide-nav.navbar .container').append($('<div id="navbar-height-col"></div>'));
 

@@ -1,6 +1,10 @@
-require_relative 'model'
+class Algorithm
+  include Mongoid::Document
+  include Mongoid::Attributes::Dynamic
 
-class Algorithm < Model
+  belongs_to :device
+  belongs_to :user
+
   def self.attributes
     [
       :algorithm,

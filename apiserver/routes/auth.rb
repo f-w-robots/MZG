@@ -23,6 +23,7 @@ module Sinatra
               status 201
             else
               status 200
+              '{meta: {errors: [1,2,3]}'
             end
           end
 

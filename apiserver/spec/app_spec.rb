@@ -8,9 +8,10 @@ describe "api" do
   end
 
   describe "api - algorithm" do
-    before(:all) do
+    before(:each) do
       @user = User.create({'username' => 'user', 'password' => '123456'})
-      @algorithm = Algorithm.create({'algorithm' => 'sleep', 'user_id' => @user.record['_id']}).first
+      @algorithm = Algorithm.create({'algorithm' => 'sleep', 'user_id' => @user['_id']})
+      @user.algorithms = [@algorithm]
     end
 
     describe "unauthorized" do
@@ -27,7 +28,7 @@ describe "api" do
       describe "patch" do
         it do
           patch "/api/v1/algorithms/#{@algorithm['_id']}", {algorithm: 'sleep2'}
-          expect(Algorithm.get(@algorithm['_id']).first['algorithm']).not_to eq 'sleep2'
+          expect(Algorithm.where('_id' => @algorithm['_id']).first['algorithm']).not_to eq 'sleep2'
         end
       end
     end
@@ -36,6 +37,7 @@ describe "api" do
       before do
         allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
       end
+
       it do
         get "/api/v1/algorithms/#{@algorithm['_id']}"
         expect(last_response.status).to be 200
@@ -50,7 +52,7 @@ describe "api" do
       describe "patch" do
         it do
           patch "/api/v1/algorithms/#{@algorithm['_id']}", '{"data": { "attributes": {"algorithm": "sleep2"} } }'
-          expect(Algorithm.get(@algorithm['_id']).first['algorithm']).to eq 'sleep2'
+          expect(Algorithm.where('_id' => @algorithm['_id']).first['algorithm']).to eq 'sleep2'
         end
       end
     end
@@ -60,7 +62,7 @@ end
 describe "auth" do
   it "should create new user" do
     post '/auth/signup', { user: { username: 'new_user', password: 'password', password_confimation: 'password' } }
-    user = User.first({username: 'new_user'})
+    user = User.where({username: 'new_user'}).first
 
     expect(last_response.status).not_to be nil
   end
