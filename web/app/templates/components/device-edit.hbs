@@ -1,4 +1,5 @@
 {{partial "partials/save-message"}}
+<div class="row">
 <div class="col-md-4">
   <form>
     <div class="row device-edit-image">
@@ -65,9 +66,15 @@
       ruby code: <br>
       {{#ace-editor mode="ruby" value=algorithm.algorithm}}{{/ace-editor}}
 
-        {{std-output data=output}}
-
     {{/if}}
     {{/unless}}
+  {{/if}}
+</div>
+<!-- <div style="background-color: black; width:100px; height:100px; position:absolute">
+</div> -->
+</div>
+<div class="row">
+  {{#if algorithm}}
+    {{std-output data=output}}
   {{/if}}
 </div>

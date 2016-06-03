@@ -15,8 +15,8 @@ body > .ember-view > .container {
 }
 
 .ember-ace-editor {
-  width: 600px;
   height: 500px;
+  width: 602px;
   z-index: 0;
 }
 
@@ -28,9 +28,9 @@ body > .ember-view > .container {
 }
 
 .output {
-  border: 4px double black;
-  height: 300px;
-  overflow: scroll;
+  border-top: 3px solid #796c6c;
+  height: 200px;
+  overflow-y: scroll;
 }
 
 .device-edit-image img {
