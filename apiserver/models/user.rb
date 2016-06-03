@@ -28,4 +28,6 @@ class User
   def authenticate password
     BCrypt::Password.new(self["password"]) == password
   end
+
+  index({ username: 1 }, { unique: true, name: "username_index" })
 end

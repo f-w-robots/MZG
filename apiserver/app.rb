@@ -23,13 +23,9 @@ class App < Sinatra::Base
   (MODELS+['user']).each { |model_name| require model_name }
 
   set :root, File.dirname(__FILE__)
-  Mongoid.load!("mongoid.yml")
-  set :db,  Mongo::Client.new([ "#{ENV['DB_HOST']}:#{ENV['DB_PORT']}" ], :database => Mongoid::Config.clients['default']['database'])
+  Mongoid.load!("mongoid.yml", App.environment)
   set :port, ENV['API_SERVER_PORT']
   set :bind, '0.0.0.0'
-
-  require './migration'
-  Migration.migrate db
 
   before '/api/*' do
     content_type :json
@@ -78,4 +74,5 @@ class App < Sinatra::Base
 
   enable :cross_origin
   Mongo::Logger.logger.level = ::Logger::FATAL
+  # debugger
 end

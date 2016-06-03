@@ -108,7 +108,6 @@ DEPENDENCIES
   byebug
   database_cleaner
   factory_girl (~> 4.7.0)
-  mongo (~> 2.2.2)
   mongoid (~> 5.1.0)
   omniauth-github (~> 1.1.2)
   omniauth-google-oauth2
