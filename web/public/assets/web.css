@@ -17,6 +17,7 @@ body > .ember-view > .container {
 .ember-ace-editor {
   width: 600px;
   height: 500px;
+  z-index: 0;
 }
 
 .output .line.stderr {
@@ -30,4 +31,8 @@ body > .ember-view > .container {
   border: 4px double black;
   height: 300px;
   overflow: scroll;
+}
+
+.device-edit-image img {
+  max-width: 100%;
 }

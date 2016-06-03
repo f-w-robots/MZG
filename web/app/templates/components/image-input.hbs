@@ -1,8 +1,16 @@
 {{#if file}}
-  <img src="{{file.dataURL}}" width="{{imageWidth}}">
-  <div class="btn btn-danger" {{action "removeImage"}}>x</div>
+<div >
+  {{#if file}}
+    <img src="{{file.dataURL}}" {{action 'clickOnImage'}}>
+  {{/if}}
+</div>
+  {{#unless disableRemove}}
+    <div class="btn btn-danger" {{action "removeImage"}}>x</div>
+  {{/unless}}
+{{else}}
+<img src="/images/optimization_icon.png" {{action 'clickOnImage'}}>
 {{/if}}
 
 <br>
 
-{{file-input fileChanged="fileSelectionChanged"}}
+{{file-input fileChanged="fileSelectionChanged" hideSelect=true}}

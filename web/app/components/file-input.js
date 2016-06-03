@@ -1,5 +1,6 @@
 export default Ember.TextField.extend({
   type: 'file',
+  classNames: ['hidden'],
 
   change: function(e) {
     let self = this;

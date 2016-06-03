@@ -10,5 +10,9 @@ export default Ember.Component.extend({
       this.$('input[type="file"]').val('');
       this.set('file', file);
     },
+
+    clickOnImage: function() {
+      this.$('input').trigger('click');
+    }
   },
 });
