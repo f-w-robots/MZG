@@ -138,7 +138,7 @@ class Device
       begin
         @unix.send_message(msg.data)
       rescue
-        @ws.close_connection
+        ws.instance_eval{@stream}.instance_eval{@rack_hijack_io_reader}.close_connection
       end
     end
 
