@@ -16,13 +16,20 @@ module Sinatra
           end
 
           app.post '/auth/signup' do
-            user = User.create(params['user'] || {})
+            if(params['user']['password'] != params['user']['password_confirmation'])
+              status 403
+              return {meta: {errors: 'password confimation'}}.to_json
+            end
 
-            if user
-              env['warden'].authenticate!(:password)
-              status 201
+            user = params['user'] || {}
+            user.merge!({'password' =>  '', 'username' => ''}.select { |k| !user.keys.include? k })
+
+            user = User.create(user)
+            if user.errors.size > 0
+              status 403
+              {meta: {errors: user.errors.map{|k,e|e}}}.to_json
             else
-              status 200
+              env['warden'].authenticate!(:password)
             end
           end
 
@@ -34,7 +41,7 @@ module Sinatra
           end
 
           app.post  '/auth/unauthenticated' do
-            'wrong'
+            status 403
           end
         end
       end

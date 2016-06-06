@@ -14,29 +14,5 @@ export default Ember.Controller.extend( {
         }
       }.bind(this));
     },
-
-    signup: function() {
-      var self = this;
-      Ember.$.post(location.protocol + "//" + location.hostname  + ":2600/auth/signup",
-        {
-          'user':
-            {
-              username: this.get('username'),
-              password: this.get('password'),
-            }
-        },
-        function(data, textStatus, xhr) {
-          console.log(xhr.status);
-          if(xhr.status == 201) {
-            self.set('success', true);
-            location.replace(location.origin);
-          } else {
-            self.set('success', false);
-            self.set('error', true);
-          }
-        },
-      );
-    },
-
   }
 });

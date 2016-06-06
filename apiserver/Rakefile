@@ -1,0 +1,7 @@
+namespace :db do
+  task :create_indexes, :environment do |t, args|
+    ENV['RACK_ENV'] = args[:environment] if args[:environment]
+    require "./app"
+    ::Mongoid::Tasks::Database.create_indexes
+  end
+end

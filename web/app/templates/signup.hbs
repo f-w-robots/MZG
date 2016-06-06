@@ -1,5 +1,8 @@
 <div class="container">
   <div class="row">
+    {{#if error}}
+      <div class="alert alert-warning" role="alert">{{error}}</div>
+    {{/if}}
     <div class="login-form">
       <h3>Please Sign Up, or {{#link-to 'index'}}Log in{{/link-to}}</h3>
       <form role="form">

@@ -6,8 +6,8 @@
       "type": "<%= @model.pluralize %>",
       "id": "<%= record['_id'].to_s %>",
       "attributes": {
-        <% @attributes.each_with_index do |attr, index| %>
-          <%= attribute(attr, record[attr], @attributes.count - 1 != index) %>
+        <% @model.attributes.each_with_index do |attr, index| %>
+          <%= attribute(attr, record[attr], @model.attributes.count - 1 != index) %>
         <% end %>
       }
     }<%= (records_count - 1 == index) ? '' : ',' %>
