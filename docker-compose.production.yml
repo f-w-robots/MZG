@@ -25,7 +25,7 @@ hwserver2:
   env_file: .env.production
 apiserver:
   build: apiserver/.
-  command: rackup
+  command: command: rackup config.ru -s puma -E production
   ports:
     - "2600:2600"
   volumes:
