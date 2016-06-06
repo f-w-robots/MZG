@@ -17,7 +17,6 @@ hwserver2:
   volumes:
     - ./hwserver2:/app
     - ./log:/app/log
-    - ./db-code:/app/db-code
     - ./tmp/containers:/app/containers
   links:
     - db

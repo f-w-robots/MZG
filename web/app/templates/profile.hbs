@@ -8,7 +8,7 @@
   {{/if}}
   {{#if errors}}
     <div class="alert alert-danger" role="alert">
-      {{model.errors}}
+      {{errors}}
     </div>
   {{/if}}
   <form>
@@ -17,10 +17,10 @@
         Username: {{input value=model.username class="form-control"}}
       </div>
       <div class="form-group">
-        Password: {{input value=model.password class="form-control"}}
+        Password: {{input value=model.password class="form-control" type="password"}}
       </div>
       <div class="form-group">
-        Password confirmation: {{input value=model.passwordConfirmation class="form-control"}}
+        Password confirmation: {{input value=model.passwordConfirmation class="form-control" type="password"}}
       </div>
     </div>
 
