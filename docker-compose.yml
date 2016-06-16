@@ -1,13 +1,13 @@
 db:
   image: mongo:3.2
   volumes:
-    - mzg_db:/data/db
-    - mzg_db_config:/data/configdb
+    - ./volumes/db/data:/data/db
+    - ./volumes/db/config:/data/configdb
 docker:
   build: docker/.
   privileged: true
   volumes:
-    - mzg_docker:/var/lib/docker
+    - ./volumes/docker:/var/lib/docker
     - ./tmp/containers:/app/containers
 hwserver2:
   build: hwserver2/.
