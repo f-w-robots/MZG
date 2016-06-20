@@ -60,16 +60,21 @@ describe "api" do
 end
 
 describe "auth" do
-  it "should create new user" do
-    post '/auth/signup', { user: { username: 'new_user', password: 'password', password_confimation: 'password' } }
-    user = User.where({username: 'new_user'}).first
-
-    expect(last_response.status).not_to be nil
+  before do
+    post '/auth/signup', { 'user' => { 'username' =>  'new_user', 'password' => 'password', 'password_confirmation' => 'password' } }
   end
 
-  # it "should not create user with dublicate username" do
-  #   User.create({ username: 'new_user', password: 'password', password_confimation: 'password' })
-  #
-  #   # expect{ post '/auth/signup', { user: { username: 'new_user', password: 'password', password_confimation: 'password' } } }.to raise_error(Mongo::Error::OperationFailure)
-  # end
+  it "should create new user" do
+    user = User.where({username: 'new_user'}).first
+
+    expect(user).not_to be nil
+  end
+
+  it "should not create user with dublicate username" do
+    count = User.count
+
+    User.create({ username: 'new_user', password: 'password', password_confimation: 'password' })
+
+    expect( User.count ).to eq count
+  end
 end
