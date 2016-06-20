@@ -8,11 +8,11 @@ end
 
 Warden::Strategies.add(:password) do
   def valid?
-    params['user'] && params['user']['username'] && params['user']['password']
+    params['user'] && params['user']['email'] && params['user']['password']
   end
 
   def authenticate!
-    user = User.where(username: params['user']['username']).first
+    user = User.where(username: params['user']['email']).first
 
     if user.nil?
       throw(:warden, message: "The username you entered does not exist.")
@@ -39,6 +39,7 @@ Warden::Strategies.add(:omniauth) do
         'providers' => {data['provider'] => data},
         'username' => data['provider'] + '-' + data['uid'],
         'password' => password,
+        'email' => '',
       })
       success!(user)
     else

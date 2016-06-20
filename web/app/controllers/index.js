@@ -33,7 +33,7 @@ export default Ember.Controller.extend({
         {
           'user':
             {
-              username: this.get('username'),
+              email: this.get('email'),
               password: this.get('password'),
               password_confirmation: this.get('password_confirmation'),
             }
@@ -48,6 +48,10 @@ export default Ember.Controller.extend({
         self.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
       });
     },
+
+    restore_password: function() {
+      // TODO
+    }
 
   }
 });

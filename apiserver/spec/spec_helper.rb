@@ -32,6 +32,8 @@ end
 
 require 'support/factory_girl'
 RSpec.configure do |config|
+  OmniAuth.config.test_mode = true
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)

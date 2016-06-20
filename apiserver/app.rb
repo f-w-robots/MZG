@@ -6,6 +6,8 @@ Bundler.require
 require 'tilt/erb'
 
 require 'json'
+require_relative 'models/mailer'
+
 
 $LOAD_PATH.push File.expand_path('../routes', __FILE__)
 %w{ config auth }.each { |file| require file }
@@ -26,6 +28,8 @@ class App < Sinatra::Base
   Mongoid.load!("mongoid.yml", App.environment)
   set :port, ENV['API_SERVER_PORT']
   set :bind, '0.0.0.0'
+
+  set :mailer, Mailer.new(ENV['SYS_EMAIL'])
 
   before '/api/*' do
     content_type :json

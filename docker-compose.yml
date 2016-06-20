@@ -43,3 +43,7 @@ web:
     - ./web/tests:/app/tests
     - ./web/config:/app/config
   env_file: .env
+mail:
+  image: tozd/postfix
+  ports:
+    - "25:25"

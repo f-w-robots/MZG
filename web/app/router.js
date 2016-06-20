@@ -13,6 +13,7 @@ Router.map(function() {
   this.route('profile');
   this.route('signin');
   this.route('signup');
+  this.route('forgot_password');
 });
 
 export default Router;

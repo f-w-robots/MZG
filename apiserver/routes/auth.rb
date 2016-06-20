@@ -22,7 +22,7 @@ module Sinatra
             end
 
             user = params['user'] || {}
-            user.merge!({'password' =>  '', 'username' => ''}.select { |k| !user.keys.include? k })
+            user.merge!({'username' => (0...8).map { (65 + rand(26)).chr }.join, 'password' =>  '', 'email' => ''}.select { |k| !user.keys.include? k })
 
             user = User.create(user)
             if user.errors.size > 0
