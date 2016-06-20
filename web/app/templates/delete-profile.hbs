@@ -1,0 +1,14 @@
+<div class="col-md-4"></div>
+<div class="col-md-4">
+  {{#if error}}
+    <div class="alert alert-warning" role="alert">{{error}}</div>
+  {{/if}}
+  <div class="alert alert-danger" role="alert">Are you sure?</div>
+  <div class="row">
+    Enter you username: {{input value=username class="form-control"}}
+  </div>
+  <div class="btn btn-danger" {{action "delete"}}>DELETE</div>
+  {{#link-to 'profile' class="btn btn-success"}}Back{{/link-to}}
+
+</div>
+<div class="col-md-4"></div>

@@ -10,11 +10,14 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: '/edit/:group_id' });
   });
-  this.route('profile');
+  this.route('profile', function() {
+    this.route('delete');
+  });
   this.route('signin');
   this.route('signup');
   this.route('forgot_password');
   this.route('update_password');
+  this.route('delete_profile');
 });
 
 export default Router;

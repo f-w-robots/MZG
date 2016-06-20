@@ -25,6 +25,21 @@ export default Ember.Controller.extend( {
 
     connect: function() {
       location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github")
+    },
+
+    delete: function() {
+      if(this.get('model.username') == this.get('username')) {
+        this.get('model').deleteRecord();
+        this.get('model').save().then(function() {
+          var newLocation = location.protocol + "//" + location.hostname;
+          if(location.port.length > 0) {
+            newLocation = newLocation + ':' + location.hostname;
+          }
+          location.replace(newLocation);
+        });
+      } else {
+        this.set('error', 'Usernames is not coincides')
+      }
     }
   }
 });
