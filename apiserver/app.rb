@@ -78,5 +78,4 @@ class App < Sinatra::Base
 
   enable :cross_origin
   Mongo::Logger.logger.level = ::Logger::FATAL
-  # debugger
 end

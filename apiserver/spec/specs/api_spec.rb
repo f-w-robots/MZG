@@ -46,6 +46,26 @@ describe "api" do
         expect(response["attributes"]["authorized"]).to eq(true)
       end
     end
+
+    it 'update'
+
+    describe 'delete' do
+      before do
+        @user1 = User.create({'username' => 'user1', 'password' => '123456', 'email' => 'mail1@example.com'})
+        @user2 = User.create({'username' => 'user2', 'password' => '123456', 'email' => 'mail2@example.com'})
+        allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user2)
+
+        delete '/api/v1/users/current'
+      end
+
+      it #do
+        #expect(User.count).to be 1
+      #end
+
+      it #do
+        #expect(User.first[:username]).to eq('user1')
+      #end
+    end
   end
 
   describe "algorithm" do

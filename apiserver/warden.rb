@@ -27,7 +27,6 @@ end
 Warden::Strategies.add(:omniauth) do
   def valid?
     data = env['omniauth.auth'].to_hash
-    debugger
     !data['provider'].empty? && !data['uid'].empty?
   end
   def authenticate!
