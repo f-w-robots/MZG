@@ -57,6 +57,11 @@ module Sinatra
             app.get '/api/v1/users/current' do
               @username = (@user || {})['username']
               @authorized = env['warden'].authenticate?
+              if env['warden'].user && env['warden'].user[:providers]
+                @providers = env['warden'].user[:providers].keys
+              else
+                @providers = []
+              end
 
               erb :'api/user'
             end

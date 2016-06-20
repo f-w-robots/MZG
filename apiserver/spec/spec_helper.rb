@@ -4,6 +4,8 @@ require 'rspec'
 ENV['RACK_ENV'] = 'test'
 ENV['DB_NAME'] = 'mzg_test'
 
+Bundler.require(:test)
+
 require File.expand_path '../../app.rb', __FILE__
 
 module RSpecMixin
@@ -31,12 +33,16 @@ end
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'support/factory_girl'
+require 'factories_'
 RSpec.configure do |config|
+  config.include FactoryGirl::Syntax::Methods
+
   OmniAuth.config.test_mode = true
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
+    FactoryGirl.find_definitions
   end
 
   config.around(:each) do |example|

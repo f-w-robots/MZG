@@ -3,11 +3,11 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   actions: {
     vkontakte: function() {
-      location.replace("http://" + location.hostname + ":2600/auth/vkontakte")
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/vkontakte")
     },
 
     github: function() {
-      location.replace("http://" + location.hostname + ":2600/auth/github")
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github")
     },
 
     signin: function() {
@@ -15,7 +15,6 @@ export default Ember.Controller.extend({
       Ember.$.post(location.protocol + "//" + location.hostname  + ":2600/auth/signin",
         { 'user': {username: this.get('username'), password: this.get('password')}},
         function(data, textStatus, xhr) {
-          console.log(xhr.status);
           if(xhr.status == 201) {
             location.replace(location.origin);
           } else {
@@ -42,16 +41,18 @@ export default Ember.Controller.extend({
           location.replace(location.origin);
         },
       ).fail(function(data, darta2, d3 ) {
-        console.log(data.responseText);
         var j = JSON.parse(data.responseText)
-        console.log(j);
         self.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
       });
     },
 
     restore_password: function() {
       // TODO
-    }
+    },
+
+    update_password: function() {
+      // TODO
+    },
 
   }
 });

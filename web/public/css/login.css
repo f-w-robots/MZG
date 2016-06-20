@@ -31,3 +31,9 @@
   text-align: center;
   line-height: 300%;
 }
+
+.login-form h4 {
+  text-align: center;
+  line-height: 300%;
+  margin-top: -13%;
+}

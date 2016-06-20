@@ -898,7 +898,8 @@ section {
 		float: none;
 	}
 }
-a:hover.nounderline{
+
+a.nounderline{
 	text-decoration: none;
 	color: #337ab7;
 }

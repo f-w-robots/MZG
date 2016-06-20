@@ -5,5 +5,6 @@ export default Model.extend({
     username: DS.attr('string'),
     password: DS.attr('string'),
     passwordConfirmation: DS.attr('string'),
+    providers: DS.attr('array'),
     errors: DS.attr('array'),
 });

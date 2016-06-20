@@ -1,7 +1,5 @@
-# RSpec
-# spec/support/factory_girl.rb
+require 'factory_girl'
 
-# RSpec without Rails
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 

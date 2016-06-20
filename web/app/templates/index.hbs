@@ -7,14 +7,12 @@
         <div class="alert alert-warning" role="alert">{{error}}</div>
       {{/if}}
       <h3>Please Log In, or {{#link-to 'signup'}}Sign Up{{/link-to}}</h3>
-      <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <a href="#" class="btn btn-lg btn-primary btn-block" {{action "vkontakte"}}>Vkontakte</a>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <a href="#" class="btn btn-lg btn-info btn-block" {{action "github"}}>Github</a>
-        </div>
-      </div>
+
+        <a class="btn btn-block btn-social btn-github" {{action "github"}}>
+           Sign in with Github
+          <span class="fa fa-github"></span>
+        </a>
+
       <div class="login-or">
         <hr class="hr-or">
         <span class="span-or">or</span>
@@ -36,9 +34,10 @@
             <input type="checkbox" disabled="disabled">
             Remember me </label>
         </div> -->
-        <button type="submit" class="btn btn btn-primary" {{action "signin"}}>
-          Log In
-        </button>
+        <a class="btn btn-block btn-dropbox" {{action "github"}}>
+           Sign in
+        </a>
+
       </form>
 
     </div>

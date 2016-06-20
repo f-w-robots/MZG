@@ -14,7 +14,6 @@ export default Ember.Controller.extend( {
           var errors = [];
           this.set('errors', errors);
           $.each(this.get('model.errors'), function(i, el) {
-            console.log(el);
             if(el == 'err1')
               errors.push('Passwords not coincides')
             if(el == 'err2')
@@ -23,5 +22,9 @@ export default Ember.Controller.extend( {
         }
       }.bind(this));
     },
+
+    connect: function() {
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github")
+    }
   }
 });

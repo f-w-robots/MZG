@@ -12,6 +12,9 @@
     </div>
   {{/if}}
   <form>
+    {{#each model.unconnectedProviders as |provider|}}
+      <div class="btn btn-default" {{action "connect" provider}}> {{provider}} </div>
+    {{/each}}
     <div class="row">
       <div class="row device-edit-image">
         {{image-input file=model.icon disableRemove=true defaultUrl="/images/blank-profile.png"}}
