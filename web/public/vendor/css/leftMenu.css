@@ -96,7 +96,7 @@ body.slide-active {
 	    height: 120%;
 	    width: 160px;
 	    right: -160px;
-	    background: #cbff8b;
+	    background: #dcdcdc;
       margin-top: 55px;
 	}
 	#slide-nav.navbar-inverse #navbar-height-col {
@@ -118,6 +118,23 @@ body.slide-active {
 	    width: 100%
 	}
 }
+@media (max-width: 768px) {
+  .menuItem {
+    text-align: center;
+    margin: 0px;
+  }
+  .menuItemActive {
+    background: #33958f;
+  }
+  .menuItemActive a{
+    color: white;
+  }
+  .menuItem a {
+    font-weight: bold;
+    font-size: 15px;
+  }
+}
+
 @media (min-width:768px) {
 	#page-content {
 	    right: 0!important

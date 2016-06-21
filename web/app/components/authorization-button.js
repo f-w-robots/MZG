@@ -17,14 +17,22 @@ export default Ember.Component.extend({
 
     $("#slide-nav").on("click", toggler, function (e) {
 
-
         var selected = $(this).hasClass('slide-active');
-        if(selected) {
-          $('body').css('position', 'inherit')
+
+        if(!selected) {
+          var scrollPosition = [
+            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+            self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+          ];
+          $('body').data('scroll-position', scrollPosition);
+          $('body').css('overflow', 'hidden');
+          window.scrollTo(scrollPosition[0], scrollPosition[1]);
         } else {
-          $('body').css('position', 'fixed')
+          var scrollPosition = $('body').data('scroll-position');
+          $('body').css('overflow', 'inherit');
+          window.scrollTo(scrollPosition[0], scrollPosition[1]);
         }
-        //
+
         $('#slidemenu').stop().animate({
             right: selected ? menuneg : '0px'
         });
@@ -54,22 +62,6 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    // login: function() {
-    //   location.replace("http://" + location.hostname + ":2600/auth/signin")
-    // },
-    //
-    // register: function() {
-    //   location.replace("http://" + location.hostname + ":2600/auth/signup")
-    // },
-    //
-    // vkontakte: function() {
-    //   location.replace("http://" + location.hostname + ":2600/auth/vkontakte")
-    // },
-    //
-    // github: function() {
-    //   location.replace("http://" + location.hostname + ":2600/auth/github")
-    // },
-
     logout: function() {
       location.replace("http://" + location.hostname + ":2600/auth/logout")
     }
