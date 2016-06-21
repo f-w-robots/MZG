@@ -46,9 +46,10 @@ header{
 	height: 55px;
 }
 .cybergizer{
-	position: absolute;
-	left: 60px;
+	position: fixed;
+	/*left: 60px;*/
   z-index: 10;
+	height: 55px;
 }
 .cybergizer img{
 	float: left;
@@ -69,8 +70,8 @@ header{
 	width: 230px;
 	font-family: 'Open Sans', sans-serif;
 	font-size:15px;
-	margin: 0 0 0 66px;
 	color: black;
+	margin: 0 0 0 66px;
 }
 .desktopMenu{
 	position: absolute;
@@ -80,7 +81,7 @@ header{
 }
 .menuItem{
 	display: inline-block;
-	margin: 0px 28px;
+	margin: 0px 0px;
 	margin-top: 5px;
 }
 header{
@@ -98,6 +99,7 @@ header{
     color: #383838;
     transition: color 0.4s ease 0s;
     text-decoration: none;
+    color: #3BBAB5;
 
 }
 .menuItem a:hover{
@@ -164,6 +166,10 @@ section{
 	left: 30px;
 }
 
+.contentLogo img {
+  border-radius: 100%;
+}
+
 .contentButtonGroup{
 	position: absolute;
 	right: 43px;
@@ -188,6 +194,7 @@ section{
 }
 .contentButtonGroup button.button_right{
   margin-right: 0px;
+  padding-left: 10px;
 }
 
 .contentButtonGroup button:hover{
@@ -207,14 +214,15 @@ section{
   transition: border-color 0.4s ease 0s, background-color 0.4s ease 0s;
   background: rgba(242, 153, 19, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
   border: solid rgba(0, 108, 109, 1) 0px;
-  font-size: 13px;
+  font-size: 18px;
+  font-weight: 400;
   font-family:  Raleway,sans-serif;
   color: #fff;
 
 
 }
 .live_demo:hover{
-  background: rgba(0, 108, 109, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
+  background: rgba(229, 125, 34, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
 }
 
 .contentButtonGroup img{
@@ -259,6 +267,8 @@ section{
 	font-style: normal;
   font-weight: bold;
   font-family: raleway, sans-serif;
+  text-align: center;
+  padding-top: 12px;
 }
 .contentH2 span{
 	font-size: 24px;
@@ -303,8 +313,8 @@ footer{
 
 .circle img{
 	    position: absolute;
-    top: -3px;
-    left: -7px;
+    top: 5px;
+    left: 6px;
 }
 .footer-content h1{
 	font-size: 12px;
@@ -331,7 +341,7 @@ footer{
 
 .footerMenu{
 	position: relative;
-	padding-top: 55px;
+	padding-top: 40px;
   text-align: center;
 }
 
@@ -372,7 +382,7 @@ section {
 @media (max-width: 930px){
 	.menuItem {
 
-    margin: 0px 20px;
+    margin: 0px 0px;
   }
 }
 
@@ -459,7 +469,7 @@ section {
 
 @media (max-width: 850px){
 		.menuItem {
-    margin: 0px 10px;
+    margin: 0px -2px;
    }
    .desktopMenu {
 
@@ -470,7 +480,7 @@ section {
 
 @media (max-width: 775px){
 	.menuItem {
-    margin: 0px 10px;
+    margin: 0px 5px;
    }
 
    .cybergizer {
@@ -898,8 +908,7 @@ section {
 		float: none;
 	}
 }
-
-a.nounderline{
+a:hover.nounderline{
 	text-decoration: none;
 	color: #337ab7;
 }

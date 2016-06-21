@@ -38,3 +38,7 @@ web:
   command: ember build --environment=production
   volumes:
     - ./web/dist:/app/dist
+mail:
+  image: tozd/postfix
+  ports:
+    - "25:25"
