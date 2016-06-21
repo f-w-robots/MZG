@@ -1,9 +1,15 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend( {
+  // init: function() {
+  //   console.log(this.get('model.username'));
+  //   if(this.get('model.avatar_url'))
+  //   this.set('defaultAvatarUrl', "/images/blank-profile.png");
+  // }.on('init'),
 
   actions: {
     save: function() {
+      console.log(this.get('model.avatar'));
       this.get('model').save().then(function(result) {
         if(result.get('errors').length == 0) {
           this.set('success', true);

@@ -29,21 +29,33 @@ Warden::Strategies.add(:omniauth) do
     data = env['omniauth.auth'].to_hash
     !data['provider'].empty? && !data['uid'].empty?
   end
+
   def authenticate!
     data = env['omniauth.auth'].to_hash
     user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
+
     if user.nil?
-      password = ""
-      32.times{password << ((rand(2)==1?65:97) + rand(25)).chr}
-      user = User.create({
-        'providers' => {data['provider'] => data},
-        'username' => data['provider'] + '-' + data['uid'],
-        'password' => password,
-        'email' => '',
-      })
-      success!(user)
-    else
-      success!(user)
+      attrs = slice(data)
+      password = "";32.times{password << ((rand(2)==1?65:97) + rand(25)).chr}
+      # debugger
+      attrs.merge!({'password' => password})
+      user = User.create(attrs)
     end
+
+    success!(user)
+  end
+
+  private
+  def slice data
+    send("slice_#{data["provider"]}", data)
+  end
+
+  def slice_github data
+    {
+      'providers' => {data['provider'] => data},
+      'username' => data['provider'] + '-' + data['uid'],
+      'email' => data["info"]["email"] ? data["info"]["email"] : '',
+      'avatar_url' => data["info"]["image"] ? data["info"]["image"] : '',
+    }
   end
 end

@@ -92,13 +92,13 @@ describe "auth" do
         expect(User.count).to eq(1)
       end
 
-      it 'email should be present' #do
-        #expect(User.first[:email]).to eq('siarheihanchuk@gmail.com')
-      #end
+      it 'email should be present' do
+        expect(User.first[:email]).to eq('siarheihanchuk@gmail.com')
+      end
 
-      it 'avatar_url should be present' #do
-        #expect(User.first[:avatar_url]).to eq('https://avatars.githubusercontent.com/u/995682?v=3')
-      #end
+      it 'avatar_url should be present' do
+        expect(User.first[:avatar_url]).to eq('https://avatars.githubusercontent.com/u/995682?v=3')
+      end
     end
 
     describe 'email in use' do

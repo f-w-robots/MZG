@@ -1,6 +1,15 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+  setupController: function(controller, model) {
+   this._super(controller, model);
+   if(model.get('avatarUrl')) {
+     controller.set('defaultAvatarUrl', model.get('avatarUrl'));
+   } else {
+     controller.set('defaultAvatarUrl', "/images/blank-profile.png");
+   }
+ },
+
   beforeModel: function(transition) {
     this.store.findRecord('user', 'current').then(function(user) {
       if(!user.get('authorized')) {

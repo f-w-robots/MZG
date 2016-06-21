@@ -17,7 +17,7 @@
     {{/each}}
     <div class="row">
       <div class="row device-edit-image">
-        {{image-input file=model.icon disableRemove=true defaultUrl="/images/blank-profile.png"}}
+        {{image-input file=model.avatar disableRemove=true defaultUrl=defaultAvatarUrl}}
       </div>
       <div class="form-group">
         Username: {{input value=model.email class="form-control"}}

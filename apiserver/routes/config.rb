@@ -70,6 +70,7 @@ module Sinatra
               params = ::JSON.parse(request.body.read)["data"]["attributes"]
 
               params.delete 'providers'
+              params.delete "avatar-url"
 
               user = env['warden'].user
               if !params["password"]
