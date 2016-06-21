@@ -1,41 +1,42 @@
-<div class="col-md-4"></div>
-{{#if model.authorized}}
+{{#if success}}
+  <div class="alert alert-success" role="alert">
+    Saved!
+  </div>
+{{/if}}
+{{#if errors}}
+  <div class="alert alert-danger" role="alert">
+    {{errors}}
+  </div>
+{{/if}}
+<form>
 <div class="col-md-4">
-  {{#if success}}
-    <div class="alert alert-success" role="alert">
-      Saved!
+  <div class="row device-edit-image">
+    {{image-input file=model.avatar disableRemove=true defaultUrl=defaultAvatarUrl}}
+  </div>
+</div>
+<div class="col-md-4">
+    <div class="form-group">
+      Username: {{input value=model.email class="form-control"}}
     </div>
-  {{/if}}
-  {{#if errors}}
-    <div class="alert alert-danger" role="alert">
-      {{errors}}
+    <div class="form-group">
+      Username: {{input value=model.username class="form-control"}}
     </div>
-  {{/if}}
-  <form>
-    {{#each model.unconnectedProviders as |provider|}}
-      <div class="btn btn-default" {{action "connect" provider}}> {{provider}} </div>
-    {{/each}}
-    <div class="row">
-      <div class="row device-edit-image">
-        {{image-input file=model.avatar disableRemove=true defaultUrl=defaultAvatarUrl}}
-      </div>
-      <div class="form-group">
-        Username: {{input value=model.email class="form-control"}}
-      </div>
-      <div class="form-group">
-        Username: {{input value=model.username class="form-control"}}
-      </div>
-      <div class="form-group">
-        Password: {{input value=model.password class="form-control" type="password"}}
-      </div>
-      <div class="form-group">
-        Password confirmation: {{input value=model.passwordConfirmation class="form-control" type="password"}}
-      </div>
+    <div class="form-group">
+      Password: {{input value=model.password class="form-control" type="password"}}
+    </div>
+    <div class="form-group">
+      Password confirmation: {{input value=model.passwordConfirmation class="form-control" type="password"}}
     </div>
 
     <div class="btn btn-success" {{action "save"}}>Save</div>
     {{#link-to 'delete_profile' class="btn btn-danger"}}Delete{{/link-to}}
-  </form>
 </div>
-{{/if}}
-<div class="col-md-4"></div>
+<div class="col-md-4">
+  {{#each model.unconnectedProviders as |provider|}}
+    <a class="btn btn-block btn-social btn-{{provider}}" {{action "connect" provider}}>
+       Sign in with Github
+      <span class="fa fa-{{provider}}"></span>
+    </a>
+  {{/each}}
+</div>
+</form>

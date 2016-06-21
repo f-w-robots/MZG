@@ -5,8 +5,23 @@ module Sinatra
         def self.registered(app)
           app.get '/auth/:provider/callback' do |provider|
             params['omniauth'] = request.env['omniauth.auth'].to_hash
-            env['warden'].authenticate!(:omniauth)
-            redirect ENV['AUTH_REDIRECT']
+            if !env['warden'].user
+              env['warden'].authenticate!(:omniauth)
+              redirect ENV['AUTH_REDIRECT']
+            else
+              data = env['omniauth.auth'].to_hash
+              existing_user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
+              user = env['warden'].user
+
+              if !existing_user && (!env['warden'].user['providers'] || env['warden'].user['providers'][provider])
+                user['providers'] ||= {}
+                user['providers'][provider] = data
+                user.save
+              end
+
+              redirect ENV['AUTH_REDIRECT'] + '/profile'
+            end
+
           end
 
           app.post '/auth/signin' do

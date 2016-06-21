@@ -126,13 +126,34 @@ describe "auth" do
         # nothing
       end
 
-      it 'not create new user' #do
-        #expect(User.count).to eq(@count)
-      #end
+      it 'not create new user' do
+        expect(User.count).to eq(@count)
+      end
 
-      it 'add provider for current user' #do
-        #expect(User.first[:providers]).not_to be_empty
-      #end
+      it 'add provider for current user' do
+        expect(User.first[:providers]).not_to be_empty
+      end
+    end
+
+    describe 'disallow connect if user exists' do
+      before do
+        User.create({'username' => 'user22', 'password' => '123456', 'email' => 'mail22@example.com',
+          'providers' => {'github' => {'provider' => 'github', 'uid' => '995682'}}
+          })
+        @user = User.create({'username' => 'user', 'password' => '123456', 'email' => 'mail@example.com'})
+        allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
+        @count = User.count
+
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+      end
+
+      it 'not create new user' do
+        expect(User.count).to eq(@count)
+      end
+
+      it 'not add provider for current user' do
+        expect(@user.reload[:providers]).to be nil
+      end
     end
   end
 
