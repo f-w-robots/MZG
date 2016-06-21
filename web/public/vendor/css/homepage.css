@@ -27,7 +27,7 @@ header{
 }
 #ornament_top {
   height: 10px;
-  background: url(../images/ornament_top.png) repeat-x;
+  background: url(/images/ornament_top.png) repeat-x;
   position: fixed;
   top: 55px;
   width: 100%;
@@ -36,7 +36,7 @@ header{
 
 #ornament_bottom {
   height: 10px;
-  background: url(../images/ornament_bottom.png) repeat-x;
+  background: url(/images/ornament_bottom.png) repeat-x;
   position: absolute;
   top: -10px;
   width: 100%;
@@ -182,7 +182,7 @@ section{
 	height: 40px;
 	border-radius: 3px;
   transition: border-color 0.4s ease 0s, background-color 0.4s ease 0s;
-  background: rgba(1, 177, 175, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
+  background: rgba(1, 177, 175, 1) url("/images/shiny1button_bg.png") 50% 50% repeat-x;
   border: solid rgba(0, 108, 109, 1) 0px;
   font-size: 13px;
   font-family:  Raleway,sans-serif;
@@ -198,7 +198,7 @@ section{
 }
 
 .contentButtonGroup button:hover{
- background: rgba(0, 108, 109, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
+ background: rgba(0, 108, 109, 1) url("/images/shiny1button_bg.png") 50% 50% repeat-x;
   transition: border-color 0.4s ease 0s, background-color 0.4s ease 0s;
 }
 .live_demo_bloc{
@@ -212,7 +212,7 @@ section{
   height: 40px;
   border-radius: 3px;
   transition: border-color 0.4s ease 0s, background-color 0.4s ease 0s;
-  background: rgba(242, 153, 19, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
+  background: rgba(242, 153, 19, 1) url("/images/shiny1button_bg.png") 50% 50% repeat-x;
   border: solid rgba(0, 108, 109, 1) 0px;
   font-size: 18px;
   font-weight: 400;
@@ -222,7 +222,7 @@ section{
 
 }
 .live_demo:hover{
-  background: rgba(229, 125, 34, 1) url("../images/shiny1button_bg.png") 50% 50% repeat-x;
+  background: rgba(229, 125, 34, 1) url("/images/shiny1button_bg.png") 50% 50% repeat-x;
 }
 
 .contentButtonGroup img{
@@ -908,7 +908,7 @@ section {
 		float: none;
 	}
 }
-a:hover.nounderline{
+a.nounderline{
 	text-decoration: none;
 	color: #337ab7;
 }
