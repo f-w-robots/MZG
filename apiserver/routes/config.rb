@@ -69,6 +69,8 @@ module Sinatra
             app.patch "/api/v1/users/:id" do |id|
               params = ::JSON.parse(request.body.read)["data"]["attributes"]
 
+              params.delete 'providers'
+
               user = env['warden'].user
               if !params["password"]
                 params.delete "password"

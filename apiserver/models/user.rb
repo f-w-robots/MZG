@@ -6,8 +6,8 @@ class User
 
   validates_length_of :username, minimum: 3
   validates_length_of :password, minimum: 6
-  validates_uniqueness_of :username
-  validates_uniqueness_of :email
+  validates_uniqueness_of :username, :allow_blank => true, :allow_nil => true
+  validates_uniqueness_of :email, :allow_blank => true, :allow_nil => true
 
   has_many :devices
   has_many :algorithms
@@ -18,12 +18,12 @@ class User
     ]
   end
 
-  def self.pluralize
-    'users'
-  end
-
   before_save do
     self["password"] = BCrypt::Password.create(self["password"])
+  end
+
+  before_create do
+    self['email'] = '' if !self['email']
   end
 
   def authenticate password

@@ -21,21 +21,47 @@ describe "auth" do
   end
 
   describe 'sign in' do
-    before do
-      User.create('username' => 'username', 'email' =>  'new_user@example.com', 'password' => 'password', 'password_confirmation' => 'password')
+    describe 'success' do
+      before do
+        User.create('username' => 'username', 'email' =>  'new_user@example.com', 'password' => 'password', 'password_confirmation' => 'password')
+      end
+
+      it "login by email" do
+        post '/auth/signin', { 'user' => { 'email' =>  'new_user@example.com', 'password' => 'password' } }
+
+        expect(last_request.env['warden'].user).not_to be nil
+      end
+
+      it "login by name" #do
+        #post '/auth/signin', { 'user' => { 'email' =>  'username', 'password' => 'password' } }
+
+        #expect(last_request.env['warden'].user).not_to be nil
+      #end
     end
 
-    it "login by email" do
-      post '/auth/signin', { 'user' => { 'email' =>  'new_user@example.com', 'password' => 'password' } }
+    describe 'unsuccess' do
+      before do
+        User.create('username' => 'username', 'email' =>  '', 'password' => 'password', 'password_confirmation' => 'password')
+      end
 
-      expect(last_request.env['warden'].user).not_to be nil
+      # check if user create
+      it do
+        expect(User.count).to eq(1)
+      end
+
+      it "login by email" #do
+        #post '/auth/signin', { 'user' => { 'email' =>  '', 'password' => 'password' } }
+
+        #expect(last_request.env['warden'].user).to be nil
+      #end
+
+      # enable it if allow empty usernames
+      # it "login by name" #do
+      #   #post '/auth/signin', { 'user' => { 'email' =>  '', 'password' => 'password' } }
+      #
+      #   #expect(last_request.env['warden'].user).to be nil
+      # #end
     end
-
-    it "login by name" #do
-      #post '/auth/signin', { 'user' => { 'email' =>  'username', 'password' => 'password' } }
-
-      #expect(last_request.env['warden'].user).not_to be nil
-    #end
   end
 
   describe 'github' do

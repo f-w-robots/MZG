@@ -49,6 +49,8 @@ describe "api" do
 
     it 'update'
 
+    it 'update - remove providers'
+
     describe 'delete' do
       before do
         @user1 = User.create({'username' => 'user1', 'password' => '123456', 'email' => 'mail1@example.com'})
