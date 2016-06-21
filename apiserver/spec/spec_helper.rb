@@ -43,6 +43,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
     FactoryGirl.find_definitions
+    Mailer.test_mode = true
   end
 
   config.around(:each) do |example|

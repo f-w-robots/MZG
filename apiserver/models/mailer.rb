@@ -1,15 +1,15 @@
 require 'net/smtp'
 
 class Mailer
-  @@testing_mode = false
+  @@test_mode = false
   @@send_counter = 0
 
-  def self.testing_mode= testing_mode
-    @@testing_mode = testing_mode
+  def self.test_mode= test_mode
+    @@test_mode = test_mode
   end
 
-  def self.testing_mode
-    @@testing_mode
+  def self.test_mode
+    @@test_mode
   end
 
   def self.send_counter
@@ -20,17 +20,31 @@ class Mailer
     @from = from
   end
 
+  def new_user user_mail, confirmation_code
+    message = new_user_body(user_mail, confirmation_code)
+
+    send_mail message, user_mail
+  end
+
   def forgot_password user_mail, restore_key
     message = forgot_password_body(user_mail, restore_key)
 
-    @@send_counter += 1
-    return if @@testing_mode
-    Net::SMTP.start('mail') do |smtp|
-      smtp.send_message message, @from, user_mail
-    end
+    send_mail message, user_mail
   end
 
   private
+  def send_mail message, to
+    @@send_counter += 1
+    return if @@test_mode
+    Net::SMTP.start('mail') do |smtp|
+      smtp.send_message message, @from, to
+    end
+  end
+
+  def new_user_body user_mail, confirmation_code
+    base_body(user_mail, "new_user, confirm code: #{confirmation_code}")
+  end
+
   def forgot_password_body user_mail, restore_key
     base_body(user_mail, "forgot, key: #{restore_key}")
   end

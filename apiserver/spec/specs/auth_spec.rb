@@ -156,22 +156,23 @@ describe "auth" do
       post '/auth/signup', { 'user' => { 'email' =>  'new_user@example.com', 'password' => 'password', 'password_confirmation' => 'password' } }
     end
 
-    it 'not confirmed' #do
-      #expect(user[:confirmed]).to eq(false)
-    #end
+    it 'not confirmed' do
+      expect(user[:confirmed]).to eq(false)
+    end
 
-    it 'have Configuration code' #do
-      #expect(user[:confirmation_code]).not_to eq(nil)
-    #end
+    it 'have Configuration code' do
+      expect(user[:confirmation_code]).not_to eq(nil)
+    end
 
-    it 'confirm' #do
-      #get "/auth/confirm/#{user[:confirmation_code]}"
-      #expect(user[:confirmed]).to eq(true)
-    #end
+    it 'confirm' do
+      get "/auth/confirm/#{user[:confirmation_code]}"
 
-    it 'send email' #do
-      #expect(Mailer.send_counter).to eq(@send_counter + 1)
-    #end
+      expect(user.reload[:confirmed]).to eq(true)
+    end
+
+    it 'send email' do
+      expect(Mailer.send_counter).to eq(@send_counter + 1)
+    end
   end
 
   describe 'forgot_password' do

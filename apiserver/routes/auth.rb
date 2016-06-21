@@ -22,13 +22,14 @@ module Sinatra
             end
 
             user = params['user'] || {}
-            user.merge!({'username' => (0...8).map { (65 + rand(26)).chr }.join, 'password' =>  '', 'email' => ''}.select { |k| !user.keys.include? k })
+            user.merge!({'username' => '', 'password' =>  '', 'email' => ''}.select { |k| !user.keys.include? k })
 
             user = User.create(user)
             if user.errors.size > 0
               status 403
               {meta: {errors: user.errors.map{|k,e|e}}}.to_json
             else
+              app.mailer.new_user user['email'], user['confirmation_code']
               env['warden'].authenticate!(:password)
             end
           end
@@ -40,8 +41,12 @@ module Sinatra
             redirect ENV['AUTH_REDIRECT']
           end
 
-          app.post  '/auth/unauthenticated' do
+          app.post '/auth/unauthenticated' do
             status 403
+          end
+
+          app.get '/auth/confirm/:confirmation_code' do |confirmation_code|
+            User.where(:confirmation_code => confirmation_code).update(confirmed: true)
           end
         end
       end

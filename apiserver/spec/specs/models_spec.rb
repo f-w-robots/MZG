@@ -2,10 +2,6 @@ describe 'models' do
   describe 'Mailer' do
     let(:mailer) { app.mailer }
 
-    before do
-      Mailer.testing_mode = true
-    end
-
     it do
       mailer.forgot_password 'user@example.com', ''
     end
