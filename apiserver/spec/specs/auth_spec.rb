@@ -143,7 +143,7 @@ describe "auth" do
     end
 
     it 'update email' do
-      patch "/api/v1/users/any", { data: {attributes: { email: 'mail@example.com'}}}.to_json
+      patch "/api/v1/users/current", { data: {attributes: { email: 'mail@example.com'}}}.to_json
       expect(@user.reload[:email]).to eq("mail@example.com")
     end
   end

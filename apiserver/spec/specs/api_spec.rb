@@ -7,7 +7,7 @@ describe "api" do
   describe "user" do
     let(:response) { JSON.parse(last_response.body)["data"] }
     before(:each) do
-      @user = User.create({'username' => 'user', 'password' => '123456', 'email' => ''})
+      @user = User.create({'username' => 'user', 'password' => '123456', 'email' => 'mail@example.com'})
     end
 
     describe "unauthorized" do
@@ -47,9 +47,43 @@ describe "api" do
       end
     end
 
-    it 'update'
+    describe 'update' do
+      it 'username'
 
-    it 'update - remove providers'
+      describe 'email to new' do
+        before do
+          User.update(:confirmation_code => nil)
+          allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
+          patch "/api/v1/users/current", {data: { attributes: {email: "mailx@example.com"}}}.to_json
+        end
+
+        it do
+          expect(User.first[:email]).to eq("mailx@example.com")
+        end
+
+        it #do
+          #expect(User.first[:confirmation_code]).not_to be nil
+        #end
+      end
+
+      describe 'email not updated' do
+        before do
+          User.update(:confirmation_code => nil)
+          allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
+          patch "/api/v1/users/current", {data: { attributes: {email: "mail@example.com"}}}.to_json
+        end
+
+        it do
+          expect(User.first[:email]).to eq("mail@example.com")
+        end
+
+        it #do
+          #expect(User.first[:confirmation_code]).to be nil
+        #end
+      end
+
+      it 'remove providers'
+    end
 
     describe 'delete' do
       before do

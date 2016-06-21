@@ -55,8 +55,8 @@ module Sinatra
             end
 
             app.get '/api/v1/users/current' do
-              @username = (@user || {})['username']
               @authorized = env['warden'].authenticate?
+              @user ||= {}
               if env['warden'].user && env['warden'].user[:providers]
                 @providers = env['warden'].user[:providers].keys
               else
@@ -66,7 +66,7 @@ module Sinatra
               erb :'api/user'
             end
 
-            app.patch "/api/v1/users/:id" do |id|
+            app.patch "/api/v1/users/current" do
               params = ::JSON.parse(request.body.read)["data"]["attributes"]
 
               params.delete 'providers'
