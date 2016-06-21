@@ -4,3 +4,6 @@
 {{#if saveError}}
   <div class="alert alert-danger" role="alert">Error!</div>
 {{/if}}
+{{#each errors as |error|}}
+  <div class="alert alert-danger" role="alert">{{error}}</div>
+{{/each}}

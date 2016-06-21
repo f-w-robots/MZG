@@ -29,6 +29,7 @@ module Sinatra
               attrs = params["data"]["attributes"]
 
               @record = model.create(attrs)
+
               @record.user = @user
               @record.save
               @model = model

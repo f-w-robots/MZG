@@ -29,27 +29,41 @@ export default Ember.Component.extend(saveModelControllerMixin, {
     });
   }.on('init'),
 
+  pushErrors: function(errors) {
+    $.each(Object.keys(errors), function(i, key){
+      this.get('errors').push(key + ' ' + errors[key].join(','))
+    }.bind(this));
+    this.notifyPropertyChange('errors');
+  },
+
   actions: {
     update: function() {
+      this.set('errors', []);
       var self = this;
-      $.each([this.get('interface'), this.get('algorithm')], function(i, model) {
+      $.each([this.get('algorithm')], function(i, model) {
         if(model) {
-          model.save().then(function() {
-            self.set('saveStatus', 'success');
+          model.save().then(function(model) {
+            self.pushErrors(model.get('errors'));
+            if(self.get('errors').length == 0) {
+              self.set('saveStatus', 'success');
+            }
           }, function() {
-            self.set('saveStatus', 'error');
+            self.pushErrors(['undefined Error']);
           });
         }
       });
 
-      this.get('model').save().then(function() {
+      this.get('model').save().then(function(model) {
+        self.pushErrors(model.get('errors'));
+        if(self.get('errors').length == 0) {
           self.set('saveStatus', 'success');
-          self.get('dm').updateDevice(self.get('model.hwid'));
-          self.set('dm.output.' + self.get('model.hwid'), []);
-          self.set('output', null);
-        }, function() {
-          self.set('saveStatus', 'error');
-        });
+        }
+        self.get('dm').updateDevice(self.get('model.hwid'));
+        self.set('dm.output.' + self.get('model.hwid'), []);
+        self.set('output', null);
+      }, function() {
+        self.pushErrors({undefined: ['Error']});
+      });
 
       setTimeout(function(){
         self.set('saveStatus', null);

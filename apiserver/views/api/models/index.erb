@@ -7,8 +7,9 @@
       "id": "<%= record['_id'].to_s %>",
       "attributes": {
         <% @model.attributes.each_with_index do |attr, index| %>
-          <%= attribute(attr, record[attr], @model.attributes.count - 1 != index) %>
+          <%= attribute(attr, record[attr], true) %>
         <% end %>
+        "errors": <%= record.errors.to_json %>
       }
     }<%= (records_count - 1 == index) ? '' : ',' %>
   <% end %>
