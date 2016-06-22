@@ -1,4 +1,5 @@
 require 'net/smtp'
+require 'mail'
 
 class Mailer
   @@test_mode = false
@@ -28,7 +29,7 @@ class Mailer
 
   def forgot_password user
     message = forgot_password_body(user)
-    puts message
+
     send_mail message, user['email']
   end
 
@@ -42,29 +43,27 @@ class Mailer
   end
 
   def new_user_body user
-    render_mail 'new_user', user
+    render_mail 'new_user', user, 'Welcome to ROBATZ'
   end
 
   def forgot_password_body user
-    render_mail 'forgot_password', user
+    render_mail 'forgot_password', user, 'Password forgotten'
   end
 
-  def render_mail template_name, user
+  def render_mail template_name, user, subject
     template = Tilt.new("views/mails/#{template_name}.erb")
     message = template.render(user, user: user);
-    base_body user['email'], message
+    base_body user, message, subject
   end
 
-  def base_body user_mail, message
-    message = <<MESSAGE_END
-      From: Private Person #{@from}
-      To: A Test User #{user_mail}
-      MIME-Version: 1.0
-      Content-type: text/html
-      Subject: SMTP e-mail test
+  def base_body user, message, subject
+    mail = Mail.new do
+      from    @from
+      to      user['email']
+      subject subject
+      body    message
+    end
 
-      #{message}
-
-MESSAGE_END
+    mail.to_s
   end
 end
