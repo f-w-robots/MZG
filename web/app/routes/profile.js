@@ -15,6 +15,8 @@ export default Ember.Route.extend({
       if(!user.get('authorized')) {
         this.transitionTo('index');
       }
+    }.bind(this), function() {
+      this.transitionTo('index');
     }.bind(this));
   },
 
@@ -30,6 +32,8 @@ export default Ember.Route.extend({
           }
         })
         user.set('unconnectedProviders', unconnectedProviders);
+    },function() {
+      // return
     });
 
     return user;

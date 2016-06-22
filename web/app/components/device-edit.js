@@ -61,8 +61,8 @@ export default Ember.Component.extend(saveModelControllerMixin, {
         self.get('dm').updateDevice(self.get('model.hwid'));
         self.set('dm.output.' + self.get('model.hwid'), []);
         self.set('output', null);
-      }, function() {
-        self.pushErrors({undefined: ['Error']});
+      }, function(model) {
+        self.pushErrors({'': [model.errors[0].detail]});
       });
 
       setTimeout(function(){

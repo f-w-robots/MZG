@@ -31,7 +31,10 @@ module Sinatra
               @record = model.create(attrs)
 
               @record.user = @user
-              @record.save
+              if !@record.save
+                status 500
+                return @record.errors.full_messages.join(', ')
+              end
               @model = model
               @records = [@record]
 
