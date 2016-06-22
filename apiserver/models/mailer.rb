@@ -38,7 +38,7 @@ class Mailer
     @@send_counter += 1
     return if @@test_mode
     Net::SMTP.start('mail') do |smtp|
-      smtp.send_message message, @from, to
+      smtp.send_message message.to_s, @from, to
     end
   end
 
@@ -63,7 +63,7 @@ class Mailer
       subject subject
       body    message
     end
-
-    mail.to_s
+    mail['from'] = @from
+    mail
   end
 end

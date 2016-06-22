@@ -29,7 +29,7 @@ class App < Sinatra::Base
   set :port, ENV['API_SERVER_PORT']
   set :bind, '0.0.0.0'
 
-  set :mailer, Mailer.new(ENV['SYS_EMAIL'])
+  set :mailer, Mailer.new(ENV['SYS_EMAIL_ADDRESS'])
 
   before '/api/*' do
     content_type :json
