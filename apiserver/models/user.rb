@@ -1,6 +1,7 @@
 require 'bcrypt'
 
 class User
+  include BCrypt
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
 
@@ -18,10 +19,6 @@ class User
     ]
   end
 
-  before_save do
-    self["password"] = BCrypt::Password.create(self["password"])
-  end
-
   before_create do
     self['email'] = '' if !self['email']
     self['confirmed'] = false
@@ -33,6 +30,14 @@ class User
 
   def authenticate password
     BCrypt::Password.new(self["password"]) == password
+  end
+
+  def password
+    Password.new(self['password'])
+  end
+
+  def password=(password)
+    self['password'] = Password.create(password)
   end
 
   index({ username: 1 }, { unique: true, name: "username_index" })

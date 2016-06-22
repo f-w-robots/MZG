@@ -18,6 +18,19 @@ describe "auth" do
 
       expect( User.count ).to eq count
     end
+
+    it "should create new user" do
+      user = User.where({email: 'new_user@example.com'}).first
+      password = user['password']
+      user['username'] = user['username'] + 'add'
+      user.save!
+
+      expect(user.reload['password']).to eq(password)
+    end
+
+    it 'signin after signup' do
+      expect(last_request.env['warden'].user).not_to be nil
+    end
   end
 
   describe 'sign in' do
@@ -27,16 +40,16 @@ describe "auth" do
       end
 
       it "login by email" do
-        post '/auth/signin', { 'user' => { 'email' =>  'new_user@example.com', 'password' => 'password' } }
+        post '/auth/signin', { 'user' => { 'login' =>  'new_user@example.com', 'password' => 'password' } }
 
         expect(last_request.env['warden'].user).not_to be nil
       end
 
-      it "login by name" #do
-        #post '/auth/signin', { 'user' => { 'email' =>  'username', 'password' => 'password' } }
+      it "login by name" do
+        post '/auth/signin', { 'user' => { 'login' =>  'username', 'password' => 'password' } }
 
-        #expect(last_request.env['warden'].user).not_to be nil
-      #end
+        expect(last_request.env['warden'].user).not_to be nil
+      end
     end
 
     describe 'unsuccess' do
@@ -201,58 +214,62 @@ describe "auth" do
       post '/auth/signup', { 'user' => { 'email' =>  'user@example.com', 'password' => 'password', 'password_confirmation' => 'password' } }
     end
 
-    it 'request' #do
-      #counter = Mailer.send_counter
-      #post "/auth/forgot_password", {email: "user@example.com"}
+    it do
+      expect(User.first[:forgot_password_code]).to be nil
+    end
 
-    #  expect(Mailer.send_counter).to eq(counter + 1)
-    #end
+    it 'no user with email' do
+      counter = Mailer.send_counter
+      post "/auth/forgot_password", {email: "user2@example.com"}
 
-    it 'no user with email' #do
-      #counter = Mailer.send_counter
-      #post "/auth/forgot_password", {email: "user2@example.com"}
+      expect(Mailer.send_counter).to eq(counter)
+    end
 
-      #expect(Mailer.send_counter).to eq(counter)
-    #end
+    describe do
+      before do
+        @counter = Mailer.send_counter
+        post "/auth/forgot_password", {email: "user@example.com"}
+      end
 
-    it 'update password' #do
-      #post "/auth/update_password", {password: 'password', password_confirmation: 'password', key: User.first[:forgot_password_code]}
+      it do
+        expect(User.first[:forgot_password_code]).not_to be nil
+      end
 
-      #expect(last_response.status).to eq(201)
-    #end
+      it 'request' do
+        expect(Mailer.send_counter).to eq(@counter + 1)
+      end
 
-    it 'update password' #do
-      #post "/auth/update_password", {password: '22222222', password_confirmation: 'password', key: User.first[:forgot_password_code]}
+      it 'update password' do
+        post "/auth/update_password", {password: 'password', password_confirmation: 'password', key: User.first[:forgot_password_code]}
 
-      #expect(last_response.status).to eq(200)
-    #end
+        expect(last_response.status).to eq(201)
+      end
 
-    it 'update password' #do
-      #post "/auth/update_password", {password: 'password', password_confirmation: 'password', key: User.first[:forgot_password_code] + 'www'}
+      it 'update password' do
+        post "/auth/update_password", {password: '22222222', password_confirmation: 'password', key: User.first[:forgot_password_code]}
 
-      #expect(last_response.status).to eq(500)
-    #end
+        expect(last_response.status).to eq(200)
+      end
 
-    it 'set forgot_password key' #do
-      #counter = Mailer.send_counter
-      #post "/auth/forgot_password", {email: "user@example.com"}
+      it 'update password' do
+        post "/auth/update_password", {password: 'password', password_confirmation: 'password', key: User.first[:forgot_password_code] + 'www'}
 
-      #expect(User.first[:forgot_password_code]).not_to eq(nil)
-    #end
+        expect(last_response.status).to eq(200)
+      end
 
-    it 'forgot_password key length' #do
-      #counter = Mailer.send_counter
-      #post "/auth/forgot_password", {email: "user@example.com"}
+      it 'set forgot_password key' do
+        expect(User.first[:forgot_password_code]).not_to eq(nil)
+      end
 
-      #expect(User.first[:forgot_password_code].length).to be > 100
-    #end
+      it 'forgot_password key length' do
+        expect(User.first[:forgot_password_code].length).to be > 100
+      end
 
-    it 'unset forgot_password key' #do
-      #counter = Mailer.send_counter
-      #post "/auth/forgot_password", {email: "user@example.com"}
-      #post "/auth/update_password", {password: 'password', password_confirmation: 'password', key: User.first[:forgot_password_code]}
+      it 'unset forgot_password key' do
+        post "/auth/update_password", {password: 'password', password_confirmation: 'password', key: User.first[:forgot_password_code]}
 
-      #expect(User.first[:forgot_password_code]).not_to eq(nil)
-    #end
+        expect(User.first[:forgot_password_code]).to eq(nil)
+      end
+    end
   end
 end

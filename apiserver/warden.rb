@@ -8,11 +8,14 @@ end
 
 Warden::Strategies.add(:password) do
   def valid?
-    params['user'] && params['user']['email'] && params['user']['password']
+    params['user'] && (params['user']['login'] || params['user']['username'] ||params['user']['email']) && params['user']['password']
   end
 
   def authenticate!
-    user = User.where(email: params['user']['email']).first
+    user = User.where(email: params['user']['login']).first ||
+    User.where(username: params['user']['login']).first ||
+    User.where(email: params['user']['email']).first ||
+    User.where(username: params['user']['username']).first
 
     if user.nil?
       throw(:warden, message: "The username you entered does not exist.")

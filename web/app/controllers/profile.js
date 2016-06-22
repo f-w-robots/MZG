@@ -10,14 +10,7 @@ export default Ember.Controller.extend( {
         } else {
           this.set('errors', true);
           this.set('success', false);
-          var errors = [];
-          this.set('errors', errors);
-          $.each(this.get('model.errors'), function(i, el) {
-            if(el == 'err1')
-              errors.push('Passwords not coincides')
-            if(el == 'err2')
-              errors.push('Password is short')
-          })
+          this.set('errors', this.get('model.errors'));
         }
       }.bind(this));
     },

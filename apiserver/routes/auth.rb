@@ -36,6 +36,8 @@ module Sinatra
               return {meta: {errors: 'password confimation'}}.to_json
             end
 
+            params['user'].delete('password_confirmation')
+
             user = params['user'] || {}
             user.merge!({'username' => '', 'password' =>  '', 'email' => ''}.select { |k| !user.keys.include? k })
 
@@ -45,6 +47,8 @@ module Sinatra
               {meta: {errors: user.errors.map{|k,e|e}}}.to_json
             else
               app.mailer.new_user user
+              params['user']['login'] = params['user'].delete 'email'
+
               env['warden'].authenticate!(:password)
             end
           end
@@ -57,10 +61,37 @@ module Sinatra
 
           app.post '/auth/unauthenticated' do
             status 403
+            {meta: {errors: 'undefined error'}}.to_json
           end
 
           app.get '/auth/confirm/:confirmation_code' do |confirmation_code|
             User.where(:confirmation_code => confirmation_code).update(confirmed: true)
+          end
+
+          app.post '/auth/forgot_password' do
+            user = User.where(email: params[:email]).first
+            if user
+              user[:forgot_password_code] = (0...150).map { ('a'..'z').to_a[rand(26)] }.join
+              user.save
+              app.mailer.forgot_password user
+              status 201
+            else
+              status 200
+            end
+          end
+
+          app.post '/auth/update_password' do
+            if params[:key] && params[:key].size > 50
+              user = User.where(forgot_password_code: params[:key]).first
+              if user
+                if params[:password] == params[:password_confirmation]
+                  user.password = params[:password]
+                  user.forgot_password_code = nil
+                  user.save
+                  status 201
+                end
+              end
+            end
           end
         end
       end
