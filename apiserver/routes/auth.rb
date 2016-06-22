@@ -44,7 +44,7 @@ module Sinatra
               status 403
               {meta: {errors: user.errors.map{|k,e|e}}}.to_json
             else
-              app.mailer.new_user user['email'], user['confirmation_code']
+              app.mailer.new_user user
               env['warden'].authenticate!(:password)
             end
           end

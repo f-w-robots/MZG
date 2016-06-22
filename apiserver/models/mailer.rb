@@ -20,16 +20,16 @@ class Mailer
     @from = from
   end
 
-  def new_user user_mail, confirmation_code
-    message = new_user_body(user_mail, confirmation_code)
+  def new_user user
+    message = new_user_body(user)
 
-    send_mail message, user_mail
+    send_mail message, user['email']
   end
 
-  def forgot_password user_mail, restore_key
-    message = forgot_password_body(user_mail, restore_key)
+  def forgot_password user
+    message = forgot_password_body(user)
 
-    send_mail message, user_mail
+    send_mail message, user['email']
   end
 
   private
@@ -41,12 +41,18 @@ class Mailer
     end
   end
 
-  def new_user_body user_mail, confirmation_code
-    base_body(user_mail, "new_user, confirm code: #{confirmation_code}")
+  def new_user_body user
+    render_mail 'new_user', user
   end
 
-  def forgot_password_body user_mail, restore_key
-    base_body(user_mail, "forgot, key: #{restore_key}")
+  def forgot_password_body user
+    render_mail 'forgot_password', user
+  end
+
+  def render_mail template_name, user
+    template = Tilt.new("views/mails/#{template_name}.erb")
+    message = template.render(user, user: user);
+    base_body user['email'], message
   end
 
   def base_body user_mail, message
