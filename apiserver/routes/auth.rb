@@ -50,7 +50,6 @@ module Sinatra
           end
 
           app.get '/auth/logout' do
-            env['warden'].raw_session.inspect
             env['warden'].logout
 
             redirect ENV['AUTH_REDIRECT']

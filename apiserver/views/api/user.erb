@@ -6,7 +6,7 @@
           "username": "<%= @user['username'].to_s %>",
           "email": "<%= @user['email'].to_s %>",
           "avatar-url": "<%= @user['avatar_url'].to_s %>",
-          "authorized": <%= @authorized.to_s %>,
+          "authorized": <%= env['warden'].authenticate? %>,
           "providers": <%= @providers.to_json %>,
           "errors": <%= @errors.to_json %>,
           "avatar": <%= @user['avatar'].to_json %>

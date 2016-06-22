@@ -39,7 +39,7 @@ export default Ember.Controller.extend( {
         this.get('model').save().then(function() {
           var newLocation = location.protocol + "//" + location.hostname;
           if(location.port.length > 0) {
-            newLocation = newLocation + ':' + location.hostname;
+            newLocation = newLocation + ':' + location.port;
           }
           location.replace(newLocation);
         });

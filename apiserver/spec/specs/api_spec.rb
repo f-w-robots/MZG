@@ -90,17 +90,18 @@ describe "api" do
         @user1 = User.create({'username' => 'user1', 'password' => '123456', 'email' => 'mail1@example.com'})
         @user2 = User.create({'username' => 'user2', 'password' => '123456', 'email' => 'mail2@example.com'})
         allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user2)
+        @count = User.count
 
         delete '/api/v1/users/current'
       end
 
-      it #do
-        #expect(User.count).to be 1
-      #end
+      it do
+        expect(User.count).to be @count - 1
+      end
 
-      it #do
-        #expect(User.first[:username]).to eq('user1')
-      #end
+      it do
+        expect(User.where(username: 'user2').count).to eq(0)
+      end
     end
   end
 

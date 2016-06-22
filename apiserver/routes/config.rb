@@ -100,6 +100,13 @@ module Sinatra
 
               erb :'api/user'
             end
+
+            app.delete '/api/v1/users/current' do
+              env['warden'].user.destroy
+              env['warden'].logout
+
+              erb :'api/user'
+            end
           end
         end
       end
