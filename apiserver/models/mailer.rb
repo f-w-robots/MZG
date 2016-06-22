@@ -61,7 +61,8 @@ class Mailer
       from    @from
       to      user['email']
       subject subject
-      body    message
+      content_type 'text/html; charset=UTF-8'
+      body message
     end
     mail['from'] = @from
     mail

@@ -1,2 +1,2 @@
 Hello <%#= username %>, you are registered on robatz.net, please
-<a href="http://localhost:2600/auth/confirmation/<%= user['confirmation_code'] %>">configrm your email</a>
+<a href="<%=ENV['API_SERVER_URL'] %>/auth/confirmation/<%= user['confirmation_code'] %>">configrm your email</a>
