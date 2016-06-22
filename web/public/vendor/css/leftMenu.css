@@ -90,7 +90,7 @@ body.slide-active {
 	    background: #333
 	}
 	/* this is behind the navigation but the navigation is not inside it so that the navigation is accessible and scrolls*/
-	#slide-nav #navbar-height-col {
+	#slide-nav .navbar-height-col {
 	    position: fixed;
 	    top: 0;
 	    height: 120%;
@@ -99,7 +99,7 @@ body.slide-active {
 	    background: #dcdcdc;
       margin-top: 55px;
 	}
-	#slide-nav.navbar-inverse #navbar-height-col {
+	#slide-nav.navbar-inverse .navbar-height-col {
 	    background: #333;
 	    z-index: 1;
 	    border: 0;
