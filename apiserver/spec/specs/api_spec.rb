@@ -85,6 +85,21 @@ describe "api" do
       it 'remove providers'
     end
 
+    describe 'disallow update email after confirmation' do
+      before do
+        @user = User.create(email: 'mailf@example.com', password: 'password', username: '')
+        allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
+        @user[:confirmed] = true
+        @user.save
+      end
+
+      it do
+        patch "/api/v1/users/current", {data: { attributes: {email: "mailx@example.com"}}}.to_json
+
+        expect(@user.reload['email']).to eq("mailf@example.com")
+      end
+    end
+
     describe 'delete' do
       before do
         @user1 = User.create({'username' => 'user1', 'password' => '123456', 'email' => 'mail1@example.com'})
@@ -130,6 +145,8 @@ describe "api" do
         end
       end
 
+      it 'post'
+
       it 'delete'
 
       it 'get all'
@@ -158,11 +175,32 @@ describe "api" do
         end
       end
 
+      it 'post'
+
       it 'delete'
 
       it 'get all'
     end
   end
 
-  it "device"
+  describe 'device' do
+    describe "create" do
+      before do
+        @user = User.create(email: 'mailf@example.com', password: 'password', username: '')
+        allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @user)
+      end
+
+      it 'can create one device' do
+        post "/api/v1/devices", {"data" => { "attributes" => {hwid: 'hwid'}}}.to_json
+        expect(Device.count).to be 1
+      end
+
+      it "cann't create two device" do
+        post "/api/v1/devices", {"data" => { "attributes" => {hwid: 'hwid'}}}.to_json
+        post "/api/v1/devices", {"data" => { "attributes" => {hwid: 'hwid2'}}}.to_json
+        expect(Device.count).to be 1
+      end
+
+    end
+  end
 end

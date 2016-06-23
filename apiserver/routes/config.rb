@@ -28,6 +28,11 @@ module Sinatra
               params = ::JSON.parse(request.body.read)
               attrs = params["data"]["attributes"]
 
+              if !@user[:confirmed] && @user.devices.count > 0
+                status 500
+                return "You are cann't create device more then one, if you not confirm email or connect github"
+              end
+
               @record = model.create(attrs)
 
               @record.user = @user
@@ -71,12 +76,14 @@ module Sinatra
             end
 
             app.patch "/api/v1/users/current" do
+              user = env['warden'].user
+
               params = ::JSON.parse(request.body.read)["data"]["attributes"]
 
               params.delete 'providers'
               params.delete "avatar-url"
+              params.delete 'email' if user['confirmed']
 
-              user = env['warden'].user
               if !params["password"]
                 params.delete "password"
                 params.delete "password-confirmation"

@@ -23,7 +23,7 @@
   {{/unless}}
   {{#if edit}}
     <div class="form-group">
-      Email: {{input value=temp_email class="form-control"}}
+      Email: {{input value=temp_email class="form-control" disabled=model.confirmed}}
     </div>
     <div class="form-group">
       Username: {{input value=temp_username class="form-control"}}
