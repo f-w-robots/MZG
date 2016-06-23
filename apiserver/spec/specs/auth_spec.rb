@@ -80,7 +80,7 @@ describe "auth" do
   describe 'github' do
     before do
       OmniAuth.config.add_mock(:github, {"provider"=>"github", "uid"=>"995682",
-        "info"=>{"nickname"=>"Neschur", "email"=>"siarheihanchuk@gmail.com", "name"=>"Sergey Ganchuk",
+        "info"=>{"nickname"=>"Neschur", "email"=>"email_from_github@gmail.com", "name"=>"Sergey Ganchuk",
           "image"=>"https://avatars.githubusercontent.com/u/995682?v=3", "urls"=>{"GitHub"=>"https://github.com/Neschur", "Blog"=>nil}},
         "credentials"=>{"token"=>"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", "expires"=>false},
         "extra"=>{"raw_info"=>{"login"=>"Neschur", "id"=>995682, "avatar_url"=>"https://avatars.githubusercontent.com/u/995682?v=3",
@@ -106,7 +106,7 @@ describe "auth" do
       end
 
       it 'email should be present' do
-        expect(User.first[:email]).to eq('siarheihanchuk@gmail.com')
+        expect(User.first[:email]).to eq('email_from_github@gmail.com')
       end
 
       it 'avatar_url should be present' do
@@ -116,7 +116,7 @@ describe "auth" do
 
     describe 'email in use' do
       before do
-        User.create({'username' => 'user', 'password' => '123456', 'email' => 'siarheihanchuk@gmail.com'})
+        User.create({'username' => 'user', 'password' => '123456', 'email' => 'email_from_github@gmail.com'})
       end
 
       it #do
@@ -166,6 +166,60 @@ describe "auth" do
 
       it 'not add provider for current user' do
         expect(@user.reload[:providers]).to be nil
+      end
+    end
+
+    describe 'login if email exists' do
+      before do
+        @user = User.create({'username' => 'user', 'password' => '123456', 'email' => 'email_from_github@gmail.com'})
+        @count = User.count
+
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+      end
+
+      it 'not create new user' do
+        expect(User.count).to eq(@count)
+      end
+
+      it 'login' do
+        expect(last_request.env['warden'].user).not_to be nil
+      end
+
+      it 'add provider for current user' do
+        expect(@user.reload[:providers]).not_to be nil
+      end
+
+      it 'confirm current user' do
+        expect(@user.reload[:confirmed]).to be true
+      end
+    end
+
+    describe 'login if email and github exists' do
+      before do
+        @user = User.create({'username' => 'user', 'password' => '123456', 'email' => 'email_from_github@gmail.com',
+          'providers' => {'github' => {'provider' => 'github', 'uid' => '144'}}
+        })
+        @count = User.count
+
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+      end
+
+      it 'not create new user' do
+        expect(User.count).to eq(@count)
+      end
+
+      it 'not login' do
+        expect(last_request.env['warden'].user).to be nil
+      end
+
+      it 'not rewrite provider for current user' do
+        expect(@user.reload[:providers]['github']['uid']).to eq("144")
+      end
+
+      it 'redirect' do
+        expect(last_response.location).to include('/?error=')
+        # debugger
+        # 1
       end
     end
 

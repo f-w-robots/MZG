@@ -40,5 +40,14 @@ class User
     self['password'] = Password.create(password)
   end
 
+  def add_provider! provider, data
+    providers = self['providers'] || {}
+    self['providers'] = nil
+    self.save
+    providers[provider] = data
+    self['providers'] = providers
+    self.save
+  end
+
   index({ username: 1 }, { unique: true, name: "username_index" })
 end

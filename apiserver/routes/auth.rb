@@ -4,22 +4,29 @@ module Sinatra
       module Auth
         def self.registered(app)
           app.get '/auth/:provider/callback' do |provider|
-            params['omniauth'] = request.env['omniauth.auth'].to_hash
-            if !env['warden'].user
-              env['warden'].authenticate!(:omniauth)
-              redirect ENV['AUTH_REDIRECT']
-            else
-              data = env['omniauth.auth'].to_hash
-              existing_user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
-              user = env['warden'].user
+            data = env['omniauth.auth'].to_hash
+            current_user = env['warden'].user
 
-              if !existing_user && (!env['warden'].user['providers'] || !env['warden'].user['providers'][provider])
-                providers = user['providers'] || {}
-                user['providers'] = nil
-                user.save
-                providers[provider] = data
-                user['providers'] = providers
-                user.save
+            if !current_user
+              existing_user_by_email = User.where(email: data["info"]["email"]).first
+              if !existing_user_by_email
+                env['warden'].authenticate!(:omniauth)
+                redirect ENV['AUTH_REDIRECT']
+              elsif (!existing_user_by_email['providers'] || !existing_user_by_email['providers']['github'])
+                existing_user_by_email.add_provider!(provider, data)
+                existing_user_by_email[:confirmed] = true
+                existing_user_by_email.save
+
+                env['warden'].authenticate!(:omniauth)
+                redirect ENV['AUTH_REDIRECT']
+              else
+                redirect ENV['AUTH_REDIRECT'] + '/?error=Email on this github accaunt used for another accaunt'
+              end
+            else
+              existing_user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
+
+              if !existing_user && (!current_user['providers'] || !current_user['providers'][provider])
+                current_user.add_provider!(provider, data)
               end
 
               redirect ENV['AUTH_REDIRECT'] + '/profile'

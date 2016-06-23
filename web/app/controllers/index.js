@@ -16,6 +16,12 @@ export default Ember.Controller.extend({
     }
   },
 
+  setup: function() {
+    if(this.getUrlParameter('error')) {
+      this.set('error', this.getUrlParameter('error'));
+    }
+  }.on('init'),
+
   actions: {
     vkontakte: function() {
       location.replace(location.protocol + "//" + location.hostname + ":2600/auth/vkontakte")
