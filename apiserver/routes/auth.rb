@@ -13,15 +13,30 @@ module Sinatra
               existing_user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
               user = env['warden'].user
 
-              if !existing_user && (!env['warden'].user['providers'] || env['warden'].user['providers'][provider])
-                user['providers'] ||= {}
-                user['providers'][provider] = data
+              if !existing_user && (!env['warden'].user['providers'] || !env['warden'].user['providers'][provider])
+                providers = user['providers'] || {}
+                user['providers'] = nil
+                user.save
+                providers[provider] = data
+                user['providers'] = providers
                 user.save
               end
 
               redirect ENV['AUTH_REDIRECT'] + '/profile'
             end
 
+          end
+
+          app.get('/auth/:provider/disconnect') do |provider|
+            user = env['warden'].user
+            user[:providers].delete(provider)
+            providers = user[:providers]
+            user.providers = nil
+            user.save
+            user.providers = providers
+            user.save
+
+            redirect ENV['AUTH_REDIRECT'] + '/profile'
           end
 
           app.post '/auth/signin' do

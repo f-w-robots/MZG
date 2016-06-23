@@ -15,28 +15,44 @@
   </div>
 </div>
 <div class="col-md-4">
+  {{#unless edit}}
+    <b>Email:</b> {{model.email}}
+    <b>Username:</b> {{model.username}}
+    <br>
+    <div class="btn btn-default" {{action "edit"}}>Edit</div>
+  {{/unless}}
+  {{#if edit}}
     <div class="form-group">
-      Username: {{input value=model.email class="form-control"}}
+      Email: {{input value=temp_email class="form-control"}}
     </div>
     <div class="form-group">
-      Username: {{input value=model.username class="form-control"}}
+      Username: {{input value=temp_username class="form-control"}}
     </div>
     <div class="form-group">
-      Password: {{input value=model.password class="form-control" type="password"}}
+      Password: {{input value=temp_password class="form-control" type="password"}}
     </div>
     <div class="form-group">
-      Password confirmation: {{input value=model.passwordConfirmation class="form-control" type="password"}}
+      Password confirmation: {{input value=temp_passwordConfirmation class="form-control" type="password"}}
     </div>
-
     <div class="btn btn-success" {{action "save"}}>Save</div>
+    <div class="btn btn-success" {{action "reject"}}>Reject</div>
     {{#link-to 'delete_profile' class="btn btn-danger"}}Delete{{/link-to}}
+  {{/if}}
 </div>
 <div class="col-md-4">
-  {{#each model.unconnectedProviders as |provider|}}
-    <a class="btn btn-block btn-social btn-{{provider}}" {{action "connect" provider}}>
-       Sign in with Github
-      <span class="fa fa-{{provider}}"></span>
+  {{#each model.providersStatus as |provider|}}
+    {{#if provider.status}}
+    <a class="btn btn-block btn-social btn-{{provider.name}}" {{action "disconnect" provider.name}}>
+        DISCONNECT {{provider.name}}
+      <span class="fa fa-{{provider.name}}"></span>
     </a>
+    {{/if}}
+    {{#unless provider.status}}
+    <a class="btn btn-block btn-social btn-{{provider.name}}" {{action "connect" provider.name}}>
+        Sign in with {{provider.name}}
+      <span class="fa fa-{{provider.name}}"></span>
+    </a>
+    {{/unless}}
   {{/each}}
 </div>
 </form>

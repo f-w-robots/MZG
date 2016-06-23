@@ -24,14 +24,11 @@ export default Ember.Route.extend({
     var supportedPorviders = ['github'];
     var user = this.store.findRecord('user', 'current');
     user.then(function(user) {
-        var unconnectedProviders = $.grep(supportedPorviders, function(provider) {
-          if(user.get('providers').indexOf(provider) > -1) {
-            return false;
-          } else {
-            return true;
-          }
-        })
-        user.set('unconnectedProviders', unconnectedProviders);
+      user.set('providersStatus', []);
+      $.each(supportedPorviders, function(i, provider) {
+        var status = user.get('providers').indexOf(provider) > -1
+        user.get('providersStatus').push({name: provider, status: status})
+      })
     },function() {
       // return
     });

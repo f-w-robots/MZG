@@ -144,7 +144,7 @@ describe "auth" do
       end
 
       it 'add provider for current user' do
-        expect(User.first[:providers]).not_to be_empty
+        expect(User.first.reload[:providers]).not_to be_empty
       end
     end
 
@@ -166,6 +166,22 @@ describe "auth" do
 
       it 'not add provider for current user' do
         expect(@user.reload[:providers]).to be nil
+      end
+    end
+
+    describe 'disconnect' do
+      before do
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+      end
+
+      it do
+        expect(User.first[:providers]).not_to be_empty
+      end
+
+      it do
+        get '/auth/github/disconnect'
+
+        expect(User.first.reload[:providers]).to be_empty
       end
     end
   end
