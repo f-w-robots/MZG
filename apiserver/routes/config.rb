@@ -28,7 +28,7 @@ module Sinatra
               params = ::JSON.parse(request.body.read)
               attrs = params["data"]["attributes"]
 
-              if !@user[:confirmed] && @user.devices.count > 0
+              if model == Device && !@user[:confirmed] && @user.devices.count > 0
                 status 500
                 return "You are cann't create device more then one, if you not confirm email or connect github"
               end
