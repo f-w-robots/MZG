@@ -1,2 +1,3 @@
-Hello <%#= username %>, you are registered on robatz.net, please
-<a href="<%=ENV['API_SERVER_URL'] %>/auth/confirmation/<%= user['confirmation_code'] %>">configrm your email</a>
+<p>Hello <%#= username %>, you are registered on robatz.net, please
+<a href="<%=ENV['API_SERVER_URL'] %>/auth/confirmation/<%= user['confirmation_code'] %>">confirm your email</a>
+Your temporary password is <%= user.get_unencrypt_pass %></p>

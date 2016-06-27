@@ -9,7 +9,12 @@ module Sinatra
 
             if !current_user
               existing_user_by_email = User.where(email: data["info"]["email"]).first
-              if !existing_user_by_email || User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
+
+              if !existing_user_by_email
+                env['warden'].authenticate!(:omniauth)
+                app.mailer.new_user env['warden'].user
+                redirect ENV['AUTH_REDIRECT']
+              elsif User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
                 env['warden'].authenticate!(:omniauth)
                 redirect ENV['AUTH_REDIRECT']
               elsif (!existing_user_by_email['providers'] || !existing_user_by_email['providers']['github'])
