@@ -36,11 +36,9 @@ Warden::Strategies.add(:omniauth) do
   def authenticate!
     data = env['omniauth.auth'].to_hash
     user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
-    #debugger
     if user.nil?
       attrs = slice(data)
       password = "";32.times{password << ((rand(2)==1?65:97) + rand(25)).chr}
-      # debugger
       attrs.merge!({'password' => password})
       user = User.create(attrs)
     end

@@ -38,6 +38,11 @@ class User
 
   def password=(password)
     self['password'] = Password.create(password)
+    @unencrypted_pass = password
+  end
+
+  def get_unencrypt_pass
+    @unencrypted_pass
   end
 
   def add_provider! provider, data
