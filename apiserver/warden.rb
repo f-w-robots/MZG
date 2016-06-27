@@ -36,7 +36,7 @@ Warden::Strategies.add(:omniauth) do
   def authenticate!
     data = env['omniauth.auth'].to_hash
     user = User.where({"providers.#{data['provider']}.uid" => data['uid']}).first
-
+    #debugger
     if user.nil?
       attrs = slice(data)
       password = "";32.times{password << ((rand(2)==1?65:97) + rand(25)).chr}
@@ -50,13 +50,21 @@ Warden::Strategies.add(:omniauth) do
 
   private
   def slice data
-    send("slice_#{data["provider"]}", data)
+    account_data = send("slice_#{data["provider"]}", data)
+    while true
+      nick_count = User.where({"username" => account_data['username']}).count
+      if nick_count == 0
+        break
+      end
+      account_data['username'] += nick_count.to_s()
+    end
+    account_data
   end
 
   def slice_github data
     {
       'providers' => {data['provider'] => data},
-      'username' => data['provider'] + '-' + data['uid'],
+      'username' => data['info']['nickname'],
       'email' => data["info"]["email"] ? data["info"]["email"] : '',
       'avatar_url' => data["info"]["image"] ? data["info"]["image"] : '',
     }

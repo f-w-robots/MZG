@@ -97,6 +97,21 @@ describe "auth" do
     end
 
     describe do
+      it do
+        @user = User.create({'username' => 'Neschur', 'password' => '123456', 'email' => 'afewff@gmail.com'})
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+        expect(User.where({email: 'email_from_github@gmail.com'}).first[:username]).to eq('Neschur1')
+      end
+      
+      it do
+        @user1 = User.create({'username' => 'Neschur', 'password' => '123456', 'email' => 'afewff@gmail.com'})
+        @user2 = User.create({'username' => 'Neschur1', 'password' => '123456', 'email' => 'ddqwff@gmail.com'})
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+        expect(User.where({email: 'email_from_github@gmail.com'}).first[:username]).to eq('Neschur11')
+      end
+    end
+
+    describe do
       before do
         get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
       end
@@ -107,6 +122,16 @@ describe "auth" do
 
       it 'email should be present' do
         expect(User.first[:email]).to eq('email_from_github@gmail.com')
+      end
+
+      it 'github nickname' do
+        expect(User.first[:username]).to eq('Neschur')
+      end
+
+      it do
+        get '/auth/logout'
+        get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
+        expect(last_request.env['warden'].user).not_to be nil
       end
 
       it 'avatar_url should be present' do
