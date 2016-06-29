@@ -1,11 +1,10 @@
-require 'bcrypt'
-
 class User
   include BCrypt
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
 
   validates_length_of :username, minimum: 3, :allow_blank => true, :allow_nil => true
+  validates_format_of :username, :with => /\A(^[a-z][a-z0-9]*([._-][a-z0-9]+){0,3}$)\Z/i, :allow_blank => true
   validates_length_of :password, minimum: 6
   validates_uniqueness_of :username, :allow_blank => true, :allow_nil => true
   validates_uniqueness_of :email, :allow_blank => true, :allow_nil => true
@@ -33,7 +32,7 @@ class User
   end
 
   def password
-    Password.new(self['password'])
+    BCrypt::Password.new(self['password'])
   end
 
   def password=(password)

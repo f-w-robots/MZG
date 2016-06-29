@@ -5,6 +5,7 @@ export default Ember.Controller.extend( {
     save: function() {
       this.set('model.email', this.get('temp_email'));
       this.set('model.username', this.get('temp_username'));
+      this.set('model.oldPassword', this.get("temp_oldPassword"));
       this.set('model.passwordConfirmation', this.get('temp_passwordConfirmation'));
       this.set('model.password', this.get('temp_password'));
 

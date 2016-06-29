@@ -8,6 +8,7 @@ require 'tilt/erb'
 require 'json'
 require_relative 'models/mailer'
 
+require 'bcrypt'
 
 $LOAD_PATH.push File.expand_path('../routes', __FILE__)
 %w{ config auth }.each { |file| require file }

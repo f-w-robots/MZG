@@ -20,4 +20,14 @@ describe 'models' do
       mailer.send(:new_user_body, User.first)
     end
   end
+
+  describe "Models" do
+    before do
+      User.create(username: 'usern@me', email: 'mail@example.com', password: 'password')
+    end
+
+    it 'not allow @ sign' do
+      expect(User.first).to be_nil
+    end
+  end
 end

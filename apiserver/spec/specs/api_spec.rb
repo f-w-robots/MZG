@@ -50,6 +50,23 @@ describe "api" do
     describe 'update' do
       it 'username'
 
+      describe 'update password' do
+        before do
+          @current_user = User.create({'username' => 'current_users', 'password' => '123456', 'email' => 'maildsfdf@example.com'})
+          allow_any_instance_of(Warden::Proxy).to receive_messages(:user => @current_user)
+        end
+
+        it 'passw is changing' do
+          patch "/api/v1/users/current", {data: { attributes: {email: "maildsfdf@example.com", :'old-password' => "123456", password: "1234", :'password-confirmation' => "1234"}}}.to_json
+          expect(BCrypt::Password.new(@current_user.reload[:password]) == "1234").to be_truthy
+        end
+
+        it 'passw is not changing' do
+          patch "/api/v1/users/current", {data: { attributes: {email: "maildsfdf@example.com", :'old-password' => "12345678", password: "1234", :'password-confirmation' => "1234"}}}.to_json
+          expect(BCrypt::Password.new(@current_user.reload[:password]) == "1234").not_to be_truthy
+        end
+      end
+
       describe 'email to new' do
         before do
           User.update(:confirmation_code => nil)
