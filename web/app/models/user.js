@@ -6,6 +6,7 @@ export default DS.Model.extend({
     username: DS.attr('string'),
     avatarUrl: DS.attr('string'),
     email: DS.attr('string'),
+    oldPassword: DS.attr('string'),
     password: DS.attr('string'),
     passwordConfirmation: DS.attr('string'),
     providers: DS.attr('array'),

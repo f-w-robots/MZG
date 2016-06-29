@@ -84,20 +84,23 @@ module Sinatra
               params.delete "avatar-url"
               params.delete 'email' if user['confirmed']
 
-              if !params["password"]
+              if !params["old-password"]
+                params.delete "old-password"
                 params.delete "password"
                 params.delete "password-confirmation"
-              else
+              elsif BCrypt::Password.new(user.password) == params["old-password"]
+                params.delete "old-password"
                 if params["password"] == params["password-confirmation"]
                   params.delete "password-confirmation"
                 else
                   @errors = ['password confimation']
                 end
+              else
+                @errors = ['old password']
               end
 
               if !@errors
                 user.update(params)
-
                 if user.errors.size > 0
                   @errors = user.errors.map{|k,e|e}
                 else
