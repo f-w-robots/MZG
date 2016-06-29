@@ -28,11 +28,11 @@ class User
   end
 
   def authenticate password
-    BCrypt::Password.new(self["password"]) == password
+    Password.new(self["password"]) == password
   end
 
   def password
-    BCrypt::Password.new(self['password'])
+    Password.new(self['password'])
   end
 
   def password=(password)

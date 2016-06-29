@@ -22,12 +22,15 @@ describe 'models' do
   end
 
   describe "Models" do
-    before do
-      User.create(username: 'usern@me', email: 'mail@example.com', password: 'password')
-    end
 
     it 'not allow @ sign' do
+      User.create(username: 'usern@me', email: 'mail@example.com', password: 'password')
       expect(User.first).to be_nil
+    end
+
+    it 'user is save' do
+      User.create(username: 'username', email: 'mail@example.com', password: 'password')
+      expect(User.first).not_to be_nil
     end
   end
 end
