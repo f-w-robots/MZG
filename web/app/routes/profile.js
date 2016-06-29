@@ -6,7 +6,7 @@ export default Ember.Route.extend({
    if(model.get('avatarUrl')) {
      controller.set('defaultAvatarUrl', model.get('avatarUrl'));
    } else {
-     controller.set('defaultAvatarUrl', "/images/blank-profile.png");
+     controller.set('defaultAvatarUrl', "https://www.gravatar.com/avatar/" + md5(model.get('email')));
    }
  },
 
@@ -32,7 +32,6 @@ export default Ember.Route.extend({
     },function() {
       // return
     });
-
     return user;
   }
 });
