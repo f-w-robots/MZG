@@ -36,11 +36,11 @@ class UNIXConnection
 end
 
 class Connection
-  def initialize worker
+  def initialize worker = nil
     @device = UNIXConnection.new 'socket', 'socket.server', lambda {|msg| inbox_msg(msg)}
     @mail = UNIXConnection.new 'socket.mail', 'socket.mail.server', lambda {|msg| inbox_mail(msg)}
 
-    @worker = worker.new(self)
+    @worker = worker.new(self) if worker
   end
 
   def to_device msg

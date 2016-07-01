@@ -136,7 +136,7 @@ class Device
     ws.on(:message) do |msg|
       puts "MSG from DEVICE: #{msg.data}"
       begin
-        @unix.send_message(msg.data)
+        @unix.send_message(msg.data.pack('c*'))
       rescue
         ws.instance_eval{@stream}.instance_eval{@rack_hijack_io_reader}.close_connection
       end
