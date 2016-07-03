@@ -9,27 +9,27 @@ export default Ember.Component.extend(saveModelControllerMixin, {
   algorithmObserver: function() {
     var target = null;
     this.get('algorithms').find(function(i){
-      if(this.get('model.algorithmId') == i.get('id')) {
+      if(this.get('model.algorithmId') === i.get('id')) {
         target = i;
       }
     }, this);
-    this.set('algorithm', target)
+    this.set('algorithm', target);
   }.observes('model.algorithmId'),
 
   modelObserver: function() {
-    this.set('output', this.get('dm.output.' + this.get('model.hwid')))
+    this.set('output', this.get('dm.output.' + this.get('model.hwid')));
   }.observes('model'),
 
   setup: function() {
     this.algorithmObserver();
     this.get('dm').addObserver('outputUpdated', function() {
-      this.set('output', this.get('dm.output.' + this.get('model.hwid')))
+      this.set('output', this.get('dm.output.' + this.get('model.hwid')));
     }.bind(this));
   }.on('init'),
 
   pushErrors: function(errors) {
     $.each(Object.keys(errors), function(i, key){
-      this.get('errors').push(key + ' ' + errors[key].join(','))
+      this.get('errors').push(key + ' ' + errors[key].join(','));
     }.bind(this));
     this.notifyPropertyChange('errors');
   },
@@ -41,7 +41,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
         if(model) {
           model.save().then(function(model) {
             this.pushErrors(model.get('errors'));
-            if(this.get('errors').length == 0) {
+            if(this.get('errors').length === 0) {
               this.set('saveStatus', 'success');
             }
           }.bind(this), function() {
@@ -52,7 +52,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
 
       this.get('model').save().then(function(model) {
         this.pushErrors(model.get('errors'));
-        if(this.get('errors').length == 0) {
+        if(this.get('errors').length === 0) {
           this.set('saveStatus', 'success');
         }
         this.get('dm').updateDevice(this.get('model.hwid'));
@@ -78,8 +78,7 @@ export default Ember.Component.extend(saveModelControllerMixin, {
       if(this.get('controlUrl')) {
         this.set('controlUrl', undefined);
       } else {
-        this.set('controlUrl', location.protocol + '//'
-          + location.hostname + ':3900/' + device.get('hwid'));
+        this.set('controlUrl', location.protocol + '//' + location.hostname + ':3900/' + device.get('hwid'));
       }
     },
 

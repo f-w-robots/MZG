@@ -83,11 +83,11 @@ export default Ember.Mixin.create({
 
   sendDirect(message) {
     var socket = this.get('socket');
-    if(socket.readyState == 1) {
+    if(socket.readyState === 1) {
       socket.send(message);
     } else {
       var intervalId = setInterval(function () {
-        if(socket.readyState == 1) {
+        if(socket.readyState === 1) {
           socket.send(message);
           clearInterval(intervalId);
         }

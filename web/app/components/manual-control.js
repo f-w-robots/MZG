@@ -18,12 +18,12 @@ export default Ember.Component.extend({
       } else {
         device.set('online', false);
       }
-    }, this)
+    }, this);
   }.observes('connecteDevices'),
 
   actions: {
     createDevice: function() {
-      var device = this.get('store').createRecord('device', {hwid: 'NONAME'})
+      var device = this.get('store').createRecord('device', {hwid: 'NONAME'});
       this.actions.selectDevice.apply(this, [device]);
     },
 
@@ -43,8 +43,7 @@ export default Ember.Component.extend({
 
     controlDevice: function(device) {
       this.set('currentDeivce', null);
-      this.set('controlUrl', location.protocol + '//'
-        + location.hostname + ':3900/' + device.get('hwid'));
+      this.set('controlUrl', location.protocol + '//' + location.hostname + ':3900/' + device.get('hwid'));
     },
   },
 });

@@ -6,8 +6,8 @@ var Socket = Ember.Object.extend(abstractSocket, {
   output: Ember.RSVP.hash({}),
 
   init() {
-    this.set('url', 'ws://' + location.hostname + ':2500/devices/manage')
-    this.onInit()
+    this.set('url', 'ws://' + location.hostname + ':2500/devices/manage');
+    this.onInit();
     this.addOnMessage('devices', function(data) {
       this.set('devices', data);
     }, this);
@@ -19,7 +19,7 @@ var Socket = Ember.Object.extend(abstractSocket, {
         }
         var out = data[key];
         var obj = {line: out[1]};
-        if(out[0]=='stdout') {
+        if(out[0] === 'stdout') {
           obj['stdout'] = true;
         } else {
           obj['stderr'] = true;
@@ -39,7 +39,7 @@ var Socket = Ember.Object.extend(abstractSocket, {
     var onError = function() {
       this.set('error', true);
       this.set('devices', null);
-    }
+    };
 
     this.addOnError(onError, this);
     this.addOnClose(onError, this);
@@ -54,7 +54,7 @@ var Socket = Ember.Object.extend(abstractSocket, {
   },
 
   updateCode(hwid, code) {
-    this.sendDirect("{\"restart\":\"" + hwid + "\",\"code\":\"" + code + "\"}")
+    this.sendDirect("{\"restart\":\"" + hwid + "\",\"code\":\"" + code + "\"}");
   }
 });
 
@@ -62,7 +62,7 @@ export function initialize() {
   var dmSocket = Socket.create({});
   Ember.getDMSocket = function() {
     return dmSocket;
-  }
+  };
 }
 
 export default {

@@ -26,9 +26,9 @@ export default Ember.Route.extend({
     user.then(function(user) {
       user.set('providersStatus', []);
       $.each(supportedPorviders, function(i, provider) {
-        var status = user.get('providers').indexOf(provider) > -1
-        user.get('providersStatus').push({name: provider, status: status})
-      })
+        var status = user.get('providers').indexOf(provider) > -1;
+        user.get('providersStatus').push({name: provider, status: status});
+      });
     },function() {
       // return
     });

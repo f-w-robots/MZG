@@ -9,18 +9,17 @@ export default Ember.Component.extend({
 
     // Enter your ids or classes
     var toggler = '.navbar-toggle';
-    var navigationwrapper = '.navbar-header';
-    var menuwidth = '100%'; // the menu inside the slide menu itself
-    var slidewidth = '160px';
     var menuneg = '-100%';
     var slideneg = '-160px';
 
-    $("#slide-nav").on("click", toggler, function (e) {
+    $("#slide-nav").on("click", toggler, function () {
 
         var selected = $(this).hasClass('slide-active');
 
+        var scrollPosition;
+
         if(!selected) {
-          var scrollPosition = [
+          scrollPosition = [
             self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
             self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
           ];
@@ -28,7 +27,7 @@ export default Ember.Component.extend({
           $('body').css('overflow', 'hidden');
           window.scrollTo(scrollPosition[0], scrollPosition[1]);
         } else {
-          var scrollPosition = $('body').data('scroll-position');
+          scrollPosition = $('body').data('scroll-position');
           $('body').css('overflow', 'inherit');
           window.scrollTo(scrollPosition[0], scrollPosition[1]);
         }
@@ -59,7 +58,7 @@ export default Ember.Component.extend({
 
   actions: {
     logout: function() {
-      location.replace("http://" + location.hostname + ":2600/auth/logout")
+      location.replace("http://" + location.hostname + ":2600/auth/logout");
     }
   }
 });

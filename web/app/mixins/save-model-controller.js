@@ -6,11 +6,11 @@ export default Ember.Mixin.create({
   },
 
   saveSuccess: function() {
-    return this.get('saveStatus') === 'success'
+    return this.get('saveStatus') === 'success';
   }.property('saveStatus'),
 
   saveError: function() {
-    return this.get('saveStatus') === 'error'
+    return this.get('saveStatus') === 'error';
   }.property('saveStatus'),
 
   actions: {

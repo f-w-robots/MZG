@@ -15,7 +15,7 @@ export default Ember.Route.extend({
       });
     }.bind(this), function() {
       return Ember.RSVP.hash({fail: true});
-    })
+    });
 
   },
 

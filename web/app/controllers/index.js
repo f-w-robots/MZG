@@ -24,18 +24,18 @@ export default Ember.Controller.extend({
 
   actions: {
     vkontakte: function() {
-      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/vkontakte")
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/vkontakte");
     },
 
     github: function() {
-      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github")
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github");
     },
 
     signin: function() {
       Ember.$.post(location.protocol + "//" + location.hostname  + ":2600/auth/signin",
         { 'user': {login: this.get('username'), password: this.get('password')}},
         function(data, textStatus, xhr) {
-          if(xhr.status == 201) {
+          if(xhr.status === 201) {
             location.replace(location.origin);
           } else {
             this.set('error', 'Wrong username or password');
@@ -59,8 +59,8 @@ export default Ember.Controller.extend({
         function(data, textStatus, xhr) {
           location.replace(location.origin);
         },
-      ).fail(function(data, darta2, d3 ) {
-        var j = JSON.parse(data.responseText)
+      ).fail(function(data) {
+        var j = JSON.parse(data.responseText);
         this.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
       }.bind(this));
     },
@@ -71,7 +71,7 @@ export default Ember.Controller.extend({
           email: this.get('email'),
         },
         function(data, textStatus, xhr) {
-          if(xhr.status == 201) {
+          if(xhr.status === 201) {
             this.set('error', null);
             this.set('success', 'All right');
           } else {
@@ -80,8 +80,7 @@ export default Ember.Controller.extend({
           }
 
         }.bind(this),
-      ).fail(function(data, darta2, d3 ) {
-      });
+      );
     },
 
     update_password: function() {
@@ -92,7 +91,7 @@ export default Ember.Controller.extend({
           key: this.getUrlParameter('key'),
         },
         function(data, textStatus, xhr) {
-          if(xhr.status == 201) {
+          if(xhr.status === 201) {
             this.set('error', null);
             this.set('success', 'All right');
           } else {
@@ -101,7 +100,7 @@ export default Ember.Controller.extend({
           }
 
         }.bind(this),
-      ).fail(function(data, darta2, d3 ) {
+      ).fail(function(data) {
       });
     },
   },
