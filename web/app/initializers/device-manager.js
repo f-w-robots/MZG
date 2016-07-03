@@ -13,10 +13,9 @@ var Socket = Ember.Object.extend(abstractSocket, {
     }, this);
 
     this.addOnMessage('output', function(data) {
-      var self = this;
       $.each(Object.keys(data), function(i, key) {
-        if(!self.get('output.' + key)) {
-          self.set('output.' + key, []);
+        if(!this.get('output.' + key)) {
+          this.set('output.' + key, []);
         }
         var out = data[key];
         var obj = {line: out[1]};
@@ -26,12 +25,12 @@ var Socket = Ember.Object.extend(abstractSocket, {
           obj['stderr'] = true;
         }
 
-        self.get('output.' + key).push(Ember.Object.create(obj));
-        var len = self.get('output.' + key).length;
-        self.set('output.' + key, self.get('output.' + key).slice(len - 1000));
-        self.set('outputUpdated', []);
-      });
-    }, this);
+        this.get('output.' + key).push(Ember.Object.create(obj));
+        var len = this.get('output.' + key).length;
+        this.set('output.' + key, this.get('output.' + key).slice(len - 1000));
+        this.set('outputUpdated', []);
+      }.bind(this));
+    }.bind(this), this);
 
     this.addOnOpen(function(){
       this.set('error', false);

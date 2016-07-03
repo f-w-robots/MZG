@@ -21,12 +21,10 @@ export default Ember.Component.extend(saveModelControllerMixin, {
   }.observes('model'),
 
   setup: function() {
-    var self = this;
     this.algorithmObserver();
     this.get('dm').addObserver('outputUpdated', function() {
-      self.set('output', self.get('dm.output.' + self.get('model.hwid')))
-
-    });
+      this.set('output', this.get('dm.output.' + this.get('model.hwid')))
+    }.bind(this));
   }.on('init'),
 
   pushErrors: function(errors) {
@@ -39,35 +37,34 @@ export default Ember.Component.extend(saveModelControllerMixin, {
   actions: {
     update: function() {
       this.set('errors', []);
-      var self = this;
       $.each([this.get('algorithm')], function(i, model) {
         if(model) {
           model.save().then(function(model) {
-            self.pushErrors(model.get('errors'));
-            if(self.get('errors').length == 0) {
-              self.set('saveStatus', 'success');
+            this.pushErrors(model.get('errors'));
+            if(this.get('errors').length == 0) {
+              this.set('saveStatus', 'success');
             }
-          }, function() {
-            self.pushErrors(['undefined Error']);
-          });
+          }.bind(this), function() {
+            this.pushErrors(['undefined Error']);
+          }.bind(this));
         }
-      });
+      }.bind(this));
 
       this.get('model').save().then(function(model) {
-        self.pushErrors(model.get('errors'));
-        if(self.get('errors').length == 0) {
-          self.set('saveStatus', 'success');
+        this.pushErrors(model.get('errors'));
+        if(this.get('errors').length == 0) {
+          this.set('saveStatus', 'success');
         }
-        self.get('dm').updateDevice(self.get('model.hwid'));
-        self.set('dm.output.' + self.get('model.hwid'), []);
-        self.set('output', null);
-      }, function(model) {
-        self.pushErrors({'': [model.errors[0].detail]});
-      });
+        this.get('dm').updateDevice(this.get('model.hwid'));
+        this.set('dm.output.' + this.get('model.hwid'), []);
+        this.set('output', null);
+      }.bind(this), function(model) {
+        this.pushErrors({'': [model.errors[0].detail]});
+      }.bind(this));
 
       setTimeout(function(){
-        self.set('saveStatus', null);
-      }, 1500);
+        this.set('saveStatus', null);
+      }.bind(this), 1500);
     },
 
     apply: function(code) {

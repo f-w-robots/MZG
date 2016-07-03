@@ -32,23 +32,21 @@ export default Ember.Controller.extend({
     },
 
     signin: function() {
-      var self = this;
       Ember.$.post(location.protocol + "//" + location.hostname  + ":2600/auth/signin",
         { 'user': {login: this.get('username'), password: this.get('password')}},
         function(data, textStatus, xhr) {
           if(xhr.status == 201) {
             location.replace(location.origin);
           } else {
-            self.set('error', 'Wrong username or password');
+            this.set('error', 'Wrong username or password');
           }
-        }
+        }.bind(this)
       ).fail(function() {
-        self.set('error', 'Wrong username or password');
-      });
+        this.set('error', 'Wrong username or password');
+      }.bind(this));
     },
 
     signup: function() {
-      var self = this;
       Ember.$.post(location.protocol + "//" + location.hostname  + ":2600/auth/signup",
         {
           'user':
@@ -63,8 +61,8 @@ export default Ember.Controller.extend({
         },
       ).fail(function(data, darta2, d3 ) {
         var j = JSON.parse(data.responseText)
-        self.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
-      });
+        this.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
+      }.bind(this));
     },
 
     restore_password: function() {

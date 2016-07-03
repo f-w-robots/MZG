@@ -3,7 +3,6 @@ export default Ember.TextField.extend({
   // classNames: [''],
 
   change: function(e) {
-    let self = this;
 
     var inputFiles = e.target.files;
     if (inputFiles.length < 1) {
@@ -26,8 +25,8 @@ export default Ember.TextField.extend({
       let fileReader = e.target;
       fileInfo.dataURL = fileReader.result;
 
-      self.sendAction('fileChanged', fileInfo);
-    };
+      this.sendAction('fileChanged', fileInfo);
+    }.bind(this);
 
     let firstFile = e.target.files[0];
     fileReader.readAsDataURL(firstFile);

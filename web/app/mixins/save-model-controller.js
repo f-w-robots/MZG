@@ -15,13 +15,12 @@ export default Ember.Mixin.create({
 
   actions: {
     saveRecord: function() {
-      var self = this;
       var model = this.get('model');
       model.save().then(function() {
-        self.set('saveStatus', 'success');
-      }, function(){
-        self.set('saveStatus', 'error');
-      });
+        this.set('saveStatus', 'success');
+      }.bind(this), function(){
+        this.set('saveStatus', 'error');
+      }.bind(this));
     },
   }
 });

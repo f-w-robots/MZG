@@ -6,46 +6,44 @@ export default Ember.Mixin.create({
   url: null,
 
   openSocket: function() {
-    var self = this;
-
     var socket = new WebSocket(this.get('url'));
     this.set('socket', socket);
 
     socket.onopen = function (event) {
-      self.set('wasOpen', true);
-      $.each(self.onOpenCallbacks, function(i, func) {
+      this.set('wasOpen', true);
+      $.each(this.onOpenCallbacks, function(i, func) {
         func['func'].apply(func['context']);
       });
-    };
+    }.bind(this);
 
     socket.onmessage = function (event) {
       var data = JSON.parse(event.data);
       var prefix = Object.keys(data)[0];
       data = data[prefix];
-      self.latestMessages[prefix] = data;
-      if(!self.onMessageListeners[prefix]) {
+      this.latestMessages[prefix] = data;
+      if(!this.onMessageListeners[prefix]) {
         console.log(prefix, data);
         return;
       }
-      $.each(self.onMessageListeners[prefix], function(i, func) {
+      $.each(this.onMessageListeners[prefix], function(i, func) {
         func['func'].apply(func['context'], [data]);
       });
-    };
+    }.bind(this);
 
     socket.onerror = function (event) {
-      $.each(self.onErrorCallbacks, function(i, func) {
+      $.each(this.onErrorCallbacks, function(i, func) {
         func['func'].apply(func['context']);
       });
-    };
+    }.bind(this);
 
     socket.onclose = function (event) {
-      $.each(self.onCloseCallbacks, function(i, func) {
+      $.each(this.onCloseCallbacks, function(i, func) {
         func['func'].apply(func['context']);
       });
       setTimeout(function() {
-        self.openSocket();
-      }, 1000);
-    };
+        this.openSocket();
+      }.bind(this), 1000);
+    }.bind(this);
   },
 
   getSocket: function() {

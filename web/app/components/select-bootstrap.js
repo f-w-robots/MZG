@@ -4,14 +4,13 @@ export default Ember.Component.extend({
   value: null,
 
   optionsObserver: function () {
-    var self = this;
     return this.set('optionsList', this.get('options').map(function(e){
       return {
-        value: e.get(self.get('valueKey')),
-        label: e.get(self.get('labelKey')),
-        selected: e.get(self.get('valueKey')) == self.get('value'),
+        value: e.get(this.get('valueKey')),
+        label: e.get(this.get('labelKey')),
+        selected: e.get(this.get('valueKey')) == this.get('value'),
       };
-    }));
+    }.bind(this)));
   }.observes('options.length'),
 
   optionsUpdate: function() {
