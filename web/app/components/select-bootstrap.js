@@ -6,7 +6,11 @@ export default Ember.Component.extend({
   optionsObserver: function () {
     var self = this;
     return this.set('optionsList', this.get('options').map(function(e){
-      return {value: e.get(self.get('valueKey')), label: e.get(self.get('labelKey'))};
+      return {
+        value: e.get(self.get('valueKey')),
+        label: e.get(self.get('labelKey')),
+        selected: e.get(self.get('valueKey')) == self.get('value'),
+      };
     }));
   }.observes('options.length'),
 
