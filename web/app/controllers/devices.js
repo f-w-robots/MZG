@@ -26,24 +26,11 @@ export default Ember.Controller.extend({
     },
 
     selectDevice: function(device) {
-      if(this.get('currentDeivce')) {
-        this.set('currentDeivce.active', null);
-      }
-
-      device.set('active', true);
-
-      this.set('currentDeivce', device);
-
       this.transitionToRoute('/devices/' + device.get('id'));
     },
 
     killDevice: function(device) {
       this.get('dm').killDevice(device.get('hwid'));
-    },
-
-    controlDevice: function(device) {
-      this.set('currentDeivce', null);
-      this.set('controlUrl', location.protocol + '//' + location.hostname + ':3900/' + device.get('hwid'));
     },
   },
 });

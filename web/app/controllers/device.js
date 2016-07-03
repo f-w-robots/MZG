@@ -42,7 +42,7 @@ export default Ember.Controller.extend({
           model.save().then(function(model) {
             this.pushErrors(model.get('errors'));
             if(this.get('errors').length === 0) {
-              this.set('saveStatus', 'success');
+              this.set('saveSuccess', 'success');
             }
           }.bind(this), function() {
             this.pushErrors(['undefined Error']);
@@ -53,7 +53,7 @@ export default Ember.Controller.extend({
       this.get('model').save().then(function(model) {
         this.pushErrors(model.get('errors'));
         if(this.get('errors').length === 0) {
-          this.set('saveStatus', 'success');
+          this.set('saveSuccess', 'success');
         }
         this.get('dm').updateDevice(this.get('model.hwid'));
         this.set('dm.output.' + this.get('model.hwid'), []);
@@ -63,7 +63,7 @@ export default Ember.Controller.extend({
       }.bind(this));
 
       setTimeout(function(){
-        this.set('saveStatus', null);
+        this.set('saveSuccess', null);
       }.bind(this), 1500);
     },
 

@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import authRouteMixin from '../../mixins/auth-route';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(authRouteMixin, {
   controllerName: 'device',
 
   setupController: function(controller, model) {
