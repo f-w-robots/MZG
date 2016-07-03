@@ -4,7 +4,8 @@
     "window",
     "-Promise",
     "Ember",
-    "$"
+    "$",
+    "md5"
   ],
   "browser": true,
   "boss": true,
@@ -30,5 +31,5 @@
   "white": false,
   "eqnull": true,
   "esnext": true,
-  "unused": true
+  "unused": false
 }

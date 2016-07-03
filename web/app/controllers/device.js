@@ -4,7 +4,6 @@ export default Ember.Controller.extend({
   devicesController: Ember.inject.controller('devices'),
   dm: Ember.getDMSocket(),
   output: null,
-  application: Em.computed.alias('controllers.application'),
 
   algorithmObserver: function() {
     var target = null;
@@ -85,7 +84,7 @@ export default Ember.Controller.extend({
     delete: function(device) {
       device.deleteRecord();
       device.save();
-      this.transitionToRoute('/devices')
+      this.transitionToRoute('/devices');
     },
   },
 });

@@ -58,7 +58,7 @@ export default Ember.Controller.extend({
         },
         function(data, textStatus, xhr) {
           location.replace(location.origin);
-        },
+        }
       ).fail(function(data) {
         var j = JSON.parse(data.responseText);
         this.set('error', JSON.parse(data.responseText)["meta"]["errors"]);
@@ -78,8 +78,7 @@ export default Ember.Controller.extend({
             this.set('error', 'Error');
             this.set('success', null);
           }
-
-        }.bind(this),
+        }.bind(this)
       );
     },
 
@@ -99,7 +98,7 @@ export default Ember.Controller.extend({
             this.set('success', null);
           }
 
-        }.bind(this),
+        }.bind(this)
       ).fail(function(data) {
       });
     },
