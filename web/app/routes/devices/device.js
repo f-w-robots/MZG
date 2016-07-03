@@ -27,8 +27,8 @@ export default Ember.Route.extend(authRouteMixin, {
       return device.then(function(device) {
         return device;
       }, function(device) {
-        return null;
-      })
+        this.transitionTo('/devices')
+      }.bind(this))
     }
   }
 });
