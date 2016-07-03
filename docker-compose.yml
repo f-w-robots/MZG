@@ -43,6 +43,7 @@ web:
     - ./web/public:/app/public
     - ./web/tests:/app/tests
     - ./web/config:/app/config
+    - ./web/vendor:/app/vendro
   env_file: .env
 mail:
   image: tozd/postfix
