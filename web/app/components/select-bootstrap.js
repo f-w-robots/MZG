@@ -4,6 +4,9 @@ export default Ember.Component.extend({
   value: null,
 
   optionsObserver: function () {
+    if(!this.get('options')) {
+      return [];
+    }
     return this.set('optionsList', this.get('options').map(function(e){
       return {
         value: e.get(this.get('valueKey')),

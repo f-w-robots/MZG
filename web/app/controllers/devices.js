@@ -1,7 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
-  //TODO - inject service
+export default Ember.Controller.extend({
   dm: Ember.getDMSocket(),
   store: Ember.inject.service('store'),
   connecteDevices: Ember.computed.alias('dm.devices'),
@@ -12,7 +11,7 @@ export default Ember.Component.extend({
   },
 
   refreshDeviceState: function() {
-    this.get('devices').find(function(device) {
+    this.get('model.devices').find(function(device) {
       if(this.get('connecteDevices') && this.get('connecteDevices').indexOf(device.get('hwid')) > -1) {
         device.set('online', true);
       } else {
@@ -23,8 +22,7 @@ export default Ember.Component.extend({
 
   actions: {
     createDevice: function() {
-      var device = this.get('store').createRecord('device', {hwid: 'NONAME'});
-      this.actions.selectDevice.apply(this, [device]);
+      this.transitionToRoute('/devices/new');
     },
 
     selectDevice: function(device) {
@@ -35,6 +33,8 @@ export default Ember.Component.extend({
       device.set('active', true);
 
       this.set('currentDeivce', device);
+
+      this.transitionToRoute('/devices/' + device.get('id'));
     },
 
     killDevice: function(device) {

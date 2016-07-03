@@ -20,7 +20,12 @@ module Sinatra
               @records = @user.send(model.pluralize).where(_id: id)
               @model = model
 
-              erb :'api/models/index'
+              if @records.empty?
+                status 404
+                ''
+              else
+                erb :'api/models/index'
+              end
             end
 
             app.post "/api/v1/#{model.pluralize}" do
