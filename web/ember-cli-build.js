@@ -9,6 +9,8 @@ module.exports = function(defaults) {
     // Add options here
   });
 
+  app.import('/vendor/css/leftMenu.css');
+
   app.import('bower_components/js-md5/build/md5.min.js');
 
   app.import(app.bowerDirectory + '/bootstrap/dist/js/bootstrap.js');
@@ -40,8 +42,6 @@ module.exports = function(defaults) {
   app.import('/vendor/css/leftMenu.css');
   app.import('/vendor/css/login.css');
   app.import('/vendor/css/homepage.css');
-
-
 
   // Use `app.import` to add additional libraries to the generated
   // output files.

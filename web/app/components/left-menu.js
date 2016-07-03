@@ -5,14 +5,13 @@ export default Ember.Component.extend({
   classNames: ['nav', 'navbar-nav', 'navbar-right'],
 
   didInsertElement: function() {
-    $('#slide-nav.navbar .container').append($('<div class="navbar-height-col"></div>'));
-
-    // Enter your ids or classes
     var toggler = '.navbar-toggle';
+    var pagewrapper = 'section';
+    var slidewidth = '160px';
     var menuneg = '-100%';
     var slideneg = '-160px';
 
-    $("#slide-nav").on("click", toggler, function () {
+    $("#slide-nav").on("click", toggler, function (e) {
 
         var selected = $(this).hasClass('slide-active');
 
@@ -20,8 +19,8 @@ export default Ember.Component.extend({
 
         if(!selected) {
           scrollPosition = [
-            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-            self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+            window.self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+            window.self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
           ];
           $('body').data('scroll-position', scrollPosition);
           $('body').css('overflow', 'hidden');
@@ -40,13 +39,17 @@ export default Ember.Component.extend({
             right: selected ? slideneg : '0px'
         });
 
+        $(pagewrapper).stop().animate({
+            right: selected ? '0px' : slidewidth
+        });
+
         $(this).toggleClass('slide-active', !selected);
         $('#slidemenu').toggleClass('slide-active');
 
-        $('.navbar, body, .navbar-header').toggleClass('slide-active');
+        $(pagewrapper + ' .navbar, body, .navbar-header').toggleClass('slide-active');
     });
 
-    var selected = '#slidemenu, body, .navbar, .navbar-header';
+    var selected = pagewrapper + '#slidemenu, body, .navbar, .navbar-header';
 
     $(window).on("resize", function () {
         if ($(window).width() > 767 && $('.navbar-toggle').is(':hidden')) {
