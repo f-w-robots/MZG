@@ -3,8 +3,12 @@ import { module, test } from 'qunit';
 
 module('Unit | Helper | ternary');
 
-// Replace this with your real tests.
-test('it works', function(assert) {
-  let result = ternary([42]);
-  assert.ok(result);
+test('true', function(assert) {
+  let result = ternary([true, 1, 2]);
+  assert.ok(result === 1);
+});
+
+test('false', function(assert) {
+  let result = ternary([false, 1, 2]);
+  assert.ok(result === 2);
 });

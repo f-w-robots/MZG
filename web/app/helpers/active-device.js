@@ -1,9 +1,7 @@
 import Ember from 'ember';
 
-export function activeDevice(params/*, hash*/) {
-  if(params[0] === params[1]) {
-    return 'active';
-  }
+export function activeDevice(params) {
+  return params[0] === params[1] ? 'active' : '';
 }
 
 export default Ember.Helper.helper(activeDevice);

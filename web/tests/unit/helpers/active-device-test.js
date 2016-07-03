@@ -3,8 +3,12 @@ import { module, test } from 'qunit';
 
 module('Unit | Helper | active device');
 
-// Replace this with your real tests.
-test('it works', function(assert) {
-  let result = activeDevice([42]);
-  assert.ok(result);
+test('eq', function(assert) {
+  let result = activeDevice(["1", "1"]);
+  assert.ok(result === 'active');
+});
+
+test('not eq', function(assert) {
+  let result = activeDevice(["2", "1"]);
+  assert.ok(result === '');
 });
