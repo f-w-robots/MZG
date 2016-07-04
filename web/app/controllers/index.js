@@ -73,14 +73,9 @@ export default Ember.Controller.extend({
           email: this.get('email'),
         },
         function(data, textStatus, xhr) {
-          if(xhr.status == 201) {
-            this.set('error', null);
-            this.set('success', 'All right');
-          } else {
-            this.set('error', 'Error');
-            this.set('success', null);
+          if(xhr.status == 201 || xhr.status == 200) {
+            this.set('message', 'If there is such email address, information for password restore has been sent.');
           }
-
         }.bind(this),
       ).fail(function(data, darta2, d3 ) {
       });

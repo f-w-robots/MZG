@@ -34,13 +34,12 @@ module Sinatra
               end
 
               @record = model.create(attrs)
-
               @record.user = @user
               if !@record.save
                 status 500
                 return @record.errors.full_messages.join(', ')
               end
-              @model = model
+              @model = model 
               @records = [@record]
 
               erb :'api/models/index'
