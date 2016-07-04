@@ -22,6 +22,10 @@ class User
     self['email'] = '' if !self['email']
     self['confirmed'] = false
 
+    @device = Device.create("hwid" => "Device" + rand(10000000).to_s)
+    @device.user = self
+    @device.save
+
     if self['email']
       self['confirmation_code'] = (0...50).map { ('a'..'z').to_a[rand(26)] }.join
     end

@@ -26,6 +26,10 @@ describe "api" do
       it do
         expect(response["attributes"]["authorized"]).to eq(false)
       end
+
+      it do
+        expect(@user.devices).not_to eq([])
+      end
     end
 
     describe "authorized" do
