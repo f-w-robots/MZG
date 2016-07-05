@@ -1,7 +1,14 @@
+desc "Launches an iteractive ruby console with presetup environment"
+task :console do
+  exec "irb -r ./app"
+end
+
 namespace :db do
+  desc "Creates indexes for different environments"
   task :create_indexes, :environment do |t, args|
     ENV['RACK_ENV'] = args[:environment] if args[:environment]
     require "./app"
     ::Mongoid::Tasks::Database.create_indexes
   end
 end
+
