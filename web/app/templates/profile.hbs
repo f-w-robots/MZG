@@ -9,13 +9,28 @@
   </div>
 {{/if}}
 <form>
-<div class="col-md-4">
+  <div class="col-md-12">
+{{!-- <div class="col-md-4">
   <div class="row device-edit-image">
     {{image-input file=model.avatar disableRemove=true defaultUrl=defaultAvatarUrl}}
   </div>
+</div> --}}
+<div class="col-md-3 tabbable tabs-left">
+  <ul class="nav nav-tabs">
+    <li>
+      <a href="#" {{action "goto"}}>
+        <i>Profile</i>
+      </a>
+    </li>
+    <li>
+      <a href="#" {{action "goto"}}>
+        <i>Account</i>
+      </a>
+    </li>
+  </ul>
 </div>
 <div class="col-md-4">
-  {{#unless edit}}
+{{!-- {{#unless edit}}
     <b>Email:</b> {{model.email}}
     <b>Username:</b> {{model.username}}
     <br>
@@ -28,11 +43,9 @@
     <div class="form-group">
       Username: {{input value=temp_username class="form-control"}}
     </div>
-    <!--  -->
     <div class="form-group">
       Old password: {{input value=temp_oldPassword class="form-control" type="password"}}
     </div>
-    <!--  -->
     <div class="form-group">
       Password: {{input value=temp_password class="form-control" type="password"}}
     </div>
@@ -42,7 +55,32 @@
     <div class="btn btn-success" {{action "save"}}>Save</div>
     <div class="btn btn-success" {{action "reject"}}>Reject</div>
     {{#link-to 'delete_profile' class="btn btn-danger"}}Delete{{/link-to}}
-  {{/if}}
+  {{/if}} --}}
+  <div class="form-group">
+    Profile image <br>
+    <img id="avatar" src={{defaultAvatarUrl}}>
+    {{!-- {{image-input file=model.avatar disableRemove=true defaultUrl=defaultAvatarUrl}} --}}
+  </div>
+  <div class="form-group">
+    Name {{ember-inplace-edit text=model.username value=model.username
+               editIcon="hidden" action="save"}}
+  </div>
+  <div class="form-group">
+    Public email {{ember-inplace-edit text=model.email value=model.email
+            editIcon="hidden" action="save"}}
+  </div>
+  <div class="form-group">
+    About yourself {{ember-inplace-edit text=model.info value=model.info
+                     editIcon="hidden" action="save"}}
+  </div>
+  <div class="form-group">
+    URL {{ember-inplace-edit text=model.url value=model.url
+            editIcon="hidden" action="save"}}
+  </div>
+  <div class="form-group">
+    Location {{ember-inplace-edit text=model.location value=model.location
+            editIcon="hidden" action="save"}}
+  </div>
 </div>
 <div class="col-md-4">
   {{#each model.providersStatus as |provider|}}
@@ -59,5 +97,6 @@
     </a>
     {{/unless}}
   {{/each}}
+</div>
 </div>
 </form>

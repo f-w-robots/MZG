@@ -29,7 +29,6 @@ class Mailer
 
   def forgot_password user
     message = forgot_password_body(user)
-
     send_mail message, user['email']
   end
 

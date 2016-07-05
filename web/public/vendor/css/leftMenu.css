@@ -146,3 +146,12 @@ body.slide-active {
 	    right: 0!important
 	}
 }
+
+span.form-control {
+  background: #fafafa
+}
+
+#avatar {
+  width: 100px;
+  height: 100px;
+}

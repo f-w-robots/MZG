@@ -1,0 +1,26 @@
+{{#if isEditing}}
+  <form {{action "doneEditing" on="submit"}}>
+    {{#if isTypeInput}}
+      {{input class="form-control" value=value autoresize=autoResize}}
+    {{else}}
+      {{textarea value=value autoresize=autoResize}}
+    {{/if}}
+  </form>
+{{else}}
+  <span class="form-control {{if disabled 'form-control-disabled' ''}}" {{action "startEditing"}}>
+    {{#if displayPlaceholder}}
+      <div class="{{placeholderClass}}">
+        {{placeholder}}
+      </div>
+    {{else}}
+      {{text}}
+    {{/if}}
+  </span>
+  <span class="edit hide {{if disabled 'edit-button-disabled' ''}}">
+    {{#if editIcon}}
+      <a {{action "startEditing"}} class={{editIcon}}></a>
+    {{else}}
+      <button {{action "startEditing"}}>edit</button>
+    {{/if}}
+  </span>
+{{/if}}

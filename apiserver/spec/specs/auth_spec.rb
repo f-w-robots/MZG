@@ -102,7 +102,7 @@ describe "auth" do
         get '/auth/github/callback', {"omniauth.auth" => OmniAuth.config.mock_auth[:github]}
         expect(User.where({email: 'email_from_github@gmail.com'}).first[:username]).to eq('Neschur1')
       end
-      
+
       it do
         @user1 = User.create({'username' => 'Neschur', 'password' => '123456', 'email' => 'afewff@gmail.com'})
         @user2 = User.create({'username' => 'Neschur1', 'password' => '123456', 'email' => 'ddqwff@gmail.com'})
@@ -243,7 +243,6 @@ describe "auth" do
 
       it 'redirect' do
         expect(last_response.location).to include('/?error=')
-        # debugger
         # 1
       end
     end
