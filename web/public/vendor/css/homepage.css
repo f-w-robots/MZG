@@ -920,39 +920,3 @@ a:hover.nounderline{
 p.firstLetterUp::first-letter {
 	font-size: 25px;
 }
-
-
-span.form-control {
-  background: #fafafa
-}
-#avatar {
-  width: 100px;
-  height: 100px;
-  float: left;
-}
-.fileUpload {
-    overflow: hidden;
-    margin: 10px;
-    margin-left: 40px;
-    position: relative;
-}
-.fileUpload input.upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-}
-#github {
-  float: right;
-  width: 200px;
-}
-.pMenuItem {
-	font-family: open sans, sans-serif;
-	font-size: 16px;
-	padding-left: 10px;
-}
