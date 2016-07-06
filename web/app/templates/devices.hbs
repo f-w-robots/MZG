@@ -1,0 +1,33 @@
+{{#if model.user.authorized}}
+{{#if errorDeviceManager}}
+  <div class="alert alert-danger" role="alert">Сonnection is not established!</div>
+{{/if}}
+<div class="col-md-12"><h3>Devices</h3>
+  <div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+      {{#each model.devices as |device|}}
+        <li class="{{activeDevice device.id currentDeviceId}}">
+          <a href="#" {{action "selectDevice" device}}>
+            {{device.hwid}}
+            {{#if device.online}}
+              <img src="images/online.png" height="10px">
+            {{/if}}
+          </a>
+        </li>
+      {{/each}}
+      <li><a>
+      </a></li>
+      <li>
+        <a href="#" {{action "createDevice"}}>
+          <i>create New</i>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="col-md-10">
+        {{outlet}}
+      </div>
+    </div>
+  </div>
+</div>
+{{/if}}

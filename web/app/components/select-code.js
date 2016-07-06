@@ -6,11 +6,10 @@ export default Ember.Component.extend({
 
   actions: {
     add() {
-      var self=this;
       var record = this.get('store').createRecord('algorithm', {name:'', algorithm: ''});
       record.save().then(function(record) {
-        self.set('device.algorithmId', record.get('id'));
-      });
+        this.set('device.algorithmId', record.get('id'));
+      }.bind(this));
       this.set('record', record);
       this.set('model', record);
     },

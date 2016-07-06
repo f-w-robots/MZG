@@ -10,7 +10,7 @@ export default Ember.Controller.extend( {
       // this.set('model.password', this.get('temp_password'));
 
       this.get('model').save().then(function(result) {
-        if(result.get('errors').length == 0) {
+        if(result.get('errors').length === 0) {
           this.set('success', true);
           this.set('errors', false);
           this.set('edit', false);
@@ -34,15 +34,15 @@ export default Ember.Controller.extend( {
     },
 
     connect: function() {
-      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github")
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github");
     },
 
     disconnect: function() {
-      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github/disconnect")
+      location.replace(location.protocol + "//" + location.hostname + ":2600/auth/github/disconnect");
     },
 
     delete: function() {
-      if(this.get('model.username') == this.get('username')) {
+      if(this.get('model.username') === this.get('username')) {
         this.get('model').deleteRecord();
         this.get('model').save().then(function() {
           var newLocation = location.protocol + "//" + location.hostname;
@@ -52,7 +52,7 @@ export default Ember.Controller.extend( {
           location.replace(newLocation);
         });
       } else {
-        this.set('error', 'Usernames is not coincides')
+        this.set('error', 'Usernames is not coincides');
       }
     },
   }

@@ -5,12 +5,8 @@ export default Ember.Component.extend({
   classNames: ['nav', 'navbar-nav', 'navbar-right'],
 
   didInsertElement: function() {
-    $('#slide-nav.navbar .container').append($('<div class="navbar-height-col"></div>'));
-
-    // Enter your ids or classes
     var toggler = '.navbar-toggle';
-    var navigationwrapper = '.navbar-header';
-    var menuwidth = '100%'; // the menu inside the slide menu itself
+    var pagewrapper = 'section';
     var slidewidth = '160px';
     var menuneg = '-100%';
     var slideneg = '-160px';
@@ -19,16 +15,18 @@ export default Ember.Component.extend({
 
         var selected = $(this).hasClass('slide-active');
 
+        var scrollPosition;
+
         if(!selected) {
-          var scrollPosition = [
-            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-            self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+          scrollPosition = [
+            window.self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+            window.self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
           ];
           $('body').data('scroll-position', scrollPosition);
           $('body').css('overflow', 'hidden');
           window.scrollTo(scrollPosition[0], scrollPosition[1]);
         } else {
-          var scrollPosition = $('body').data('scroll-position');
+          scrollPosition = $('body').data('scroll-position');
           $('body').css('overflow', 'inherit');
           window.scrollTo(scrollPosition[0], scrollPosition[1]);
         }
@@ -41,13 +39,17 @@ export default Ember.Component.extend({
             right: selected ? slideneg : '0px'
         });
 
+        $(pagewrapper).stop().animate({
+            right: selected ? '0px' : slidewidth
+        });
+
         $(this).toggleClass('slide-active', !selected);
         $('#slidemenu').toggleClass('slide-active');
 
-        $('.navbar, body, .navbar-header').toggleClass('slide-active');
+        $(pagewrapper + ' .navbar, body, .navbar-header').toggleClass('slide-active');
     });
 
-    var selected = '#slidemenu, body, .navbar, .navbar-header';
+    var selected = pagewrapper + '#slidemenu, body, .navbar, .navbar-header';
 
     $(window).on("resize", function () {
         if ($(window).width() > 767 && $('.navbar-toggle').is(':hidden')) {
@@ -59,7 +61,7 @@ export default Ember.Component.extend({
 
   actions: {
     logout: function() {
-      location.replace("http://" + location.hostname + ":2600/auth/logout")
+      location.replace("http://" + location.hostname + ":2600/auth/logout");
     }
   }
 });

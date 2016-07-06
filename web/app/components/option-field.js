@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   }.observes('model.options'),
 
   optionsUpdate: function() {
-    this.optionsObserver()
+    this.optionsObserver();
   }.on('init'),
 
   fieldValueObserver: function() {

@@ -1,23 +1,14 @@
 import Ember from 'ember';
+import authRouteMixin from '../mixins/auth-route';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(authRouteMixin, {
   setupController: function(controller, model) {
-   this._super(controller, model);
-   if(model.get('avatarUrl')) {
-     controller.set('defaultAvatarUrl', model.get('avatarUrl'));
-   } else {
-     controller.set('defaultAvatarUrl', "https://www.gravatar.com/avatar/" + md5(model.get('email')));
-   }
- },
-
-  beforeModel: function(transition) {
-    this.store.findRecord('user', 'current').then(function(user) {
-      if(!user.get('authorized')) {
-        this.transitionTo('index');
-      }
-    }.bind(this), function() {
-      this.transitionTo('index');
-    }.bind(this));
+    this._super(controller, model);
+    if(model.get('avatarUrl')) {
+      controller.set('defaultAvatarUrl', model.get('avatarUrl'));
+    } else {
+      controller.set('defaultAvatarUrl', "https://www.gravatar.com/avatar/" + md5(model.get('email')));
+    }
   },
 
   model() {
@@ -26,9 +17,9 @@ export default Ember.Route.extend({
     user.then(function(user) {
       user.set('providersStatus', []);
       $.each(supportedPorviders, function(i, provider) {
-        var status = user.get('providers').indexOf(provider) > -1
-        user.get('providersStatus').push({name: provider, status: status})
-      })
+        var status = user.get('providers').indexOf(provider) > -1;
+        user.get('providersStatus').push({name: provider, status: status});
+      });
     },function() {
       // return
     });

@@ -1,15 +1,8 @@
 import Ember from 'ember';
+import authRouteMixin from '../mixins/auth-route';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(authRouteMixin, {
   controllerName: 'profile',
-
-  beforeModel: function(transition) {
-    this.store.findRecord('user', 'current').then(function(user) {
-      if(!user.get('authorized')) {
-        this.transitionTo('index');
-      }
-    }.bind(this));
-  },
 
   model() {
     return this.store.findRecord('user', 'current');

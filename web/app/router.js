@@ -20,6 +20,9 @@ Router.map(function() {
   this.route('forgot_password');
   this.route('update_password');
   this.route('delete_profile');
+  this.route('devices', function() {
+    this.route('device', {path: '/:device_id'});
+  });
 });
 
 export default Router;

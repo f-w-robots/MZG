@@ -19,6 +19,6 @@ Ember.$.ajaxSetup({
   crossDomain: true,
   xhrFields: {
     withCredentials: true
-}})
+}});
 
 export default App;
