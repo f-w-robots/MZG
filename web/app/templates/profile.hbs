@@ -9,55 +9,14 @@
   </div>
 {{/if}}
 <form>
-<div class="col-md-4">
-  <div class="row device-edit-image">
-    {{image-input file=model.avatar disableRemove=true defaultUrl=defaultAvatarUrl}}
+  <div class="col-md-12">
+    <div class="col-md-3">
+      <h3>Personal settings</h3>
+      <ul class="nav nav-pills nav-stacked">
+        <li class="pMenuItem">{{#link-to 'profile.profile'}}Profile{{/link-to}}</li>
+        <li class="pMenuItem">{{#link-to 'profile.account'}}Account{{/link-to}}</li>
+      </ul>
+    </div>
+    {{outlet}}
   </div>
-</div>
-<div class="col-md-4">
-  {{#unless edit}}
-    <b>Email:</b> {{model.email}}
-    <b>Username:</b> {{model.username}}
-    <br>
-    <div class="btn btn-default" {{action "edit"}}>Edit</div>
-  {{/unless}}
-  {{#if edit}}
-    <div class="form-group">
-      Email: {{input value=temp_email class="form-control" disabled=model.confirmed}}
-    </div>
-    <div class="form-group">
-      Username: {{input value=temp_username class="form-control"}}
-    </div>
-    <!--  -->
-    <div class="form-group">
-      Old password: {{input value=temp_oldPassword class="form-control" type="password"}}
-    </div>
-    <!--  -->
-    <div class="form-group">
-      Password: {{input value=temp_password class="form-control" type="password"}}
-    </div>
-    <div class="form-group">
-      Password confirmation: {{input value=temp_passwordConfirmation class="form-control" type="password"}}
-    </div>
-    <div class="btn btn-success" {{action "save"}}>Save</div>
-    <div class="btn btn-success" {{action "reject"}}>Reject</div>
-    {{#link-to 'delete_profile' class="btn btn-danger"}}Delete{{/link-to}}
-  {{/if}}
-</div>
-<div class="col-md-4">
-  {{#each model.providersStatus as |provider|}}
-    {{#if provider.status}}
-    <a class="btn btn-block btn-social btn-{{provider.name}}" {{action "disconnect" provider.name}}>
-        DISCONNECT {{provider.name}}
-      <span class="fa fa-{{provider.name}}"></span>
-    </a>
-    {{/if}}
-    {{#unless provider.status}}
-    <a class="btn btn-block btn-social btn-{{provider.name}}" {{action "connect" provider.name}}>
-        Sign in with {{provider.name}}
-      <span class="fa fa-{{provider.name}}"></span>
-    </a>
-    {{/unless}}
-  {{/each}}
-</div>
 </form>

@@ -39,7 +39,7 @@ module Sinatra
                 status 500
                 return @record.errors.full_messages.join(', ')
               end
-              @model = model 
+              @model = model
               @records = [@record]
 
               erb :'api/models/index'

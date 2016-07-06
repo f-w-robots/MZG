@@ -3,18 +3,17 @@ import Ember from 'ember';
 export default Ember.Controller.extend( {
   actions: {
     save: function() {
-      this.set('model.email', this.get('temp_email'));
-      this.set('model.username', this.get('temp_username'));
-      this.set('model.oldPassword', this.get("temp_oldPassword"));
-      this.set('model.passwordConfirmation', this.get('temp_passwordConfirmation'));
-      this.set('model.password', this.get('temp_password'));
+      // this.set('model.email', this.get('temp_email'));
+      // this.set('model.username', this.get('temp_username'));
+      // this.set('model.oldPassword', this.get("temp_oldPassword"));
+      // this.set('model.passwordConfirmation', this.get('temp_passwordConfirmation'));
+      // this.set('model.password', this.get('temp_password'));
 
       this.get('model').save().then(function(result) {
         if(result.get('errors').length == 0) {
           this.set('success', true);
           this.set('errors', false);
           this.set('edit', false);
-          console.log('set');
         } else {
           this.set('errors', true);
           this.set('success', false);

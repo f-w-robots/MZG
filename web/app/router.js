@@ -12,6 +12,8 @@ Router.map(function() {
   });
   this.route('profile', function() {
     this.route('delete');
+    this.route('account');
+    this.route('profile');
   });
   this.route('signin');
   this.route('signup');

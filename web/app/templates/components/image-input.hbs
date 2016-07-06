@@ -1,16 +1,19 @@
 {{#if file}}
 <div>
   {{#if file}}
-    <img src="{{file.dataURL}}" {{action 'clickOnImage'}}>
+    <img id="avatar" src="{{file.dataURL}}" {{action 'clickOnImage'}}>
   {{/if}}
 </div>
   {{#unless disableRemove}}
     <div class="btn btn-danger" {{action "removeImage"}}>x</div>
   {{/unless}}
 {{else}}
-<img src="{{defaultUrl}}" {{action 'clickOnImage'}}>
+<img id="avatar" src="{{defaultUrl}}" {{action 'clickOnImage'}}>
 {{/if}}
 
 <br>
 
-{{file-input fileChanged="fileSelectionChanged" hideSelect=true}}
+<div class="fileUpload btn btn-default">
+  <span>Upload new picture</span>
+  {{file-input fileChanged="fileSelectionChanged" hideSelect=true class="upload"}}
+</div>
