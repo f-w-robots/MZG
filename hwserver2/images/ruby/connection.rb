@@ -29,9 +29,9 @@ class UNIXConnection
   private
   def on_request
     socket = @server.accept
-    line = socket.readline
+    data = socket.read
     socket.close
-    line
+    data
   end
 end
 
@@ -57,6 +57,7 @@ class Connection
 
   private
   def inbox_msg msg
+    puts "X: #{msg.bytes.inspect}"
     @worker.from_device(msg)
   end
 
