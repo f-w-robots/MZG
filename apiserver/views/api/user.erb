@@ -10,7 +10,10 @@
           "confirmed": <%= !!@user['confirmed'] %>,
           "providers": <%= @providers.to_json %>,
           "errors": <%= @errors.to_json %>,
-          "avatar": <%= @user['avatar'].to_json %>
+          "avatar": <%= @user['avatar'].to_json %>,
+          "info": "<%= @user['info'].to_s %>",
+          "url": "<%= @user['url'].to_s %>",
+          "location": "<%= @user['location'].to_s %>"
       }
     }
 }

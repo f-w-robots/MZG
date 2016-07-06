@@ -10,15 +10,15 @@ export default Ember.Controller.extend( {
       // this.set('model.password', this.get('temp_password'));
 
       this.get('model').save().then(function(result) {
-        // if(result.get('errors').length == 0) {
-        //   this.set('success', true);
-        //   this.set('errors', false);
-        //   this.set('edit', false);
-        // } else {
-        //   this.set('errors', true);
-        //   this.set('success', false);
-        //   this.set('errors', this.get('model.errors'));
-        // }
+        if(result.get('errors').length == 0) {
+          this.set('success', true);
+          this.set('errors', false);
+          this.set('edit', false);
+        } else {
+          this.set('errors', true);
+          this.set('success', false);
+          this.set('errors', this.get('model.errors'));
+        }
       }.bind(this));
 
     },

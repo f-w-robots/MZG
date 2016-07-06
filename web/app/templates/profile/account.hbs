@@ -1,0 +1,31 @@
+<div class="col-md-4">
+  <h3>Account settings</h3>
+  <div class="form-group">
+    Old password {{ember-inplace-edit text=model.oldPassword value=model.oldPassword
+                   editIcon="hidden" inputType="password"}}
+  </div>
+  <div class="form-group">
+    New password {{ember-inplace-edit text=model.password value=model.password
+                   editIcon="hidden" inputType="password"}}
+  </div>
+  <div class="form-group">
+    Confirm password {{ember-inplace-edit text=model.passwordConfirmation
+                       value=model.passwordConfirmation editIcon="hidden"
+                       inputType="password"}}
+  </div>
+  <div class="btn btn-success" {{action "save"}}>Update profile</div>
+  {{#each model.providersStatus as |provider|}}
+    {{#if provider.status}}
+    <a id="github" class="btn btn-block btn-social btn-{{provider.name}}" {{action "disconnect" provider.name}}>
+        DISCONNECT {{provider.name}}
+      <span class="fa fa-{{provider.name}}"></span>
+    </a>
+    {{/if}}
+    {{#unless provider.status}}
+    <a id="github" class="btn btn-block btn-social btn-{{provider.name}}" {{action "connect" provider.name}}>
+        Sign in with {{provider.name}}
+      <span class="fa fa-{{provider.name}}"></span>
+    </a>
+    {{/unless}}
+  {{/each}}
+</div>

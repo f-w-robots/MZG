@@ -12,6 +12,18 @@ export default Ember.Component.extend({
     return this.get('type') === "input";
   }),
 
+  displayText: Ember.computed('text', function() {
+    if (this.get('inputType')=="password") {
+      var str = "";
+      for (var i = 0; i < this.get('text').length; i++) {
+        str += "\u25CF";
+      }
+      return str;
+    } else {
+      return this.get('text');
+    }
+  }),
+
   displayPlaceholder: Ember.computed('text', function() {
     return Ember.isBlank(this.get('text'));
   }),
