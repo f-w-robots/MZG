@@ -11,14 +11,6 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{ace-editor}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.equal(this.$().text().trim(), 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
 
-  // Template block usage:"
-  this.render(hbs`
-    {{#ace-editor}}
-      template block text
-    {{/ace-editor}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
 });

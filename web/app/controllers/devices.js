@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-  dm: Ember.getDMSocket(),
+  dm: Ember.inject.service('devices-manager'),
   store: Ember.inject.service('store'),
   connecteDevices: Ember.computed.alias('dm.devices'),
   errorDeviceManager: Ember.computed.alias('dm.error'),

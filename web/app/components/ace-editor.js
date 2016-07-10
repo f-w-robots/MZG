@@ -4,6 +4,8 @@ export default Ember.Component.extend({
   editor: null,
   tagName: 'div',
   classNames: ['ember-ace-editor'],
+  mode: 'ruby',
+  value: '',
 
   didInsertElement: function() {
     this.set('editor', window.ace.edit(this.get('element')));
