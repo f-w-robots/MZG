@@ -1,4 +1,4 @@
-FROM node:4.4.7
+FROM node:4
 
 RUN mkdir /app && npm install -g bower@1.7.9 ember-cli@2.6.2
 

@@ -71,10 +71,10 @@ export default Ember.Controller.extend({
           email: this.get('email'),
         },
         function(data, textStatus, xhr) {
-          if(xhr.status == 201 || xhr.status == 200) {
+          if(xhr.status === 201 || xhr.status === 200) {
             this.set('message', 'If there is such email address, information for password restore has been sent.');
           }
-        }.bind(this),
+        }.bind(this)
       ).fail(function(data) {
       });
     },

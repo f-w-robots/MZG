@@ -13,7 +13,7 @@ export default Ember.Component.extend({
   }),
 
   displayText: Ember.computed('text', function() {
-    if (this.get('inputType')=="password") {
+    if (this.get('inputType') === "password") {
       var str = "";
       for (var i = 0; i < this.get('text').length; i++) {
         str += "\u25CF";
