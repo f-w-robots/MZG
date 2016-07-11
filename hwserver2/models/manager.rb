@@ -49,7 +49,6 @@ class Manager
       end
 
       if msg['update']
-        puts 'recreate_device'
         recreate_device(msg['update'])
       end
     end
@@ -64,9 +63,11 @@ class Manager
   end
 
   def recreate_device hwid
-    puts "recreate_device: #{hwid}"
     device = device_by_hwid(hwid)
-    device.recreate_container if device
+    if device
+      puts "recreate_device: #{hwid}"
+      device.recreate_container
+    end
   end
 
   def device_by_hwid hwid

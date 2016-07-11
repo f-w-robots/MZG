@@ -69,7 +69,9 @@ class Device
     Dir["#{basepath}/**/*"].each do |fname|
       nfname = fname.sub(basepath, '')
       if File.directory?(fname)
+
         Dir.mkdir("#{@path}/#{nfname}") if !File.exists?("#{@path}/#{nfname}")
+
       else
         FileUtils.cp fname, "#{@path}/#{nfname}"
       end
@@ -136,8 +138,13 @@ class Device
     ws.on(:message) do |msg|
       puts "MSG from DEVICE: #{msg.data}"
       begin
-        @unix.send_message(msg.data.pack('c*'))
+        if msg.data.is_a? String
+          @unix.send_message(msg.data)
+        else
+          @unix.send_message(msg.data.pack('c*'))
+        end
       rescue
+        puts 'RJ'
         ws.instance_eval{@stream}.instance_eval{@rack_hijack_io_reader}.close_connection
       end
     end
