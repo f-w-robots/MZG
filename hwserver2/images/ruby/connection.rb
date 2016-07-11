@@ -57,7 +57,6 @@ class Connection
 
   private
   def inbox_msg msg
-    puts "X: #{msg.bytes.inspect}"
     @worker.from_device(msg)
   end
 
