@@ -1,9 +1,10 @@
 module Packs
   module Mods
     class Base
-      def initialize position, pack
+      def initialize position, pack, response_size
         @pack = pack
         @position = position
+        @response_size = response_size
       end
 
       def update! params
@@ -21,6 +22,10 @@ module Packs
 
       def refresh data
         @value = data
+      end
+
+      def response_size
+        @response_size
       end
     end
 
@@ -57,6 +62,7 @@ module Packs
       @package = []
 
       @tree = {}
+      @tree_by_response_size = {}
 
       @position = 0
       modules.each do |name, mod|
@@ -81,8 +87,17 @@ module Packs
     end
 
     def refresh data
-      @tree.values.flatten.each_with_index do |mod, index|
-        mod.refresh(data[index])
+      position = 0
+      @tree.values.flatten.each do |mod|
+        v = 0
+        x = 1
+        (position..position + mod.response_size - 1).each do
+          # TODO
+          v += (data[position] || 0) * x
+          x += 1
+          position += 1
+        end
+        mod.refresh(v)
       end
     end
 
@@ -91,8 +106,10 @@ module Packs
     end
 
     private
-    def create_mod mod_name
-      mod = Mods.const_get(mod_name).new @position, self
+    def create_mod mod
+      mod_name = mod.keys.first
+      response_size = mod.values.first
+      mod = Mods.const_get(mod_name).new @position, self, response_size
       @package[@position] = mod.default
       @position += 1
       mod
@@ -104,6 +121,7 @@ module Packs
       @connection = connection
 
       @tree = {}
+      @tree_by_id = {}
 
       if block_given?
         yield(self)
@@ -114,6 +132,7 @@ module Packs
       pack_name = params.first[1]
       pack_id = params.first[0]
       @tree[pack_name] = Pack.new(pack_id, @connection, params[:modules])
+      @tree_by_id[pack_id] = @tree[pack_name]
     end
 
     def method_missing(method_sym, *arguments, &block)
@@ -125,7 +144,7 @@ module Packs
     end
 
     def refresh data
-      @tree.values[data[0]].refresh(data[1..-1])
+      @tree_by_id[data[0]].refresh(data[1..-1])
     end
   end
 end

@@ -25,7 +25,7 @@ class UNIXConnection
   def on_request
     socket = @server.accept
     begin
-      line = socket.readline
+      line = socket.read
     rescue EOFError
       line = ""
     end

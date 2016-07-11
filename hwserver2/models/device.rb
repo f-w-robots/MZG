@@ -144,7 +144,7 @@ class Device
           @unix.send_message(msg.data.pack('c*'))
         end
       rescue
-        puts 'RJ'
+        puts "Container not started"
         ws.instance_eval{@stream}.instance_eval{@rack_hijack_io_reader}.close_connection
       end
     end
