@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   devicesController: Ember.inject.controller('devices'),
-  dm: Ember.getDMSocket(),
+  dm: Ember.inject.service('devices-manager'),
   output: null,
 
   algorithmObserver: function() {

@@ -1,6 +1,7 @@
+import Ember from 'ember';
 import abstractSocket from '../mixins/abstract-socket';
 
-var Socket = Ember.Object.extend(abstractSocket, {
+export default Ember.Service.extend(abstractSocket, {
   devices: null,
   error: null,
   output: Ember.RSVP.hash({}),
@@ -57,15 +58,3 @@ var Socket = Ember.Object.extend(abstractSocket, {
     this.sendDirect("{\"restart\":\"" + hwid + "\",\"code\":\"" + code + "\"}");
   }
 });
-
-export function initialize() {
-  var dmSocket = Socket.create({});
-  Ember.getDMSocket = function() {
-    return dmSocket;
-  };
-}
-
-export default {
-  name: 'device-manager',
-  initialize
-};
