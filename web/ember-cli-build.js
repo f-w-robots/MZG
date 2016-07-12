@@ -6,7 +6,14 @@ var mergeTrees = require('broccoli-merge-trees');
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
-    // Add options here
+    fingerprint: {
+      exclude: ['assets/ace/**/*'],
+    },
+    minifyJS: {
+      options: {
+        exclude: ['assets/ace/**/*'],
+      },
+    },
   });
 
   app.import('/vendor/css/leftMenu.css');
@@ -35,7 +42,7 @@ module.exports = function(defaults) {
   });
 
   var merged = mergeTrees([app.toTree(), ace, fontawesome, bootstrap], {
-       overwrite: true
+    overwrite: true
   });
 
   app.import('/vendor/css/tabs-left.css');
