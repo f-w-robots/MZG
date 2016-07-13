@@ -38,13 +38,14 @@ web:
   command: ember server
   ports:
     - "4200:4200"
-    - "4201:4201"
+    # - "4201:4201"
   volumes:
     - ./web/app:/app/app
     - ./web/public:/app/public
     - ./web/tests:/app/tests
     - ./web/config:/app/config
     - ./web/vendor:/app/vendor
+    - ./web/mirage:/app/mirage
   env_file: .env
 mail:
   image: tozd/postfix

@@ -10,6 +10,8 @@
     "bootstrap-social": "^5.0.0",
     "ace": "^1.2.3",
     "ace-builds": "^1.2.3",
-    "js-md5": "md5#^0.4.1"
+    "js-md5": "md5#^0.4.1",
+    "pretender": "~1.1.0",
+    "Faker": "~3.1.0"
   }
 }
