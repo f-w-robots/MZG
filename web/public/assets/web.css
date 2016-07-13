@@ -79,3 +79,7 @@ span.form-control {
 	font-size: 16px;
 	padding-left: 10px;
 }
+
+.device-control-panel {
+  margin-top: -50px;
+}

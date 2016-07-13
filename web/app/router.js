@@ -21,7 +21,12 @@ Router.map(function() {
   this.route('update_password');
   this.route('delete_profile');
   this.route('devices', function() {
-    this.route('device', {path: '/:device_id'});
+    this.route('device', {path: '/:device_id'}, function() {
+      this.route('builder');
+      this.route('control');
+      this.route('program');
+      this.route('settings');
+    });
   });
 });
 
