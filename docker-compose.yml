@@ -49,5 +49,3 @@ web:
   env_file: .env
 mail:
   image: tozd/postfix
-  ports:
-    - "25:25"

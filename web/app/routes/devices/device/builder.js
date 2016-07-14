@@ -7,4 +7,9 @@ export default Ember.Route.extend({
     controller.set('activeLink', 'builder')
     this._super(controller, model);
   },
+
+  model: function(params, transition) {
+    // console.log(params);
+    // console.log(b);
+  }
 });

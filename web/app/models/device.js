@@ -5,4 +5,5 @@ export default DS.Model.extend({
   algorithmId: DS.attr('string'),
   icon: DS.attr(),
   errors: DS.attr({}),
+  buildId: DS.attr('string'),
 });

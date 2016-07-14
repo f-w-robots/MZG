@@ -8,11 +8,19 @@ export default Ember.Component.extend({
       return [];
     }
     return this.set('optionsList', this.get('options').map(function(e){
-      return {
-        value: e.get(this.get('valueKey')),
-        label: e.get(this.get('labelKey')),
-        selected: e.get(this.get('valueKey')) === this.get('value'),
-      };
+      if(e.get) {
+        return {
+          value: e.get(this.get('valueKey')),
+          label: e.get(this.get('labelKey')),
+          selected: e.get(this.get('valueKey')) === this.get('value'),
+        };
+      } else {
+        return {
+          value: e['value'],
+          label: e['label'],
+          selected: e['value'] === this.get('value'),
+        };
+      }
     }.bind(this)));
   }.observes('options.length'),
 
