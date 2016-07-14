@@ -12,6 +12,11 @@ class Algorithm
     ]
   end
 
+  def self.relationships
+    [
+    ]
+  end
+
   def self.pluralize
     'algorithms'
   end

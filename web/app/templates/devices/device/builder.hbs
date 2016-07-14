@@ -1,6 +1,7 @@
 {{outlet}}
-{{device-module}}
-{{device-module}}
+{{#each model.build.devicesModules as |module|}}
+  {{device-module module=module}}
+{{/each}}
 <div class="btn btn-default device-module-new">
   +
 </div>

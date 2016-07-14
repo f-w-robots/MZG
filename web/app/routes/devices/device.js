@@ -23,8 +23,13 @@ export default Ember.Route.extend(authRouteMixin, {
       }.bind(this));
     } else {
       var device = this.store.findRecord('device', params['device_id']);
+      this.store.findAll('deviceBuild');
 
       return device.then(function(device) {
+        console.log('XXX');
+        device.get('deviceBuild').then(function(build){
+          console.log(build);
+        })
         return device;
       }, function(device) {
         this.transitionTo('/devices');

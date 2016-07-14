@@ -11,6 +11,26 @@
         <% end %>
         "errors": <%= record.errors.to_json %>
       }
+      <% if @model.relationships.present? %>
+      ,
+      "relationships": {
+        <% @model.relationships.each do |relationship| %>
+          <% id = record.attributes[relationship] %>
+          "<%= relationship %>": {
+            "data": <%= id.is_a?(Array) ? '[' : '' %>
+            <% ids = id.is_a?(Array) ? id : [id] %>
+              <% ids.each do |id| %>
+              {
+                "id": "<%= id %>",
+                "type": "<%= relationship %>"
+              }
+              <% end %>
+            <%= id.is_a?(Array) ? ']' : '' %>
+          }
+        <% end %>
+      }
+      <% end %>
+
     }<%= (records_count - 1 == index) ? '' : ',' %>
   <% end %>
   <%= records_count == 1 ? '' : ']' %>

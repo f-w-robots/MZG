@@ -14,6 +14,12 @@ class Device
     ]
   end
 
+  def self.relationships
+    [
+      :'device-build',
+    ]
+  end
+
   def self.pluralize
     'devices'
   end

@@ -18,6 +18,11 @@ class User
     ]
   end
 
+  def self.relationships
+    [
+    ]
+  end
+
   before_create do
     self['email'] = '' if !self['email']
     self['confirmed'] = false

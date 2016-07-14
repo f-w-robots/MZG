@@ -11,7 +11,7 @@ require_relative 'models/mailer'
 require 'bcrypt'
 
 $LOAD_PATH.push File.expand_path('../routes', __FILE__)
-%w{ config auth }.each { |file| require file }
+%w{ tmp config auth }.each { |file| require file }
 
 require_relative 'helpers/helpers'
 
@@ -73,6 +73,7 @@ class App < Sinatra::Base
 
   helpers Sinatra::App::Helpers
 
+  register Sinatra::App::Routing::Tmp
   register Sinatra::App::Routing::Config
   register Sinatra::App::Routing::Auth
   register Sinatra::CrossOrigin
