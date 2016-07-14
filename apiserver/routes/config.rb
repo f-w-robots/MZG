@@ -61,7 +61,7 @@ module Sinatra
 
               params["data"]["relationships"].each do |rel, data|
                 model.where('_id' => id).update(rel => data["data"]["id"])
-              end
+              end if params["data"]["relationships"]
 
               {meta:{}}.to_json
             end
