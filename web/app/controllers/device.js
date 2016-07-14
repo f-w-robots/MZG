@@ -4,16 +4,16 @@ export default Ember.Controller.extend({
   devicesController: Ember.inject.controller('devices'),
   dm: Ember.inject.service('devices-manager'),
   output: null,
-
-  algorithmObserver: function() {
-    var target = null;
-    this.get('algorithms').find(function(i){
-      if(this.get('model.algorithmId') === i.get('id')) {
-        target = i;
-      }
-    }, this);
-    this.set('algorithm', target);
-  }.observes('model.algorithmId'),
+  //
+  // algorithmObserver: function() {
+  //   var target = null;
+  //   this.get('algorithms').find(function(i){
+  //     if(this.get('model.algorithmId') === i.get('id')) {
+  //       target = i;
+  //     }
+  //   }, this);
+  //   this.set('algorithm', target);
+  // }.observes('model.algorithmId'),
 
   modelObserver: function() {
     this.set('output', this.get('dm.output.' + this.get('model.hwid')));
@@ -73,12 +73,16 @@ export default Ember.Controller.extend({
       this.get('dm').updateCode(this.get('model.hwid'), code);
     },
 
-    control: function(device) {
-      if(this.get('controlUrl')) {
-        this.set('controlUrl', undefined);
-      } else {
-        this.set('controlUrl', location.protocol + '//' + location.hostname + ':3900/' + device.get('hwid'));
-      }
+    selectAlgorithm: function(algorithmId) {
+      var target = null;
+      this.get('algorithms').find(function(i){
+        console.log(algorithmId, i.get('id'));
+        if(algorithmId === i.get('id')) {
+          target = i;
+        }
+      }, this);
+      console.log(target);
+      this.set('model.algorithm', target);
     },
 
     delete: function(device) {

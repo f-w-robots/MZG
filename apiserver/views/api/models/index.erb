@@ -14,7 +14,7 @@
       <% if @model.relationships.present? %>
       ,
       "relationships": {
-        <% @model.relationships.each do |relationship| %>
+        <% @model.relationships.each_with_index do |relationship, index| %>
           <% id = record.attributes[relationship] %>
           "<%= relationship %>": {
             "data": <%= id.is_a?(Array) ? '[' : '' %>
@@ -26,7 +26,7 @@
               }
               <% end %>
             <%= id.is_a?(Array) ? ']' : '' %>
-          }
+          } <%= index +1 != @model.relationships.size ? ',' : '' %>
         <% end %>
       }
       <% end %>

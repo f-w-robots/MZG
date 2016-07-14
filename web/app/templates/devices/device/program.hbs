@@ -10,7 +10,13 @@
         </div>
       </div>
       <div class="row">
-        {{select-code model=algorithm options=algorithms valueKey="id" labelKey="name" name=algorithm.name value=model.algorithmId modelName="algorithm" device=model}}
+        <select onchange={{action "selectAlgorithm" value="target.value"}} class="form-control">
+          <option value=""></option>
+          {{#each algorithms as |algorithm|}}
+            <option value={{algorithm.id}} selected={{eq model.algorithm.id algorithm.id}}>{{algorithm.name}}</option>
+          {{/each}}
+        </select>
+        <!-- {{select-code model=model.algorithm options=algorithms valueKey="id" labelKey="name" name=model.algorithm.name value=model.algorithm.id modelName="algorithm" device=model}} -->
       </div>
       <div class="row">
         <div class="btn btn-warning" {{action "update" model}}>Update</div>
@@ -20,28 +26,14 @@
   </div>
 
   <div class="col-md-8">
-    {{#if controlUrl}}
-      <iframe class="control col-md-12" height="500" src="{{controlUrl}}"></iframe>
-    {{else}}
-      {{#if model.manual}}
-      {{#if interface}}
-        body, html: <br>
-        {{#ace-editor mode="html" value=interface.interface cols="80" rows="20"}}{{/ace-editor}}
-      {{/if}}
-      {{/if}}
-
-      {{#unless model.manual}}
-      {{#if algorithm}}
-        ruby code: <br>
-        {{#ace-editor mode="ruby" value=algorithm.algorithm}}{{/ace-editor}}
-
-      {{/if}}
-      {{/unless}}
+    {{#if model.algorithm}}
+      ruby code: <br>
+      {{#ace-editor mode="ruby" value=model.algorithm.algorithm}}{{/ace-editor}}
     {{/if}}
   </div>
 </div>
 <div class="row">
-  {{#if algorithm}}
+  {{#if model.algorithm}}
     {{std-output data=output}}
   {{/if}}
 </div>

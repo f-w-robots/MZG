@@ -9,13 +9,13 @@ class Device
   def self.attributes
     [
       :hwid,
-      :'algorithm-id',
       :icon,
     ]
   end
 
   def self.relationships
     [
+      :'algorithm',
       :'device-build',
     ]
   end

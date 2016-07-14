@@ -7,9 +7,9 @@ export default Ember.Route.extend(authRouteMixin, {
   setupController: function(controller, model) {
     var algorithms = this.store.findAll('algorithm');
     controller.set('algorithms', algorithms);
-    algorithms.then(function(algorithms) {
-      controller.algorithmObserver();
-    });
+    // algorithms.then(function(algorithms) {
+    //   // controller.algorithmObserver();
+    // });
     if(model) {
       controller.set('devicesController.currentDeviceId', model.get('id'));
     }
@@ -27,7 +27,7 @@ export default Ember.Route.extend(authRouteMixin, {
 
       return device.then(function(device) {
         console.log('XXX');
-        device.get('deviceBuild').then(function(build){
+        device.get('algorithm').then(function(build){
           console.log(build);
         })
         return device;
