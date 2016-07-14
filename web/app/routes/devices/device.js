@@ -13,7 +13,7 @@ export default Ember.Route.extend(authRouteMixin, {
     if(model) {
       controller.set('devicesController.currentDeviceId', model.get('id'));
     }
-    this.transitionTo('/devices/' + model.get('id') + '/program');
+    this._super(controller, model);
   },
 
   model(params) {

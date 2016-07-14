@@ -26,7 +26,7 @@ export default Ember.Controller.extend({
     },
 
     selectDevice: function(device) {
-      this.transitionToRoute('/devices/' + device.get('id'));
+      this.transitionToRoute('/devices/' + device.get('id') + '/program');
     },
 
     killDevice: function(device) {
