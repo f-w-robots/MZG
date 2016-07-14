@@ -14,7 +14,12 @@
   {{modelName}}
   <div class="row">
     <div class="col-md-9">
-      {{select-bootstrap options=options valueKey=valueKey labelKey=labelKey value=value}}
+      <select onchange={{action "selectAlgorithm" value="target.value"}} class="form-control">
+        <option value=""></option>
+        {{#each options as |algorithm|}}
+          <option value={{algorithm.id}} selected={{eq device.algorithm.id algorithm.id}}>{{algorithm.name}}</option>
+        {{/each}}
+      </select>
     </div>
     <div class="col-md-3">
       <a href="#" {{action "add"}}>add</a>/

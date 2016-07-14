@@ -26,10 +26,6 @@ export default Ember.Route.extend(authRouteMixin, {
       this.store.findAll('deviceBuild');
 
       return device.then(function(device) {
-        console.log('XXX');
-        device.get('algorithm').then(function(build){
-          console.log(build);
-        })
         return device;
       }, function(device) {
         this.transitionTo('/devices');

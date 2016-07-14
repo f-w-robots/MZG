@@ -73,18 +73,6 @@ export default Ember.Controller.extend({
       this.get('dm').updateCode(this.get('model.hwid'), code);
     },
 
-    selectAlgorithm: function(algorithmId) {
-      var target = null;
-      this.get('algorithms').find(function(i){
-        console.log(algorithmId, i.get('id'));
-        if(algorithmId === i.get('id')) {
-          target = i;
-        }
-      }, this);
-      console.log(target);
-      this.set('model.algorithm', target);
-    },
-
     delete: function(device) {
       device.deleteRecord();
       device.save();

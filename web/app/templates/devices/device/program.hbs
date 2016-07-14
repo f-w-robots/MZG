@@ -10,13 +10,7 @@
         </div>
       </div>
       <div class="row">
-        <select onchange={{action "selectAlgorithm" value="target.value"}} class="form-control">
-          <option value=""></option>
-          {{#each algorithms as |algorithm|}}
-            <option value={{algorithm.id}} selected={{eq model.algorithm.id algorithm.id}}>{{algorithm.name}}</option>
-          {{/each}}
-        </select>
-        <!-- {{select-code model=model.algorithm options=algorithms valueKey="id" labelKey="name" name=model.algorithm.name value=model.algorithm.id modelName="algorithm" device=model}} -->
+        {{select-code model=model.algorithm options=algorithms valueKey="id" labelKey="name" name=model.algorithm.name value=model.algorithm.id modelName="algorithm" device=model}}
       </div>
       <div class="row">
         <div class="btn btn-warning" {{action "update" model}}>Update</div>

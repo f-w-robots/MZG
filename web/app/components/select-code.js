@@ -19,9 +19,26 @@ export default Ember.Component.extend({
     },
 
     delete() {
-      this.get('model').deleteRecord();
-      this.get('model').save();
+      var target = null;
+      this.get('options').find(function(i){
+        if(this.get('device.algorithm.id') === i.get('id')) {
+          target = i;
+        }
+      }, this);
+      target.deleteRecord();
+      target.save();
       this.set('model', null);
+      this.set('device.algorithm', null);
+    },
+
+    selectAlgorithm: function(algorithmId) {
+      var target = null;
+      this.get('options').find(function(i){
+        if(algorithmId === i.get('id')) {
+          target = i;
+        }
+      }, this);
+      this.set('device.algorithm', target);
     },
   }
 });

@@ -59,6 +59,10 @@ module Sinatra
 
               model.where('_id' => id).update(params["data"]["attributes"])
 
+              params["data"]["relationships"].each do |rel, data|
+                model.where('_id' => id).update(rel => data["data"]["id"])
+              end
+
               {meta:{}}.to_json
             end
 
