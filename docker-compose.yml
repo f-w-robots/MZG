@@ -29,6 +29,7 @@ apiserver:
     - "2600:2600"
   volumes:
     - ./apiserver:/app
+    - ./volumes/repos:/app/repos
   links:
     - db
     - mail
