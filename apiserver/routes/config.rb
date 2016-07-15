@@ -17,6 +17,7 @@ module Sinatra
 
             app.get "/api/v1/#{model.pluralize}/:id" do |id|
               halt "{\"data\":[]}" if !@user
+              # debugger
               @records = @user.send(model.pluralize).where(_id: id)
               @model = model
 
@@ -60,7 +61,14 @@ module Sinatra
               model.where('_id' => id).update(params["data"]["attributes"])
 
               params["data"]["relationships"].each do |rel, data|
-                model.where('_id' => id).update(rel => data["data"]["id"])
+                data = data["data"]
+                next if !data
+                if data.is_a? Array
+                  dat = data.map{|d|d["id"]}
+                else
+                  dat = data["id"]
+                end
+                model.where('_id' => id).update(rel => dat)
               end if params["data"]["relationships"]
 
               {meta:{}}.to_json

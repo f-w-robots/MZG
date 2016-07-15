@@ -5,8 +5,7 @@ export default Ember.Component.extend({
 
   classNames: ['device-module'],
   shelfModulesOptions: [],
-
-  modules: [],
+  // component: null,
 
   setup: function() {
     this.get('store').findAll('shelfModule').then(function(modules) {
@@ -22,11 +21,26 @@ export default Ember.Component.extend({
   actions: {
     addMod: function() {
       var mod = this.get('store').peekRecord('shelfModule', this.get('selectedModule'));
-      this.get('modules').push({
+      if(!this.get('module.mods')) {
+        this.set('module.mods', []);
+      }
+      var pins = [];
+      $.each(mod.get('pins'), function(index, pin) {
+        pins.push({
+          type: pin,
+          value: '',
+        })
+      });
+      this.get('module.mods').pushObject({
         name: mod.get('name'),
-        pins: mod.get('pins'),
-      })
-      this.notifyPropertyChange('modules');
-    }
+        pins: pins,
+      });
+      this.get('module').save();
+    },
+
+    save() {
+      this.notifyPropertyChange('module.mods');
+      this.get('module').save();
+    },
   }
 });

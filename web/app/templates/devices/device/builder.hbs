@@ -1,7 +1,6 @@
-{{outlet}}
-{{#each model.build.devicesModules as |module|}}
-  {{device-module module=module}}
+{{#each model.build.components as |comp|}}
+  {{device-module module=comp}}
 {{/each}}
-<div class="btn btn-default device-module-new">
+<div class="btn btn-default device-module-new" {{action "addModule"}}>
   +
 </div>

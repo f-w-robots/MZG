@@ -7,9 +7,6 @@ export default Ember.Route.extend(authRouteMixin, {
   setupController: function(controller, model) {
     var algorithms = this.store.findAll('algorithm');
     controller.set('algorithms', algorithms);
-    // algorithms.then(function(algorithms) {
-    //   // controller.algorithmObserver();
-    // });
     if(model) {
       controller.set('devicesController.currentDeviceId', model.get('id'));
     }
@@ -23,11 +20,17 @@ export default Ember.Route.extend(authRouteMixin, {
       }.bind(this));
     } else {
       var device = this.store.findRecord('device', params['device_id']);
-      this.store.findAll('deviceBuild');
 
       return device.then(function(device) {
+        if(!device.get('build.content')) {
+          var build = this.store.createRecord('build');
+          build.save().then(function(build) {
+            device.set('build', build);
+            device.save();
+          });
+        }
         return device;
-      }, function(device) {
+      }.bind(this), function(device) {
         this.transitionTo('/devices');
       }.bind(this));
     }

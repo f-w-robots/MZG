@@ -78,5 +78,15 @@ export default Ember.Controller.extend({
       device.save();
       this.transitionToRoute('/devices');
     },
+
+    addModule: function() {
+      var record = this.store.createRecord('component', {name: 'new name'})
+      record.save().then(function(component) {
+        var build = this.get('model.build.content');
+        console.log(build);
+        build.get('components').pushObject(record);
+        build.save();
+      }.bind(this));
+    }
   },
 });

@@ -14,19 +14,21 @@
       <% if @model.relationships.present? %>
       ,
       "relationships": {
+
         <% @model.relationships.each_with_index do |relationship, index| %>
-          <% id = record.attributes[relationship] %>
-          "<%= relationship %>": {
-            "data": <%= id.is_a?(Array) ? '[' : '' %>
-            <% ids = id.is_a?(Array) ? id : [id] %>
-              <% ids.each do |id| %>
-              {
-                "id": "<%= id %>",
-                "type": "<%= relationship %>"
-              }
-              <% end %>
-            <%= id.is_a?(Array) ? ']' : '' %>
-          } <%= index +1 != @model.relationships.size ? ',' : '' %>
+          <% if id = record.attributes[relationship] %>
+            "<%= relationship %>": {
+              "data": <%= id.is_a?(Array) ? '[' : '' %>
+              <% ids = id.is_a?(Array) ? id : [id] %>
+                <% ids.each_with_index do |id, index| %>
+                  {
+                    "id": "<%= id %>",
+                    "type": "<%= relationship %>"
+                  }<%= index +1 != ids.size ? ',' : '' %>
+                <% end %>
+              <%= id.is_a?(Array) ? ']' : '' %>
+            } <%= index +1 != @model.relationships.size ? ',' : '' %>
+          <% end %>
         <% end %>
       }
       <% end %>

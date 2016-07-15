@@ -1,28 +1,22 @@
-class Device
+class Component
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
 
   belongs_to :user
-  has_one :algorithms
-  validates_uniqueness_of :hwid
 
   def self.attributes
     [
-      :hwid,
-      :icon,
+      :name,
+      :mods,
     ]
   end
 
   def self.relationships
     [
-      :algorithm,
-      :build,
     ]
   end
 
   def self.pluralize
-    'devices'
+    'components'
   end
-
-  index({ hwid: 1 }, { unique: true, name: "hwid_index" })
 end

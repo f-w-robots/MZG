@@ -7,7 +7,7 @@ module Sinatra
           result += "\"#{attr.gsub('"', '\"').gsub("\n",'\n')}\""
         elsif attr.nil?
           result += '""'
-        elsif attr.is_a?(Hash)
+        elsif attr.is_a?(Hash) || attr.is_a?(Array)
           result += attr.to_json
         else
           result += attr.to_s

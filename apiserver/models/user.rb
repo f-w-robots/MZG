@@ -11,6 +11,9 @@ class User
 
   has_many :devices
   has_many :algorithms
+  has_many :builds
+  has_many :components
+  has_many :mods
 
   def self.attributes
     [

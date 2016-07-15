@@ -1,6 +1,7 @@
 {{mod.name}}:
 <div class="pin-fields">
-  {{#each mod.pins as |pinType|}}
-    {{pinType}}{{input}}
+  {{#each mod.pins as |pin|}}
+    {{pin.type}}{{input value=pin.value}}
   {{/each}}
+  <span class="glyphicon glyphicon-trash" aria-hidden="true" {{action "delete" mod}}></span>
 </div>

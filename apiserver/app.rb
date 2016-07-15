@@ -21,7 +21,7 @@ class App < Sinatra::Base
   set :session_secret, ENV['SECRET']
   use Rack::Session::Cookie, secret: ENV['SECRET']
 
-  MODELS = %w{ algorithm device }
+  MODELS = %w{ algorithm device build component mod }
   $LOAD_PATH.push File.expand_path('../models', __FILE__)
   (MODELS+['user']).each { |model_name| require model_name }
 

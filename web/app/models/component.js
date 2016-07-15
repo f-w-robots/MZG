@@ -3,5 +3,6 @@ import Model from 'ember-data/model';
 // import { belongsTo, hasMany } from 'ember-data/relationships';
 
 export default Model.extend({
-  modulesId: DS.attr('string'),
+  name: DS.attr("string"),
+  mods: DS.attr(),
 });
