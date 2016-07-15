@@ -3,27 +3,12 @@ module Sinatra
     module Routing
       module Tmp
         def self.registered(app)
-          app.get '/api/v1/device-builds' do
-            {
-              data: [
-                {
-                  type: "device-build",
-                  id: "917a19b19c27fe0001cs9cfe",
-                  attributes: {
-                    name: "BUG",
-                    'modues-ids': [],
-                  }
-                },
-              ]
-            }.to_json
-          end
-
           app.get '/api/v1/shelf-modules' do
             {
               data: [
                 {
                   type: "shelf-modules",
-                  id: "917a19b19c27fe0001c09cfe",
+                  id: "1",
                   attributes: {
                       name: "DCEngine",
                       key: "dc_engine",
@@ -34,7 +19,7 @@ module Sinatra
                 },
                 {
                   type: "shelf-modules",
-                  id: "927a19b19c27fe0001c09cfe",
+                  id: "2",
                   attributes: {
                       name: "StepperMotor",
                       key: "stepper_motor",
@@ -45,12 +30,45 @@ module Sinatra
                 },
                 {
                   type: "shelf-modules",
-                  id: "937a19b19c27fe0001c09cfe",
+                  id: "3",
                   attributes: {
-                      name: "Sensors",
-                      key: "sensors",
+                      name: "Sensor",
+                      key: "sensor",
                       pins: [
-                        'analog', 'analog', 'analog', 'analog', 'analog'
+                        'analog'
+                      ]
+                  }
+                },
+                {
+                  type: "shelf-modules",
+                  id: "4",
+                  attributes: {
+                      name: "IRReciever",
+                      key: "ir_rec",
+                      pins: [
+                        'shim'
+                      ]
+                  }
+                },
+                {
+                  type: "shelf-modules",
+                  id: "5",
+                  attributes: {
+                      name: "IRTransmiter",
+                      key: "ir_trans",
+                      pins: [
+                        'shim'
+                      ]
+                  }
+                },
+                {
+                  type: "shelf-modules",
+                  id: "6",
+                  attributes: {
+                      name: "Sonar",
+                      key: "sr_04",
+                      pins: [
+                        'any', 'any'
                       ]
                   }
                 },

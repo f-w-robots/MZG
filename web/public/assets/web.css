@@ -86,7 +86,7 @@ span.form-control {
 
 .device-module {
   background: #d8d5d5;
-  width: 33%;
+  max-width: 300px;
   height: 500px;
   float: left;
   border: 2px solid black;
@@ -97,6 +97,7 @@ span.form-control {
 
 .device-module-new {
   height: 500px;
+  float: left;
 }
 
 .device-module .pin-fields input {
