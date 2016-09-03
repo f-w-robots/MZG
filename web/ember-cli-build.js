@@ -16,7 +16,10 @@ module.exports = function(defaults) {
     },
   });
 
+  app.import('/vendor/css/tabs-left.css');
   app.import('/vendor/css/leftMenu.css');
+  app.import('/vendor/css/login.css');
+  app.import('/vendor/css/homepage.css');
 
   app.import('bower_components/js-md5/build/md5.min.js');
 
@@ -44,11 +47,6 @@ module.exports = function(defaults) {
   var merged = mergeTrees([app.toTree(), ace, fontawesome, bootstrap], {
     overwrite: true
   });
-
-  app.import('/vendor/css/tabs-left.css');
-  app.import('/vendor/css/leftMenu.css');
-  app.import('/vendor/css/login.css');
-  app.import('/vendor/css/homepage.css');
 
   // Use `app.import` to add additional libraries to the generated
   // output files.
