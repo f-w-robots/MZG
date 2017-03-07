@@ -6,7 +6,7 @@ var adapter;
 
 if(ENV.environment !== 'test') {
   adapter = DS.JSONAPIAdapter.extend({
-    host: location.protocol + '//' + location.hostname + ':' + 2600,
+    host: location.protocol + '//api.' + location.hostname,
     namespace: 'api/v1',
   });
 } else {
