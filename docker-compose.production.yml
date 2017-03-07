@@ -1,15 +1,18 @@
 db:
   image: mongo:3.2
+  restart: always
   volumes:
     - ./volumes/db/data:/data/db
     - ./volumes/db/config:/data/configdb
 docker:
   build: docker/.
+  restart: always
   privileged: true
   volumes:
     - ./volumes/docker:/var/lib/docker
     - ./tmp/containers:/app/containers
 hwserver2:
+  restart: always
   build: hwserver2/.
   command: rackup
   ports:
@@ -23,6 +26,7 @@ hwserver2:
     - docker
   env_file: .env.production
 apiserver:
+  restart: always
   build: apiserver/.
   command: rackup config.ru -s puma -E production
   ports:
@@ -39,6 +43,5 @@ web:
   volumes:
     - ./web/dist:/app/dist
 mail:
+  restart: always
   image: tozd/postfix
-  ports:
-    - "25:25"
