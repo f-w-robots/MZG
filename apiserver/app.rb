@@ -67,8 +67,7 @@ class App < Sinatra::Base
   require './warden'
 
   use OmniAuth::Builder do
-    provider :vkontakte, ENV['AUTH_API_KEY'], ENV['AUTH_API_SECRET']
-    provider :github, ENV['AUTH_GITHUB_KEY'], ENV['AUTH_GITHUB_SECRET'], scope: "user"
+    provider :github, ENV['AUTH_GITHUB_KEY'], ENV['AUTH_GITHUB_SECRET'], redirect_uri: ENV["AUTH_REDIRECT"], scope: "user"
   end
 
   helpers Sinatra::App::Helpers
