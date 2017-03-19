@@ -5,7 +5,7 @@ export default Ember.Component.extend({
 
   actions: {
     logout: function() {
-      location.replace("http://api." + location.hostname + "/auth/logout");
+      location.replace("http://" + location.hostname + "/auth/logout");
     }
   }
 });

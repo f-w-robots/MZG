@@ -7,7 +7,7 @@ export default Ember.Service.extend(abstractSocket, {
   output: Ember.RSVP.hash({}),
 
   init() {
-    this.set('url', 'ws://hwapi' + location.hostname + '/devices/manage');
+    this.set('url', 'ws://' + location.hostname + '/devices/manage');
     this.onInit();
     this.addOnMessage('devices', function(data) {
       this.set('devices', data);

@@ -32,6 +32,8 @@ class App < Sinatra::Base
 
   set :mailer, Mailer.new(ENV['SYS_EMAIL_ADDRESS'])
 
+  set :protection, :except => :json_csrf
+
   before '/api/*' do
     content_type :json
   end
@@ -66,8 +68,10 @@ class App < Sinatra::Base
 
   require './warden'
 
+  OmniAuth.config.full_host = ENV["AUTH_REDIRECT"]
+
   use OmniAuth::Builder do
-    provider :github, ENV['AUTH_GITHUB_KEY'], ENV['AUTH_GITHUB_SECRET'], redirect_uri: ENV["AUTH_REDIRECT"], scope: "user"
+    provider :github, ENV['AUTH_GITHUB_KEY'], ENV['AUTH_GITHUB_SECRET'], scope: "user"
   end
 
   helpers Sinatra::App::Helpers

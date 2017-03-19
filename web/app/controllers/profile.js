@@ -34,11 +34,11 @@ export default Ember.Controller.extend( {
     },
 
     connect: function() {
-      location.replace(location.protocol + "//api." + location.hostname + "/auth/github");
+      location.replace(location.protocol + "//" + location.hostname + "/auth/github");
     },
 
     disconnect: function() {
-      location.replace(location.protocol + "//api." + location.hostname + "/auth/github/disconnect");
+      location.replace(location.protocol + "//" + location.hostname + "/auth/github/disconnect");
     },
 
     delete: function() {

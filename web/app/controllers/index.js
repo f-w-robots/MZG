@@ -24,15 +24,15 @@ export default Ember.Controller.extend({
 
   actions: {
     vkontakte: function() {
-      location.replace(location.protocol + "//api." + location.hostname + "/auth/vkontakte");
+      location.replace(location.protocol + "//" + location.hostname + "/auth/vkontakte");
     },
 
     github: function() {
-      location.replace(location.protocol + "//api." + location.hostname + "/auth/github");
+      location.replace(location.protocol + "//" + location.hostname + "/auth/github");
     },
 
     signin: function() {
-      Ember.$.post(location.protocol + "//api." + location.hostname  + "/auth/signin",
+      Ember.$.post(location.protocol + "//" + location.hostname  + "/auth/signin",
         { 'user': {login: this.get('username'), password: this.get('password')}},
         function(data, textStatus, xhr) {
           if(xhr.status === 201) {
@@ -47,7 +47,7 @@ export default Ember.Controller.extend({
     },
 
     signup: function() {
-      Ember.$.post(location.protocol + "//api." + location.hostname  + "/auth/signup",
+      Ember.$.post(location.protocol + "//" + location.hostname  + "/auth/signup",
         {
           'user':
             {
@@ -66,7 +66,7 @@ export default Ember.Controller.extend({
     },
 
     restore_password: function() {
-      Ember.$.post(location.protocol + "//api." + location.hostname  + "/auth/forgot_password",
+      Ember.$.post(location.protocol + "//" + location.hostname  + "/auth/forgot_password",
         {
           email: this.get('email'),
         },
@@ -80,7 +80,7 @@ export default Ember.Controller.extend({
     },
 
     update_password: function() {
-      Ember.$.post(location.protocol + "//api." + location.hostname  + "/auth/update_password",
+      Ember.$.post(location.protocol + "//" + location.hostname  + "/auth/update_password",
         {
           password: this.get('password'),
           password_confirmation: this.get('password_confirmation'),
